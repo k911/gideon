@@ -1,0 +1,136 @@
+<?php
+namespace Gideon\Database\Connection;
+
+use Gideon\Debug\Base as Debug;
+use Gideon\Handler\Config;
+use Gideon\Database\Connection;
+
+abstract class Base extends Debug implements Connection
+{
+    /**
+     * @var \PDO    $PDO PHP Data Object
+     * @var string  $DSN Data Source Names
+     * @var string  $username db
+     * @var string  $password for provided username
+     * @var array   $options 4th argument of \PDO constructor
+     */
+    private $PDO;
+    private $DSN;
+    private $username;
+    private $password;
+    private $options;
+
+    public function __call(string $function, array $arguments)
+    {
+        if(isset($this->PDO))
+            return call_user_func_array([$this->PDO, $function], $arguments);
+        else 
+            $this->log("Tried to call function: $function on not initialized PDO.");
+    }
+
+    public function close()
+    {
+        unset($this->PDO);
+    }
+
+    public function try_connect(): bool
+    {
+        try 
+        {
+            $this->PDO = new \PDO($this->DSN, $this->username, $this->password, $this->options);
+            return true;
+        } 
+        catch (\PDOException $e) 
+        {
+            // TODO: error catcher
+            do
+            {
+                $file = substr($e->getFile(), strpos($e->getFile(), 'core') + strlen('core')); 
+                $file = "[{$e->getCode()}] `$file:{$e->getLine()}` {$e->getMessage()}";
+                $this->log(rtrim($file, '\n'));
+            }
+            while($e = $e->getPrevious());
+            return false;
+        }
+    }
+
+    /**
+     * Computes DSN from settings
+     * @param array $settings
+     * @return string PDO's DSN string
+     */
+    private function computeDSN(array $settings): string
+    {
+        $dsn = $settings['prefix'] . ':';
+        unset($settings['prefix']);
+        
+        if(!empty($settings))
+        {
+            foreach($settings as $name => $v)
+            {
+                $dsn .= "$name=$v;";
+            }
+            $dsn = substr($dsn, 0, -1);
+        }
+        return $dsn;
+    }
+
+    /**
+     * Concatenate provided $settings with defaults from $config
+     * @param Gideon\Handler\Config $config
+     * @param array                 $settings
+     * @return array
+     */
+    abstract protected function parseSettings(Config $config, array $settings = null): array;
+
+    /**
+     * Initialize PDO settings and Database credentials
+     * @param Gideon\Handler\Config $config
+     * @param array                 $settings
+     */
+    public function __construct(Config $config, array $settings = null)
+    {
+        $settings = $this->parseSettings($config, $settings);
+
+        // Unpack unnecessary credentials
+        if(isset($settings['username']))
+        {
+            $this->username = $settings['username'];
+            unset($settings['username']);
+
+            if(isset($settings['password']))
+            {
+                $this->password = $settings['password'];
+            }
+        }
+        unset($settings['password']);
+
+        if(isset($settings['options']))
+        {
+            $this->username = $settings['options'];
+            unset($settings['options']);
+        }
+
+        // Save coputed DSN
+        $this->DSN = $this->computeDSN($settings);
+    }
+
+    /**
+     * @override
+     */
+    protected function getDebugProperties(): array
+    {
+        $result = [
+            'pdo_driver' => isset($this->PDO) ? $this->PDO->getAttribute(\PDO::ATTR_DRIVER_NAME) : 'not initialized',
+            'dsn' => $this->DSN,
+        ];
+
+        if(isset($this->username))
+        {
+            $result['username'] = $this->username;
+            $result['use_password'] = isset($this->password) ? 'yes' : 'no';
+        }
+
+        return $result;
+    }
+}
