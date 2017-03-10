@@ -1,0 +1,19 @@
+# default
+.vscode
+/node_modules
+npm-debug.log
+**/.DS_Store
+**/.bak
+composer.lock
+composer.phar
+
+# configs
+conf
+
+# specific
+application/cache
+application/config
+application/download
+application/log
+ref
+vendor

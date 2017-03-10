@@ -1,0 +1,36 @@
+{
+  "name": "gideon-ftf",
+  "version": "0.0.0",
+  "description": "Gideon Fast Tiny Framework - tiny php MVC framework featuring Material Design, Restful Fast Router, Anti-CSRF and TWIG support",
+  "main": "gulpfile.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "mdi": "^1.7.22",
+    "normalize-sass": "^1.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-download-stream": "0.0.13",
+    "gulp-notify": "2.2.0",
+    "gulp-sass": "^3.0.0",
+    "gulp-uglify": "^2.0.0"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none yet"
+  },
+  "keywords": [
+    "framework",
+    "mvc",
+    "fast-router",
+    "php"
+  ],
+  "author": "K911 <konradobal@gmail.com> (http://k911blog.tk/)",
+  "license": "ISC"
+}
