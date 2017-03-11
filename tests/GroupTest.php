@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Gideon\Handler\Config;
 use Gideon\Handler\Group\MixedGroup;
+use Gideon\Handler\Group\UniformGroup;
 
 class Foo2 
 {
@@ -92,5 +93,64 @@ final class GroupTest extends TestCase
 
         //$group->notExistentMethod(); //shows in log
 
+    }
+
+    public function testUniform()
+    {
+        $foo = new Foo2();
+        $foo2 = new class extends Foo2 {};
+        $group;
+        
+        // Creation of not existent class/interface : Should fail
+        $init = false;
+        try {
+            $group = new UniformGroup(get_class($foo) . '_NotExistent');
+            $init = true;
+        } 
+        catch(\Exception $e)
+        {}
+        $this->assertEquals(false, $init);
+
+        // Creation and add proper class/interface : Should success
+        $init = false;
+        $add = false;
+        try {
+            $group = new UniformGroup(get_class($foo));
+            $init = true;
+            $group->add($foo);
+            $add = true;
+        } 
+        catch(\Exception $e)
+        {
+            $this->config->log($e);
+        }
+        $this->assertEquals(true, $init);
+        $this->assertEquals(true, $add);
+
+        // Adding descendant of foo to group : Should success
+        $add = false;
+        try {
+            $group = new UniformGroup(get_class($foo));
+            $group->add($foo2);
+            $add = true;
+        } 
+        catch(\Throwable $e)
+        {
+            $this->config->log($e);
+        }
+        $this->assertEquals(true, $add);
+    
+        // Adding descendant of foo to group in strict mode : Should fail
+        $add = false;
+        try {
+            $group = new UniformGroup(get_class($foo), true);
+            $group->add($foo2);
+            $add = true;
+        } 
+        catch(\Throwable $e)
+        {
+            $this->config->logException($e);
+        }
+        $this->assertEquals(false, $add);
     }
 }
