@@ -1,16 +1,14 @@
 <?php
-namespace Gideon\Router\Route\RegexRoute;
+namespace Gideon\Router\Route\Param;
 
-class Param 
+use Gideon\Router\Route\Param as Base;
+
+class ArrayRouteParam extends Base
 {
     /**
-     * @var string  $name
-     * @var string  $value
-     * @var bool    $volatile
+     * @var string $regex
      */
-    public $name;
-    public $value;
-    public $volatile;
+    public $regex;
 
     public function __construct(string $param) 
     {
@@ -20,7 +18,7 @@ class Param
         if($this->volatile = ($param[0] == ':'))
         {
              // Check for custom defined regex pattern
-            if(preg_match('/^:{.+}$/', $param) === 1)
+            if($this->regex = (preg_match('/^:{.+}$/', $param)) === 1)
             {
                 $this->value = trim(substr($param, 2, -1));
             }
