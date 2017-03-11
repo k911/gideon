@@ -24,7 +24,8 @@ class Logger
     protected function parseThrowable(\Throwable $thrown): string
     {
         $file = substr($thrown->getFile(), strpos($thrown->getFile(), $this->root) + strlen($this->root)); 
-        return "[{$thrown->getCode()}] `$file:{$thrown->getLine()}` {$thrown->getMessage()}";
+        $message = preg_replace("~class\@anonymous[^\s\'\"\,]*~", 'class@anonymous', $thrown->getMessage());
+        return "[{$thrown->getCode()}] `$file:{$thrown->getLine()}` $message";
     }
 
     /**
