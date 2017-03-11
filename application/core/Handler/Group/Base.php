@@ -14,7 +14,7 @@ abstract class Base extends Debug implements Group
      * @throws Gideon\Handler\Group\InvalidArgumentException if $item is not an object
      * @return void
      */
-    private function addSingle($item)
+    protected function addSingle($item)
     {
         if(is_object($item))
         {
@@ -25,16 +25,13 @@ abstract class Base extends Debug implements Group
 
     public function add(...$items): Group
     {
-        foreach($items as $item)
-            $this->addSingle($item);
-
-        return $this;
+        return $this->addMultiple($items);
     }
 
     public function addMultiple(array $items): Group
     {
         foreach($items as $item)
-            $this->addSingle($items);
+            $this->addSingle($item);
 
         return $this;
     }
@@ -61,14 +58,14 @@ abstract class Base extends Debug implements Group
         $results = [];
         foreach($this->items as $obj)
         {
-            if(method_exists($obj, '__get'))
+            try 
             {
                 $results[] = $obj->{$key};
-            }
-            else 
+            } 
+            catch (\Exception $e)
             {
-                $this->log("Unable to get property: " . get_class($obj) . "->$key.");
                 $results[] = NULL;
+                $this->log($e);
             }
         }
         return $results;
@@ -79,16 +76,15 @@ abstract class Base extends Debug implements Group
         $results = [];
         foreach($this->items as $obj)
         {
-            if(method_exists($obj, '__set'))
+            try 
             {
-                // Remarks: when __set returns null it uses __get to verify wheter operation 
-                //          was successful or not
-                $results[] = ($obj->{$key} = $value) ?? ($obj->{$key} === $value); 
-            }
-            else 
+                $obj->{$key} = $value;
+                $results[] = true;
+            } 
+            catch (\Exception $e)
             {
-                $this->log("Unable to get property: " . get_class($obj) . "->$key.");
                 $results[] = false;
+                $this->log($e);
             }
         }
         return $results;
@@ -98,16 +94,8 @@ abstract class Base extends Debug implements Group
     {
         foreach($this->items as $obj)
         {
-            if(method_exists($obj, '__isset'))
-            {
-                if(!isset($obj->{$key}))
-                    return false;
-            }
-            else 
-            {
-                $this->log("Trying to use not implemented isset on object: " . get_class($obj));
+            if(!isset($obj->{$key}))
                 return false;
-            }
         }
         return true;   
     }
