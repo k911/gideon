@@ -1,84 +1,17 @@
 <?php
 namespace Gideon\Router\Route;
 
-use Gideon\Http\Request;
 use Gideon\Router\Route;
-use Gideon\Debug\Base as Debug;
+use Gideon\Http\Request;
 
-class ArrayRoute extends Debug implements Route
+class ArrayRoute extends Base
 {
-
-    /**
-     * @var ArrayRoute\Param[]  $params
-     * @var int[]               $vars
-     * @var callable            $handler 
-     * @var int                 $size
-     */
-    protected $params;
-    protected $vars;
-    protected $handler;
-    protected $size;
-
-    protected function parse(string $route)
+    protected function paramFrom(string $value): Param
     {
-        $index = 0;
-        $values = explode('/', $route);
-        foreach($values as $value)
-        {
-            $value = trim($value);
-            if(!empty($value) || $value === '0') 
-            {
-                $param = $this->params[] = new ArrayRoute\Param($value);
-                if($param->volatile)
-                    $this->vars[] = $index;
-                ++$index;
-            }
-        }
-        $this->size = $index;
+        return new Param\ArrayRouteParam($value);
     }
 
-    /**
-    * @param string $route 
-    * @param callable $handler
-    */
-    public function __construct(string $route, callable $handler = null)
-    {
-        $this->parse($route);
-        $this->handler = $handler;
-    }
-
-    public function empty(): bool
-    {
-        return empty($this->params);
-    }
-
-    public function size(): int
-    {
-        return $this->size;
-    }
-
-    public function variables(): int
-    {
-        return count($this->vars);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function map(Request $request): array
-    {
-        $data = [];
-        if(!empty($this->vars))
-        {
-            foreach($this->vars as $index)
-            {
-                $data[] = $request[$index];
-            }
-        }
-        return $data;
-    }
-
-    public function check(ArrayRoute\Param $param, string $value)
+    public function check(Param $param, string $value)
     {
         if($param->volatile)
             return ($param->regex) ? (preg_match('~^' . $param->value . '$~', $value) === 1)  : true;
@@ -93,7 +26,7 @@ class ArrayRoute extends Debug implements Route
 
         foreach($request as $i => $value)
         {
-            if(!$this->check($this->params[$i], $value))
+            if(!$this->check($this->parameters[$i], $value))
                 return false;
         }
 
@@ -103,7 +36,7 @@ class ArrayRoute extends Debug implements Route
     public function regex(array $replacements): string
     {
         $trimmed = [];
-        foreach($this->params as $param)
+        foreach($this->parameters as $param)
         {
             $trimmed[] = ($param->volatile) ?
                 '(' . ($param->regex ? $param->value : $replacements['any']) . ')' :
@@ -114,7 +47,7 @@ class ArrayRoute extends Debug implements Route
 
     public function where(array $replacements): Route
     {
-        foreach($this->params as $param)
+        foreach($this->parameters as $param)
         {
             if($param->volatile && isset($replacements[$param->name]))
             {
@@ -123,23 +56,5 @@ class ArrayRoute extends Debug implements Route
             }
         }
         return $this;
-    }
-
-    /**
-     * @return callable or null
-     */
-    public function handler(): callable 
-    {
-        return $this->handler;
-    }
-
-    /**
-     * @override
-     */
-    protected function getDebugProperties(): array
-    {
-        return ['params' => $this->params,
-                'vars' => $this->vars,
-                'handler' => $this->handler];
     }
 }

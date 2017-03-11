@@ -31,9 +31,9 @@ class EmptyRoute extends Debug implements Route
     {
         return $this;
     }
-    public function handler()
+    public function callback(): callable
     {
-        return null;
+        return function() {};
     }
 
     /**

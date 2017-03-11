@@ -25,7 +25,7 @@ $router->addRoute('index/simple/:cst')->where(['cst' => '\d+']);
 
 $route = $router->dispatch($request);//->showDebugDetails();
 if(!$route->empty())
-    $route->handler()($route->map($request)[0]);
+    $route->callback()($route->map($request)[0]);
 else echo "<p>Empty Route</p>";
 
 $router2 = new Gideon\Router\LoopRouter($config);
@@ -40,5 +40,5 @@ $router2->addRoute('index/simple/:cst')->where(['cst' => '\d+']);
 
 $route2 = $router2->dispatch($request);//->showDebugDetails();
 if(!$route2->empty())
-    $route2->handler()($route->map($request)[0]);
+    $route2->callback()($route->map($request)[0]);
 else echo "<p>Empty Route 2</p>";
