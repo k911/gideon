@@ -5,6 +5,7 @@ use Gideon\Router;
 use Gideon\Http\Request;
 use Gideon\Handler\Config;
 use Gideon\Debug\Base as Debug;
+use Gideon\Handler\Group\UniformGroup;
 
 class RoutersSpeedMeter
 {
@@ -86,14 +87,28 @@ final class RoutersAndItsSpeedTest extends TestCase
     }
 
 
-    // TODO: dd
-    public function addRandomRoutes(...$routers)
+    public function generateRandomRoutes(int $routes, int $max_params, ...$routers)
     {
-        foreach($routers as $router)
+        $group = new UniformGroup('Gideon\Router');
+        $group->addMultiple($routers);
+
+        // Add routes
+        $array[0] = ['foo', 'bar', 'param', 'var', 'test', 'value'];
+        $array[1] = [':var', ':id', ':numeric', ':hash', ':word', ':/[0-9]{3}/'];
+        for($i = 0; $i < $routes; ++$i)
         {
-            $this-
+            // Generate random route
+            $route = "";
+            $params = mt_rand(1, $max_params);
+
+            for($j = 0; $j < $params; ++$j)
+            {
+                $r = $j % 2;
+                $route .= $array[$r][array_rand($array[$r], 1)] . '/';
+            }
+            // Generate random route - end
+            $group->addRoute($route);
         }
-        if($ro)
     }
 
     /**
@@ -102,36 +117,17 @@ final class RoutersAndItsSpeedTest extends TestCase
      */
     public function testRoutersAddData($normal, $fast): array
     {
+        $routes = $this->config->get('TEST_INT_ROUTES');
+        $max_params = $this->config->get('TEST_INT_MAX_PARAMS');
+        $this->assertGreaterThan(0, $routes);
+        $this->assertGreaterThan(0, $max_params);
 
-        $this->assertNotEquals(0, $this->config->get('TEST_INT_ROUTES'));
-
-        // Add routes
-        $array[0] = ['foo', 'bar', 'param', 'var', 'test', 'value'];
-        $array[1] = [':var', ':id', ':numeric', ':hash', ':word', ':/[0-9]{3}/'];
-        for($i = 0; $i < $this->config->get('TEST_INT_ROUTES'); ++$i)
-        {
-            // Generate random route
-            $route = "";
-            $params = mt_rand(1, $this->config->get('TEST_INT_MAX_PARAMS'));
-
-            for($j = 0; $j < $params; ++$j)
-            {
-                $r = $j % 2;
-                $route .= $array[$r][array_rand($array[$r], 1)] . '/';
-            }
-            // Generate random route - end
-
-            $normal->addRoute($route);
-            $fast->addRoute($route);
-        }
+        $this->generateRandomRoutes($routes, $max_params, $normal, $fast);
 
         $this->assertNotEquals(true, $normal->empty());
         $this->assertNotEquals(true, $fast->empty());
-        
-        $this->assertEquals($this->config->get('TEST_INT_ROUTES'), $normal->size());
-        $this->assertEquals($this->config->get('TEST_INT_ROUTES'), $fast->size());
-
-
+        $this->assertEquals($routes, $normal->size());
+        $this->assertEquals($routes, $fast->size());
         return [$normal, $fast];
     }
 

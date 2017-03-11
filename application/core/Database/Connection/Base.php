@@ -33,6 +33,12 @@ abstract class Base extends Debug implements Connection
         unset($this->PDO);
     }
 
+    public function connect(): Connection
+    {
+        $this->PDO = new \PDO($this->DSN, $this->username, $this->password, $this->options);
+        return $this;
+    }
+
     public function try_connect(): bool
     {
         try 
@@ -42,14 +48,7 @@ abstract class Base extends Debug implements Connection
         } 
         catch (\PDOException $e) 
         {
-            // TODO: error catcher
-            do
-            {
-                $file = substr($e->getFile(), strpos($e->getFile(), 'core') + strlen('core')); 
-                $file = "[{$e->getCode()}] `$file:{$e->getLine()}` {$e->getMessage()}";
-                $this->log(rtrim($file, '\n'));
-            }
-            while($e = $e->getPrevious());
+            $this->logException($e);
             return false;
         }
     }
