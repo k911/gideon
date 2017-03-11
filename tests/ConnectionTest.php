@@ -30,8 +30,7 @@ final class ConnectionTest extends TestCase
 
         ++$options['port'];
         $mysql = new Connection\MySQL($this->config, $options);
-        $mysql->log('Error 2002 should be upcoming next.');
-        $this->assertNotEquals(true, $mysql->try_connect());
+        $this->assertNotEquals(true, $mysql->try_connect(false));
         $mysql->close();
     }
 
