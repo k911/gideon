@@ -18,10 +18,6 @@ class LoopRouter extends Debug implements Router
     private $replacements;
     private $prepared;
 
-    /**
-     * @param Request
-     * @return Router\Route | EmptyRoute when not matches
-     */
     public function dispatch(Request $request): Route
     {
         $method = $request->method();
@@ -73,7 +69,7 @@ class LoopRouter extends Debug implements Router
         return empty($this->routes);
     }
 
-    public function addRoute(string $route, callable $handler = null, string $method = 'GET'): Router\Route
+    public function addRoute(string $route, $handler = null, string $method = 'GET'): Route
     {
         $method = strtoupper($method);
         $route = new Route\ArrayRoute($route, $handler);

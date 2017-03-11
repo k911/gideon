@@ -68,12 +68,7 @@ class FastRouter extends Debug implements Router
         }
     }
 
-    /**
-     * @api
-     * @param Request
-     * @return Route | when not found route is empty()
-     */
-    public function dispatch(Request $request): Router\Route
+    public function dispatch(Request $request): Route
     {
         $method = $request->method();
 
@@ -91,7 +86,7 @@ class FastRouter extends Debug implements Router
             {
                 if (preg_match($regex, $uri, $matches) === 1)
                 {
-                    return $method_maps[$i][count($matches)] ?? new Route\UndefinedRoute(); // Todo throw error
+                    return $method_maps[$i][count($matches)];
                 }
             }
         }
@@ -99,10 +94,7 @@ class FastRouter extends Debug implements Router
         return new Route\EmptyRoute();
     }
 
-    /**
-     * @api
-     */
-    public function addRoute(string $route, callable $handler = null, string $method = 'GET'): Router\Route
+    public function addRoute(string $route, $handler = null, string $method = 'GET'): Route
     {
         $method = strtoupper($method);
         $route = new Route\RegexRoute($route, $handler);
