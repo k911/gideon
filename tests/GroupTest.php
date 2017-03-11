@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Gideon\Handler\Config;
 use Gideon\Handler\Group\MixedGroup;
 
 class Foo2 
@@ -17,16 +18,42 @@ class Foo2
 
 final class GroupTest extends TestCase 
 {
-    public function testBasic()
+    private $config;
+
+    public function __construct()
+    {
+        $this->config = new Config('test');
+    }
+
+    public function testIsset()
+    {
+        $obj1 = new Foo2();
+        $obj2 = new Foo2();
+        $obj2->foo = 10;
+
+        $this->assertEquals(true, is_object($obj1));
+        $this->assertEquals(true, is_object($obj2));
+
+        $group = new MixedGroup();
+        $group->add($obj1, $obj2);
+
+        // test isset
+        $this->assertEquals(false, isset($obj1->foo));
+        $this->assertEquals(true, isset($obj2->foo));
+        $this->assertEquals(false, isset($group->foo));
+        $obj1->foo = 'x';
+        $this->assertEquals(true, isset($group->foo)); 
+    }
+
+    public function testBase()
     {
         // create test data
         $foos = [];
         $iis = [];
         for($i = 10; $i < 20; ++$i)
         {
-            $f = new Foo2();
+            $foos[] = $f = new Foo2();
             $f->foo = $i;
-            $foos[] = $f;
             $iis[] = $i;
         }
 
@@ -36,14 +63,14 @@ final class GroupTest extends TestCase
         // test __get()
         $this->assertEquals($iis, $group->foo);
 
+        // add one more
         $addThis = new Foo2();
         $addThis->foo = -999;
         $addThis->bar = 1;
         $group->add($addThis);
 
-
         // test __set()
-        $group->foo = 999;
+        $this->assertEquals(true, $group->foo = 999);
         foreach($foos as $f)
         {
             if($f->bar == 5)
@@ -63,7 +90,7 @@ final class GroupTest extends TestCase
             $this->assertEquals(0, $f->bar);
         }
 
-        //$group->notExistentMethod(); shows in log
+        //$group->notExistentMethod(); //shows in log
 
     }
 }
