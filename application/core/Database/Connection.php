@@ -19,10 +19,11 @@ interface Connection
     public function close();
 
     /**
-     * Connect to database | no throw
+     * Connect to database | no throw 
+     * @param bool $log saves error log or not
      * @return bool true on success | false otherwise
      */
-    public function try_connect(): bool;
+    public function try_connect(bool $log = true): bool;
 
     /**
      * Connect to database

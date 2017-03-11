@@ -23,9 +23,13 @@ abstract class Base extends Debug implements Connection
     public function __call(string $function, array $arguments)
     {
         if(isset($this->PDO))
-            return call_user_func_array([$this->PDO, $function], $arguments);
-        else 
-            $this->log("Tried to call function: $function on not initialized PDO.");
+        {
+            if(method_exists($this->PDO, $function))
+                return call_user_func_array([$this->PDO, $function], $arguments);
+            
+            else throw new InvalidArgumentException("Function: PDO->$function() doesn't exists."); 
+        }
+        else throw new InvalidArgumentException("Tried to call function: $function on not initialized PDO.");
     }
 
     public function close()
@@ -35,22 +39,29 @@ abstract class Base extends Debug implements Connection
 
     public function connect(): Connection
     {
-        $this->PDO = new \PDO($this->DSN, $this->username, $this->password, $this->options);
+        if(!isset($this->PDO))
+            $this->PDO = new \PDO($this->DSN, $this->username, $this->password, $this->options);
+            
         return $this;
     }
 
-    public function try_connect(): bool
+    public function try_connect(bool $log = true): bool
     {
-        try 
+        if(!isset($this->PDO))
         {
-            $this->PDO = new \PDO($this->DSN, $this->username, $this->password, $this->options);
-            return true;
-        } 
-        catch (\PDOException $e) 
-        {
-            $this->logException($e);
-            return false;
+            try 
+            {
+                $this->PDO = new \PDO($this->DSN, $this->username, $this->password, $this->options);
+                return true;
+            } 
+            catch (\PDOException $e) 
+            {
+                if($log)
+                    $this->logException($e);
+                return false;
+            }
         }
+        return true;
     }
 
     /**
