@@ -19,8 +19,14 @@ interface Connection
     public function close();
 
     /**
-     * Connect to database
+     * Connect to database | no throw
      * @return bool true on success | false otherwise
      */
     public function try_connect(): bool;
+
+    /**
+     * Connect to database
+     * @throws \PDOException
+     */
+    public function connect(): self;
 }
