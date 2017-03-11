@@ -48,7 +48,10 @@ abstract class Base implements Debug
 
     public function log(string $what): bool
     {
-        $name = isset($this) ? get_class($this) : get_called_class();
+        if($what instanceof \Throwable)
+            $name = get_class($what);
+        else
+            $name = isset($this) ? get_class($this) : get_called_class();
         return Logger::log($name, $what);
     }
 
