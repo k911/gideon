@@ -72,7 +72,11 @@ final class SimpleCacheTest extends TestCase
      */
     public function testClear($cache)
     {
+        $path = $this->config->get('CACHE_PATH');
         $cache->clear();
-        $this->assertEquals(false, (new \FilesystemIterator($this->config->get('CACHE_PATH')))->valid());
+        // assert no files in cache dir
+        $this->assertNotEquals(true, (new \FilesystemIterator($path))->valid());
+        rmdir($path);
+        $this->assertNotEquals(true, file_exists($path));
     }
 }
