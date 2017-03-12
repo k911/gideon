@@ -194,8 +194,8 @@ final class RoutersAndItsSpeedTest extends TestCase
             $this->assertEquals($results_normal[$i]['request'], $results_fast[$i]['request']);
 
             $this->assertEquals(
-                $results_normal[$i]['route']->regex($this->config->get('FAST_ROUTER_REPLACEMENTS_DEFAULT')),
-                $results_fast[$i]['route']->regex($this->config->get('FAST_ROUTER_REPLACEMENTS_DEFAULT'))
+                $results_normal[$i]['route']->regex($this->config->get('ROUTER_REPLACEMENTS_DEFAULT')),
+                $results_fast[$i]['route']->regex($this->config->get('ROUTER_REPLACEMENTS_DEFAULT'))
             );
             $this->assertEquals(
                 $results_normal[$i]['route']->map($results_normal[$i]['request']),
