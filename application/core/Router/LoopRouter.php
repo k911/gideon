@@ -1,44 +1,44 @@
 <?php
 namespace Gideon\Router;
 
-use Gideon\Router;
 use Gideon\Http\Request;
 use Gideon\Handler\Config;
-use Gideon\Debug\Base as Debug;
 
-class LoopRouter extends Debug implements Router
+class LoopRouter extends Base
 {
 
     /**
-     * @var array       $routes key => HTTP_METHOD, values => Gideon\Router\ArrayRoute[]
-     * @var string[]    $replacements key => name to replace in RegexRoute\Param()->value with regex
-     * @var bool[]      $prepared
+     * @var bool[] $prepared methods
      */
-    private $routes;
-    private $replacements;
     private $prepared;
 
     public function dispatch(Request $request): Route
     {
         $method = $request->method();
 
-        // Secure from situation when trying to dispatch having no routes for method
-        if(!empty($this->routes[$method]))
-        {
-            if(empty($this->prepared[$method]))
-                $this->prepare($method);
+        if(!$this->prepared[$method])
+            $this->prepare($method);
 
-            $method_routes = $this->routes[$method];
-            foreach($method_routes as $route)
-            {
-                if($route->validate($request))
-                    return $route;
-            }
+        $routes = $this->routes[$method];
+        foreach($routes as $route)
+        {
+            if($route->validate($request))
+                return $route;
         }
+
         return new Route\EmptyRoute();
     }
+
+    public function __construct(Config $config)
+    {
+        parent::__construct($config);
+        foreach($this->supportedMethods as $method)
+        {
+            $this->prepared[$method] = false;
+        }
+    }
     
-    public function prepare(string $method)
+    protected function prepare(string $method)
     {
         foreach($this->routes[$method] as $route)
         {
@@ -47,55 +47,8 @@ class LoopRouter extends Debug implements Router
         $this->prepared[$method] = true;
     }
 
-    public function prepareAll()
+    protected function routeFrom(string $route, callable $callback = null): Route
     {
-        $methods = array_keys($this->routes);
-        foreach($methods as $method)
-        {
-            $this->prepare($method);
-        }
-    }
-
-    public function size(): int 
-    {
-        $count = 0;
-        foreach($this->routes as $method_routes)
-            $count += count($method_routes);
-        return $count;
-    }
-
-    public function empty(): bool
-    {
-        return empty($this->routes);
-    }
-
-    public function addRoute(string $route, $handler = null, string $method = 'GET'): Route
-    {
-        $method = strtoupper($method);
-        $route = new Route\ArrayRoute($route, $handler);
-        if(!$route->empty())
-            $this->routes[$method][] = $route;
-        
-        return $route;
-    }
-
-    public function __construct(Config $config) 
-    {
-        $this->replacements = $config->get('FAST_ROUTER_REPLACEMENTS_DEFAULT');
-    }
-
-    /**
-     * @override
-     */
-    protected function getDebugProperties(): array
-    {
-        $debugarr = [];
-
-        $methods = array_keys($this->routes);
-        foreach($methods as $method)
-        {
-            $debugarr[$method] = $this->routes[$method];
-        }
-        return $debugarr;
+        return new Route\ArrayRoute($route, $callback);
     }
 }

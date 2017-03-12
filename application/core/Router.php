@@ -16,11 +16,11 @@ interface Router
     /**
      * Adds single routes
      * @param string    $route
-     * @param mixed     $handler can be: \Closure, callable or ['ControllerName', 'method'] 
+     * @param mixed     $callback can be: \Closure, callable or ['ControllerName', 'method'] 
      * @param string    $method http
      * @return Gideon\Router\Route created route
      */
-    public function addRoute(string $route, $handler = null, string $method = 'GET'): Route;
+    public function addRoute(string $route, $callback = null, string $method = 'GET'): Route;
     
     /**
      * Matches request with available routes
