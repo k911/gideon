@@ -70,9 +70,9 @@ final class SimpleCacheTest extends TestCase
     /**
      * @depends testCacheSaveRead
      */
-    public function testClean($cache)
+    public function testClear($cache)
     {
         $cache->clear();
-        $this->assertEquals(false, file_exists($this->config->get('CACHE_PATH')));
+        $this->assertEquals(false, (new \FilesystemIterator($this->config->get('CACHE_PATH')))->valid());
     }
 }
