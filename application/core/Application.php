@@ -8,11 +8,13 @@ use Gideon\Handler\Locale;
 use Gideon\Http\Request;
 use Gideon\Renderer\Response;
 use Gideon\Database\Connection;
+use Gideon\Router\Route\EmptyRoute;
 
 /**
  * Config keys used:
  * - VIEW_ERROR
  * - APPLICATION_CLOSURE_ACTION_NAME
+ * - APPLICATION_CONTROLLER_PREFIX
  */
 class Application extends Debug
 {
@@ -51,29 +53,37 @@ class Application extends Debug
     protected function exec(callable $handler, array $args)
     {
         // Init some things depending if using Gideon\Controller or anonymous function (\Closure)
-        $anon = $handler instanceof \Closure;
-        if(!$anon)
+        $controller_name = $action = '';
+        if($handler instanceof \Closure)
         {
-            // init controller
-            // TODO: add db if implemented
-            $handler[0] = new $handler[0]($this->config, $this->locale, $this->request);
+            $controller_name = substr(get_class($handler), 1);
+            $action = $this->config->get('APPLICATION_CLOSURE_ACTION_NAME');
+        } 
+        elseif (is_array($handler) && $handler[0] instanceof Controller)
+        {
+            list($controller, $action) = $handler;
+            $controller->init($this->config, $this->locale, $this->request, $this->connection);
+            $controller_name = str_replace($this->config->get('APPLICATION_CONTROLLER_PREFIX'), '', get_class($controller));
         }
-        $class_name = get_class($anon ? $handler : $handler[0]);
-        $this->renderer->controller = substr($controller_name, strrpos($controller_name, '\\') + 1);
-        $this->renderer->action = $anon ? $this->config->get('APPLICATION_CLOSURE_ACTION_NAME') : $handler[1];
+        else 
+        {
+            $controller_name = get_class($handler);
+            $this->log("Unrecognized callable: $controller_name");
+        }
+
+        $this->renderer->controller = $controller_name;
+        $this->renderer->action = $action;
 
         // Execute function
         try 
         {
             $this->renderer->init(call_user_func_array($handler, $args));
         } 
-        catch (\Throwable $threw)
+        catch (\Throwable $thrown)
         {
-            // error handling
-            //$this->renderer->errors[] = $this->locale->get('ERROR_CALLBACK_FAILED}');
             $this->renderer->init($this->error(500));
+            $this->logException($thrown);
         }
-
      }
         
 
@@ -86,12 +96,11 @@ class Application extends Debug
         if($route instanceof EmptyRoute)
         {
             $this->response = $this->error(404);
-            //$this->renderer->errors[] = $this->locale->get('ERROR_NOT_FOUND');
         }
         else
         {
             $args = $route->map($this->request);
-            $handler = $route->getCallback();
+            $handler = $route->callback();
             $this->exec($handler, $args);
         }
 
@@ -105,7 +114,7 @@ class Application extends Debug
         $this->renderer->render();
     }
 
-    protected function getDebugProperties(): arrray 
+    protected function getDebugProperties(): array 
     {
         return [
             'config' => $this->config,

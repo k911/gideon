@@ -6,6 +6,13 @@ use Gideon\Http\Request;
 use Gideon\Debug\Base as Debug;
 use Gideon\Handler\Config;
 
+/**
+ * Config keys used:
+ * - APPLICATION_CONTROLLER_PREFIX
+ * - FAST_ROUTER_MAX_CHUNKS
+ * - FAST_ROUTER_REPLACEMENTS_DEFAULT
+ */
+
 class FastRouter extends Debug implements Router
 {
 
@@ -97,6 +104,13 @@ class FastRouter extends Debug implements Router
     public function addRoute(string $route, $handler = null, string $method = 'GET'): Route
     {
         $method = strtoupper($method);
+
+        if(is_array($handler))
+        {   
+            $handler[0] = $this->controller_prefix . $handler[0];
+            $handler[0] = new $handler[0]();
+        }
+
         $route = new Route\RegexRoute($route, $handler);
         if(!$route->empty())
         {
@@ -106,7 +120,6 @@ class FastRouter extends Debug implements Router
             }
             $this->routes[$method][] = $route;
         }
-
         return $route;
     }
 
@@ -114,6 +127,7 @@ class FastRouter extends Debug implements Router
     {
         $this->max = $config->get('FAST_ROUTER_MAX_CHUNKS');
         $this->replacements = $config->get('FAST_ROUTER_REPLACEMENTS_DEFAULT');
+        $this->controller_prefix = $config->get('APPLICATION_CONTROLLER_PREFIX');
     }
 
     public function size(): int 
@@ -136,8 +150,9 @@ class FastRouter extends Debug implements Router
      */
     protected function getDebugProperties(): array
     {
-        $debugarr = ['maps' => $this->maps,
-                'chunks' => $this->chunks];
+        $debugarr = [
+            'maps' => $this->maps,
+            'chunks' => $this->chunks];
 
         $methods = array_keys($this->routes);
         foreach($methods as $method)

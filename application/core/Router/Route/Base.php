@@ -99,7 +99,7 @@ abstract class Base extends Debug implements Route
         return [
             'params' => $this->parameters,
             'vars' => $this->variables,
-            'handler' => $this->handler
-            ];
+            'callback' => $this->callback
+        ];
     }
 }

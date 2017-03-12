@@ -25,6 +25,9 @@ abstract class Base implements Controller
     protected $request;
     protected $params;
 
+    public function __construct()
+    {}
+
     public function init(Config $config, Locale $locale, Request $request, Connection $connection)
     {
         $this->config = $config;

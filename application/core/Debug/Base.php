@@ -19,7 +19,7 @@ abstract class Base implements Debug
         foreach($data as $index => $dependency) 
         {
             if($dependency instanceof Debug)
-                $data[$index] = $dependency->getDetails();
+                $data[$index] = $dependency->getDebugDetails();
 
             elseif (is_array($dependency) || $dependency instanceof \ArrayObject)
             {
@@ -27,7 +27,7 @@ abstract class Base implements Debug
                 {
                     if($item instanceof Debug)
                     {
-                        $data[$index][$i] = $item->getDetails();
+                        $data[$index][$i] = $item->getDebugDetails();
                     }
                 }
             }
