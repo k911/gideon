@@ -84,8 +84,7 @@ class Application extends Debug
             $this->renderer->init($this->error(500));
             $this->logException($thrown);
         }
-     }
-        
+    }
 
     public function run()
     {

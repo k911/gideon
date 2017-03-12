@@ -47,16 +47,12 @@ class Request extends Debug implements \ArrayAccess, \Iterator
 
         // Verify if selected method is accepted by application
         if(!in_array($method, $config->get('REQUEST_METHODS_SUPPORTED')))
-        {
-            $this->log("Undefined/not accepted HTTP_METHOD: $method. Setting default.");
-            $method = $config->get('REQUEST_METHOD_DEFAULT');
-        }
+            throw new InvalidArgumentException("Undefined/not accepted HTTP_METHOD: $method");
         
         $this->method = $method;
         $this->position = 0; // request uri params iterator
         $this->values = $this->parseUri($config, $request);
         $this->size = count($this->values);
-        
     }
 
     public function size(): int
