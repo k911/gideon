@@ -1,33 +1,25 @@
 <?php
 namespace Gideon\Router;
 
-use Gideon\Router;
 use Gideon\Http\Request;
-use Gideon\Debug\Base as Debug;
 use Gideon\Handler\Config;
 
 /**
  * Config keys used:
- * - APPLICATION_CONTROLLER_PREFIX
  * - FAST_ROUTER_MAX_CHUNKS
- * - FAST_ROUTER_REPLACEMENTS_DEFAULT
  */
 
-class FastRouter extends Debug implements Router
+class FastRouter extends Base
 {
 
     /**
-     * @var array                   $routes key => HTTP_METHOD, values => ArrayObject of FastRouter\RegexRoute
      * @var FastRouter\RegexRoute[] $maps key => HTTP_METHOD, values => map of FastRouter\RegexRoute for dispatcher
      * @var string[]                $chunks key => HTTP_METHOD, values => chunks containing string regexes for fast dispatcher
      * @var int                     $max number of chunks in HTTP_METHOD that router can create
-     * @var string[]                $replacements key => name to replace in RegexRoute\Param()->value with regex
      */
-    private $routes;
     private $maps;
     private $chunks;
     private $max;
-    private $replacements;
 
     private function computeChunkSize(string $method)
     {
@@ -36,16 +28,7 @@ class FastRouter extends Debug implements Router
         return ($chunks) ? ceil($elements/ $chunks) : $elements;
     } 
 
-    public function prepareAll()
-    {
-        $methods = array_keys($this->routes);
-        foreach($methods as $method)
-        {
-            $this->prepare($method);
-        }
-    }
-
-    public function prepare(string $method)
+    protected function prepare(string $method)
     {
         $chunk_size = $this->computeChunkSize($method);
         $iterator = $this->routes[$method]->getIterator();
@@ -78,71 +61,39 @@ class FastRouter extends Debug implements Router
     public function dispatch(Request $request): Route
     {
         $method = $request->method();
+        $uri = $request->uri();
 
-        // Secure from situation when trying to dispatch having no routes for method
-        if(isset($this->routes[$method]) && $this->routes[$method]->count())
+        if(empty($this->chunks[$method]))
+            $this->prepare($method);
+
+        $maps = $this->maps[$method];
+        $chunks = $this->chunks[$method];
+        foreach ($chunks as $i => $regex) 
         {
-            if(empty($this->chunks[$method]))
-                $this->prepare($method);
-
-            $uri = $request->uri();
-            $method_maps = $this->maps[$method];
-            $method_chunks = $this->chunks[$method];
-
-            foreach ($method_chunks as $i => $regex) 
+            if (preg_match($regex, $uri, $matches) === 1)
             {
-                if (preg_match($regex, $uri, $matches) === 1)
-                {
-                    return $method_maps[$i][count($matches)];
-                }
+                return $maps[$i][count($matches)];
             }
         }
 
         return new Route\EmptyRoute();
     }
 
-    public function addRoute(string $route, $handler = null, string $method = 'GET'): Route
+    protected function routeFrom(string $route, callable $callback = null): Route
     {
-        $method = strtoupper($method);
-
-        if(is_array($handler))
-        {   
-            $handler[0] = $this->controller_prefix . $handler[0];
-            $handler[0] = new $handler[0]();
-        }
-
-        $route = new Route\RegexRoute($route, $handler);
-        if(!$route->empty())
-        {
-            if(!isset($this->routes[$method]))
-            {
-                $this->routes[$method] = new \ArrayObject();
-            }
-            $this->routes[$method][] = $route;
-        }
-        return $route;
+        return new Route\RegexRoute($route, $callback);
     }
 
     public function __construct(Config $config)
     {
+        parent::__construct($config);
         $this->max = $config->get('FAST_ROUTER_MAX_CHUNKS');
-        $this->replacements = $config->get('FAST_ROUTER_REPLACEMENTS_DEFAULT');
-        $this->controller_prefix = $config->get('APPLICATION_CONTROLLER_PREFIX');
-    }
 
-    public function size(): int 
-    {
-        $count = 0;
-        foreach($this->routes as $method_routes)
+        foreach($this->supportedMethods as $method)
         {
-            $count += $method_routes->count();
+            $this->chunks[$method] = [];
+            $this->maps[$method] = [];
         }
-        return $count;
-    }
-
-    public function empty(): bool
-    {
-        return empty($this->routes);
     }
 
     /**
@@ -150,15 +101,9 @@ class FastRouter extends Debug implements Router
      */
     protected function getDebugProperties(): array
     {
-        $debugarr = [
-            'maps' => $this->maps,
-            'chunks' => $this->chunks];
-
-        $methods = array_keys($this->routes);
-        foreach($methods as $method)
-        {
-            $debugarr[$method] = $this->routes[$method];
-        }
+        $debugarr = parent::getDebugProperties();
+        $debugarr['maps'] = $this->maps;
+        $debugarr['chunks'] = $this->chunks;
         return $debugarr;
     }
 }
