@@ -109,7 +109,7 @@ class SimpleCache implements CacheInterface
     public function set($key, $value, $ttl = null)
     {
         $dest = $this->pathFrom($key);
-        $temp = $this->path . DIRECTORY_SEPARATOR . uniqid("temp_", true);
+        $temp = $this->path . uniqid("temp_", true);
 
         // Set default ttl if null
         if(is_null($ttl))
@@ -147,7 +147,6 @@ class SimpleCache implements CacheInterface
     public function clear()
     {
         array_map('unlink', glob($this->path . '*'));
-        rmdir($this->path);
     }
 
     public function getMultiple($keys, $default = null)

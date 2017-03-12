@@ -1,0 +1,37 @@
+1489276620	[Init]
+1489276620	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489276664	[Init]
+1489276664	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489276671	[Init]
+1489276722	[Init]
+1489276729	[Init]
+1489276729	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489276749	[Init]
+1489276749	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489276756	[Init]
+1489276756	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489276756	[Gideon\Renderer]:	Setting HTTP status response code: . Failed.
+1489276761	[Init]
+1489276761	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489276761	[Gideon\Renderer]:	Setting HTTP status response code: . Failed.
+1489276768	[Init]
+1489276768	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489276768	[Gideon\Renderer]:	Setting HTTP status response code: . Failed.
+1489276806	[Init]
+1489276836	[Init]
+1489277011	[Init]
+1489277133	[Init]
+1489277174	[Init]
+1489277191	[Init]
+1489277191	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489277191	[Gideon\Renderer\Response\View]:	View 'VIEW_ERRROR500' doesn't exists. Setting default.
+1489277191	[Error]:	[0] `Dev\apps\comp\application\core\Controller\User.php:10` Call to undefined function Gideon\Renderer\Response\Text()
+1489277191	[Gideon\Renderer]:	Setting HTTP status response code: 500. Failed.
+1489277211	[Init]
+1489277211	[Gideon\Handler\Config]:	Key 'VIEW_ERRROR' is not set.
+1489277211	[Gideon\Renderer\Response\View]:	View 'VIEW_ERRROR500' doesn't exists. Setting default.
+1489277211	[Error]:	[0] `Dev\apps\comp\application\core\Controller\User.php:10` Call to undefined function Gideon\Renderer\Response\Text()
+1489277229	[Init]
+1489277291	[Init]
+1489277366	[Init]
+1489277470	[Init]
