@@ -26,9 +26,9 @@ interface Group {
      * Invokes $name($arguments) on all stored objects
      * @param string    $name
      * @param mixed[]   $arguments
-     * @return Gideon\Handler\Group of results
+     * @return \IteratorAggreagte [PHP 7.1 return: iterable]
      */
-    public function __call(string $name, array $arguments): array;
+    public function __call(string $name, array $arguments): \IteratorAggregate;
 
     /**
      * Gets $key from each group iteam

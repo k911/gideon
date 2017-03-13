@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use Gideon\Router;
 use Gideon\Router\Route;
 use Gideon\Handler\Config;
-use Gideon\Handler\Group\UniformGroup as Group;
+use Gideon\Handler\Group\ArrayGroup;
 use Gideon\Http\Request;
 
 class RoutesTest extends TestCase 
@@ -19,8 +19,11 @@ class RoutesTest extends TestCase
 
     public function setUp()
     {
-        $this->routers = new Group('Gideon\Router');
-        $this->routers->add(new Router\FastRouter($this->config), new Router\LoopRouter($this->config));
+        $routers = (new ArrayGroup())->add(new Router\FastRouter($this->config), new Router\LoopRouter($this->config));
+        foreach($routers as $router)
+            $this->assertEquals(true, $router instanceof Gideon\Router);
+
+        $this->routers = $routers;
     } 
 
     public function testSimpleAddRoutes()
@@ -34,20 +37,19 @@ class RoutesTest extends TestCase
         // test route integrity
         $r = 10;
         $id = 99; $any = "something";
-        $cstom = 'la_NG';
+        $false_numeric = 'la_NG';
         for($i = 0; $i < $r; ++$i)
         {
-            $route_txt = "test/$i/:id/:any/static/:cstom";
-            $matching_req = new Request($this->config, "test/$i/$id/$any/static/$cstom", 'GET');
+            $route_txt = "test/$i/:id/:any/static/:numeric";
+            $matching_req = new Request($this->config, "test/$i/$id/$any/static/$false_numeric", 'GET');
             $uri = $matching_req->uri();
 
-            $routes = $this->routers->addRoute($route_txt, null, 'GET');
+            $routes = ($this->routers->addRoute($route_txt, null, 'GET'))->where(['numeric' => '[a-z]{2}_[A-Z]{2}']);
             foreach($routes as $route)
             {
                 // test custom replacements
-                $route->where(['cstom' => '[a-z]{2}_[A-Z]{2}']);
                 $this->assertEquals(count($matching_req), count($route));
-                $this->assertEquals([$id, $any, $cstom], $route->map($matching_req));
+                $this->assertEquals([$id, $any, $false_numeric], $route->map($matching_req));
 
                 // must match to request
                 $regex = $route->regex($this->config->get('ROUTER_REPLACEMENTS_DEFAULT'));

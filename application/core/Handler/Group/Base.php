@@ -6,7 +6,7 @@ use Gideon\Handler\Group;
 
 abstract class Base extends Debug implements Group
 {
-    private $items;
+    protected $items;
 
     /**
      * Adds single item
@@ -16,11 +16,10 @@ abstract class Base extends Debug implements Group
      */
     protected function addSingle($item)
     {
-        if(is_object($item))
-        {
-            $this->items[] = $item;
-        } 
-        else throw new InvalidArgumentException("Added item is not an object.");
+        if(!is_object($item))
+            throw new InvalidArgumentException("Added item is not an object.");
+            
+        $this->items[] = $item;
     }
 
     public function add(...$items): Group
@@ -28,6 +27,7 @@ abstract class Base extends Debug implements Group
         return $this->addMultiple($items);
     }
 
+    // TODO: PHP 7.1 iterable
     public function addMultiple(array $items): Group
     {
         foreach($items as $item)
@@ -36,9 +36,9 @@ abstract class Base extends Debug implements Group
         return $this;
     }
 
-    public function __call(string $name, array $arguments): array
+    public function __call(string $name, array $arguments): \IteratorAggregate
     {
-        $results = [];
+        $results = new \ArrayObject();
         foreach($this->items as $obj)
         {
             if(method_exists($obj, $name))
@@ -47,7 +47,7 @@ abstract class Base extends Debug implements Group
             else 
             {
                 $this->log("Couldn't call: " . get_class($obj) . "->$name(). Method doesn't exists.");
-                $results[] = NULL;
+                $results[] = null;
             }
         }
         return $results;
@@ -64,7 +64,7 @@ abstract class Base extends Debug implements Group
             } 
             catch (\Exception $e)
             {
-                $results[] = NULL;
+                $results[] = null;
                 $this->log($e);
             }
         }

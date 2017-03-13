@@ -15,7 +15,6 @@ class Request extends Debug implements
      * @var int                         $size of the $values
      * @var string                      $method uppercased HTTP_METHOD
      */
-    //private $position;
     private $values;
     private $size;
     private $method;
@@ -106,31 +105,11 @@ class Request extends Debug implements
         return new \ArrayIterator($this->values);
     }
 
-    // public function rewind() 
-    // {
-    //     $this->position = 0;
-    // }
-    // public function current() 
-    // {
-    //     return $this->values[$this->position];
-    // }
-    // public function key()
-    // {
-    //     return $this->position;
-    // }
-    // public function next() 
-    // {
-    //     ++$this->position;
-    // }
-    // public function valid() 
-    // {
-    //     return isset($this->values[$this->position]);
-    // }
-
     protected function getDebugProperties(): array
     {
-        return [//'position' => $this->position,
-                'values' => $this->values,
-                'method' => $this->method];
+        return [
+            'values' => $this->values,
+            'method' => $this->method
+        ];
     }
 }
