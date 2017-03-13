@@ -5,7 +5,7 @@ class IOException extends \RuntimeException
 {
     private $path;
 
-    public function __construct(string $path, string $message = "", int $code = 0, \Exception $previous = NULL)
+    public function __construct(string $path, string $message = "", int $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
     } 

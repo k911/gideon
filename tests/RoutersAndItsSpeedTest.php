@@ -5,6 +5,7 @@ use Gideon\Router;
 use Gideon\Http\Request;
 use Gideon\Handler\Config;
 use Gideon\Debug\Base as Debug;
+use Gideon\Handler\Group\MixedGroup;
 use Gideon\Handler\Group\UniformGroup;
 
 class RoutersSpeedMeter

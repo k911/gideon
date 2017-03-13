@@ -2,7 +2,7 @@
 namespace Gideon\Handler\Group;
 
 /**
- * Group that each object in it can be different
+ * Group that stores various objects
  */
 class MixedGroup extends Base 
 {}
