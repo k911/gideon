@@ -58,7 +58,7 @@ abstract class Base extends Debug implements Router
         // Initialize controller object
         if(is_array($callback) && is_string($callback[0]))
         {   
-            $callback[0] = $this->controller_prefix . $callback[0];
+            $callback[0] = $this->controllerPrefix . $callback[0];
             $callback[0] = new $callback[0]();
         }
 

@@ -6,7 +6,7 @@ use Gideon\Handler\Config;
 
 class Request extends Debug implements 
     \ArrayAccess, 
-    \Iterator,
+    \IteratorAggregate,
     \Countable
 {
     /**
@@ -15,7 +15,7 @@ class Request extends Debug implements
      * @var int                         $size of the $values
      * @var string                      $method uppercased HTTP_METHOD
      */
-    private $position;
+    //private $position;
     private $values;
     private $size;
     private $method;
@@ -99,32 +99,37 @@ class Request extends Debug implements
     }
 
     /**
-     * \Iterator implementation
+     * \IteratorAgregate implementation
      */
-    public function rewind() 
+    public function getIterator(): \Traversable
     {
-        $this->position = 0;
+        return new \ArrayIterator($this->values);
     }
-    public function current() 
-    {
-        return $this->values[$this->position];
-    }
-    public function key() 
-    {
-        return $this->position;
-    }
-    public function next() 
-    {
-        ++$this->position;
-    }
-    public function valid() 
-    {
-        return isset($this->values[$this->position]);
-    }
+
+    // public function rewind() 
+    // {
+    //     $this->position = 0;
+    // }
+    // public function current() 
+    // {
+    //     return $this->values[$this->position];
+    // }
+    // public function key()
+    // {
+    //     return $this->position;
+    // }
+    // public function next() 
+    // {
+    //     ++$this->position;
+    // }
+    // public function valid() 
+    // {
+    //     return isset($this->values[$this->position]);
+    // }
 
     protected function getDebugProperties(): array
     {
-        return ['position' => $this->position,
+        return [//'position' => $this->position,
                 'values' => $this->values,
                 'method' => $this->method];
     }

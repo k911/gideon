@@ -23,8 +23,9 @@ class ArrayRoute extends Base
     {
         if($this->count() != $request->count())
             return false;
-
-        foreach($request as $i => $value)
+        
+        $iterator = $request->getIterator();
+        foreach($iterator as $i => $value)
         {
             if(!$this->check($this->parameters[$i], $value))
                 return false;
