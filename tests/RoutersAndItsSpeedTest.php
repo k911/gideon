@@ -126,8 +126,8 @@ final class RoutersAndItsSpeedTest extends TestCase
 
         $this->assertNotEquals(true, $normal->empty());
         $this->assertNotEquals(true, $fast->empty());
-        $this->assertEquals($routes, $normal->size());
-        $this->assertEquals($routes, $fast->size());
+        $this->assertEquals($routes, count($normal));
+        $this->assertEquals($routes, count($fast));
         return [$normal, $fast];
     }
 
@@ -202,7 +202,7 @@ final class RoutersAndItsSpeedTest extends TestCase
                 $results_fast[$i]['route']->map($results_fast[$i]['request'])
             );
             $this->assertEquals($results_normal[$i]['route']->empty(), $results_fast[$i]['route']->empty());
-            $this->assertEquals($results_normal[$i]['route']->size(), $results_fast[$i]['route']->size());  
+            $this->assertEquals(count($results_normal[$i]['route']), count($results_fast[$i]['route']));  
         }
 
         // fast router should be always faster

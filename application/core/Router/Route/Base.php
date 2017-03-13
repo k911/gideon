@@ -81,7 +81,7 @@ abstract class Base extends Debug implements Route
         return count($this->variables);
     }
 
-    public function size(): int 
+    public function count(): int 
     {
         return $this->size;
     }

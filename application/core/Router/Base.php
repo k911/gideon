@@ -85,7 +85,7 @@ abstract class Base extends Debug implements Router
         $this->supportedMethods = $supportedMethods;
     }
 
-    public function size(): int 
+    public function count(): int 
     {
         $count = 0;
         foreach($this->routes as $mRoutes)
@@ -97,7 +97,7 @@ abstract class Base extends Debug implements Router
 
     public function empty(): bool
     {
-        return ($this->size() == 0);
+        return ($this->count() == 0);
     }
 
     /**

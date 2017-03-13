@@ -15,7 +15,7 @@ class EmptyRoute extends Debug implements Route
     {
         return [];
     }
-    public function size(): int
+    public function count(): int
     {
         return -1;
     }

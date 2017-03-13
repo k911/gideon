@@ -8,7 +8,7 @@ use Gideon\Debug\Base as Debug;
  * Class handling request's parameters of every HTTP method
  * But only when its content-type is: application/x-www-form-urlencoded
  */
-class Params extends Debug
+class Params extends Debug implements \Countable
 {
     private $data;
     
@@ -47,7 +47,7 @@ class Params extends Debug
             return $this->data->{$key};
     }
 
-    public function size(): int
+    public function count(): int
     {
         return count($this->data);
     }

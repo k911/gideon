@@ -5,14 +5,8 @@ use Gideon\Handler\Config;
 use Gideon\Http\Request;
 use Gideon\Router\Route;
 
-interface Router 
+interface Router extends \Countable
 {
-    /**
-     * Return number of routes in all methods
-     * @return int
-     */
-    public function size(): int;
-    
     /**
      * Adds single routes
      * @param string    $route

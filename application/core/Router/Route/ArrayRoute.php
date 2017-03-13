@@ -21,7 +21,7 @@ class ArrayRoute extends Base
 
     public function validate(Request $request): bool
     {
-        if($this->size() != $request->size())
+        if($this->count() != $request->count())
             return false;
 
         foreach($request as $i => $value)

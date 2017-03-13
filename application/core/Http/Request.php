@@ -4,7 +4,10 @@ namespace Gideon\Http;
 use Gideon\Debug\Base as Debug;
 use Gideon\Handler\Config;
 
-class Request extends Debug implements \ArrayAccess, \Iterator 
+class Request extends Debug implements 
+    \ArrayAccess, 
+    \Iterator,
+    \Countable
 {
     /**
      * @var int                         $position position in current iteration
@@ -55,7 +58,7 @@ class Request extends Debug implements \ArrayAccess, \Iterator
         $this->size = count($this->values);
     }
 
-    public function size(): int
+    public function count(): int
     {
         return $this->size;
     }
