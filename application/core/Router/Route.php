@@ -3,7 +3,7 @@ namespace Gideon\Router;
 
 use Gideon\Http\Request;
 
-interface Route 
+interface Route extends \Countable
 {
     /**
      * Maps volatile parameters witch request values
@@ -11,12 +11,6 @@ interface Route
      * @return string[] values
      */
     public function map(Request $request): array;
-
-    /** 
-     * Number of route's parameters
-     * @return int
-     */
-    public function size(): int;
 
     /**
      * Checks if route has no parameters

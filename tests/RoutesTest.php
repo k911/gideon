@@ -46,7 +46,7 @@ class RoutesTest extends TestCase
             {
                 // test custom replacements
                 $route->where(['cstom' => '[a-z]{2}_[A-Z]{2}']);
-                $this->assertEquals($matching_req->size(), $route->size());
+                $this->assertEquals(count($matching_req), count($route));
                 $this->assertEquals([$id, $any, $cstom], $route->map($matching_req));
 
                 // must match to request

@@ -26,14 +26,14 @@ interface Group {
      * Invokes $name($arguments) on all stored objects
      * @param string    $name
      * @param mixed[]   $arguments
-     * @return mixed[]
+     * @return Gideon\Handler\Group of results
      */
     public function __call(string $name, array $arguments): array;
 
     /**
      * Gets $key from each group iteam
      * @param string $key
-     * @return mixed[]
+     * @return array of results
      */
     public function __get(string $key): array;
 
