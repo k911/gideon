@@ -5,6 +5,8 @@ use Gideon\Debug\Base as Debug;
 use Gideon\Handler\Config;
 
 /**
+ * @deprecated
+ * @todo proper ErrorHandler
  * Config keys used:
  * - THROWABLE_SESSION_ARRAY
  */
@@ -77,7 +79,7 @@ class Throwable extends Debug
         return $counter;
     }
 
-    public static function empty(): bool
+    public static function isEmpty(): bool
     {
         return empty(self::$Trash);
     }
@@ -95,6 +97,9 @@ class Throwable extends Debug
         return $parsed;
     }
 
+    /**
+     * @todo change name (phpDoc dont accept)
+     */
     public static function catch(\Throwable $thrown) 
     {
         self::$Trash[] = $thrown;

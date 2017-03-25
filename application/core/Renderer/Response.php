@@ -40,14 +40,14 @@ interface Response
 
     /**
      * Verifies propeties with configs and fixes them if possible
-     * @param Gideon\Handler\Config $config
+     * @param \Gideon\Handler\Config $config
      */
     public function setup(Config $config);
 
     /**
      * Rendering method; outputs ready response to main buffer
-     * @param Gideon\Handler\Config $config 
-     * @param Gideon\Handler\Locale $locale
+     * @param \Gideon\Handler\Config $config 
+     * @param \Gideon\Handler\Locale $locale
      * @param \stdClass             $document general informations provided by application (not from controller)
      */
     public function render(Config $config, Locale $locale, \stdClass $document);

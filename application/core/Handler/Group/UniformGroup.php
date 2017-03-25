@@ -6,8 +6,8 @@ namespace Gideon\Handler\Group;
  */
 class UniformGroup extends Base 
 {
-    private $uniform;
-    private $strict;
+    protected $uniform;
+    protected $strict;
 
     protected function addSingle($item)
     {

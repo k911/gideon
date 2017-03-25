@@ -1,20 +1,11 @@
 <?php
 namespace Gideon\Router\Route;
 
-abstract class Param 
+interface Param 
 {
     /**
-     * @var string  $name
-     * @var string  $value
-     * @var bool    $volatile
+     * Sets object properites
+     * @param string $value
      */
-    public $name;
-    public $value;
-    public $volatile;
-
-    /** 
-     * Parses $param to set properties
-     * @param string $param
-     */
-    abstract public function __construct(string $param);
+     public function __construct(string $value);
 };

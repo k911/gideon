@@ -16,7 +16,7 @@ class Locale extends Debug
      * @var string PATTERN regex pattern of the langauge file (eg. 'en_EN')
      * @var string[] $data array consisting all the language strings (completed with default ones if not found all)
      * @var string $language is the current langauge in PATTERN style
-     * @var Gideon\Handler\Config $config external variables that this object depends on
+     * @var \Gideon\Handler\Config $config external variables that this object depends on
      */
     const PATTERN = '[a-z]{2}_[A-Z]{2}';
     private $data;
@@ -142,7 +142,7 @@ class Locale extends Debug
         return $this->get($key);
     }
 
-    public function isset(string $key): bool
+    public function has(string $key): bool
     {
         if(!isset($this->data[$key]))
         {
@@ -158,7 +158,7 @@ class Locale extends Debug
 
     public function __isset(string $key): bool
     {
-        return $this->isset($key);
+        return $this->has($key);
     }
 
     public function __construct(Config $config, $language = null) 

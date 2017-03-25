@@ -74,7 +74,7 @@ final class RoutersAndItsSpeedTest extends TestCase
     public function testFastRouterEmpty(): Router
     {
         $router = new Router\FastRouter($this->config);
-        $this->assertEquals(true, $router->empty());
+        $this->assertEquals(true, $router->isEmpty());
 
         return $router;
     }
@@ -82,7 +82,7 @@ final class RoutersAndItsSpeedTest extends TestCase
     public function testLoopRouterEmpty(): Router
     {
         $router = new Router\LoopRouter($this->config);
-        $this->assertEquals(true, $router->empty());
+        $this->assertEquals(true, $router->isEmpty());
 
         return $router;
     }
@@ -125,8 +125,8 @@ final class RoutersAndItsSpeedTest extends TestCase
 
         $this->generateRandomRoutes($routes, $max_params, $normal, $fast);
 
-        $this->assertNotEquals(true, $normal->empty());
-        $this->assertNotEquals(true, $fast->empty());
+        $this->assertNotEquals(true, $normal->isEmpty());
+        $this->assertNotEquals(true, $fast->isEmpty());
         $this->assertEquals($routes, count($normal));
         $this->assertEquals($routes, count($fast));
         return [$normal, $fast];
@@ -202,7 +202,7 @@ final class RoutersAndItsSpeedTest extends TestCase
                 $results_normal[$i]['route']->map($results_normal[$i]['request']),
                 $results_fast[$i]['route']->map($results_fast[$i]['request'])
             );
-            $this->assertEquals($results_normal[$i]['route']->empty(), $results_fast[$i]['route']->empty());
+            $this->assertEquals($results_normal[$i]['route']->isEmpty(), $results_fast[$i]['route']->isEmpty());
             $this->assertEquals(count($results_normal[$i]['route']), count($results_fast[$i]['route']));  
         }
 

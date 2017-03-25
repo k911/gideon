@@ -14,22 +14,30 @@ use Gideon\Handler\Locale;
 
 class Renderer extends Debug 
 {
-
     /**
-     * @var Gideon\Handler\Config       $config
-     * @var Gideon\Handler\Locale       $locale
-     * @var Gideon\Renderer\Response    $response
-     * @var \stdClass                   $document various informations and settings that may be (or not) useful for Response object
+     * @var \Gideon\Handler\Config  $config
      */
     private $config;
+    
+    /**
+     * @var \Gideon\Handler\Locale  $locale
+     */
     private $locale;
+    
+    /**
+     * @var \stdClass   $document various informations and settings that may be (or not) useful for Response object
+     */
     private $document;
+    
+    /** 
+     * @var \Gideon\Renderer\Response   $response
+     */
     private $response;
 
     /**
      * Set HTTP headers
      * Remarks: Must be called before any output sent
-     * @param Gideon\Renderer\Response  $response
+     * @param \Gideon\Renderer\Response  $response
      */
     private function setHeaders() 
     {

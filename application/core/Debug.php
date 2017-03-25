@@ -24,7 +24,8 @@ interface Debug
     public function getDebugDetails(): array;
 
     /**
-     * Does prints to default buffer output of getDetails()
+     * Prints provided debug informations to default buffer
+     * @return void
      */
     public function showDebugDetails();
 }

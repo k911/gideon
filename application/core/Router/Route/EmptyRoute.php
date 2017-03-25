@@ -19,7 +19,7 @@ class EmptyRoute extends Debug implements Route
     {
         return -1;
     }
-    public function empty(): bool
+    public function isEmpty(): bool
     {
         return true;
     }

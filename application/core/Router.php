@@ -12,14 +12,14 @@ interface Router extends \Countable
      * @param string    $route
      * @param mixed     $callback can be: \Closure, callable or ['ControllerName', 'method'] 
      * @param string    $method http
-     * @return Gideon\Router\Route created route
+     * @return \Gideon\Router\Route created route
      */
     public function addRoute(string $route, $callback = null, string $method = 'GET'): Route;
     
     /**
      * Matches request with available routes
-     * @param Gideon\Http\Reqest
-     * @return Gideon\Router\Route
+     * @param \Gideon\Http\Request
+     * @return \Gideon\Router\Route
      */
     public function dispatch(Request $request): Route;
 
@@ -27,5 +27,5 @@ interface Router extends \Countable
      * Checks if router has no routes
      * @return bool
      */
-    public function empty(): bool;
+    public function isEmpty(): bool;
 }

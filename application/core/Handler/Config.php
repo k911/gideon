@@ -91,13 +91,13 @@ class Config extends Debug\Base
         return $this->get($key);
     }
 
-    public function isset(string $key, bool $force_origin = false): bool
+    public function has(string $key, bool $force_origin = false): bool
     {
         return (!$force_origin && $this->extended) ? isset($this->extension[$key]) : isset($this->origin[$key]);
     }
     public function __isset(string $key): bool
     {
-        return $this->isset($key);
+        return $this->has($key);
     }
 
     public function __construct(string $config, $extension = null)

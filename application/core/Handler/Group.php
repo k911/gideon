@@ -10,7 +10,7 @@ interface Group {
      * Add item(s) which is an object to group
      * @param mixed[] $items => $item1, $item2, ..., $itemN
      * @throws Gideon\Handler\Group\InvalidArgumentException
-     * @return Gideon\Handler\Group
+     * @return \Gideon\Handler\Group
      */
     public function add(...$items): self;
     
@@ -18,7 +18,7 @@ interface Group {
      * Add mutilple items (must be object) to group
      * @param mixed[] $items
      * @throws Gideon\Handler\Group\InvalidArgumentException
-     * @return Gideon\Handler\Group
+     * @return \Gideon\Handler\Group
      */
     public function addMultiple(array $items): self;
 

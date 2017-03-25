@@ -9,15 +9,28 @@ abstract class Base extends Debug implements Connection
 {
     /**
      * @var \PDO    $PDO PHP Data Object
-     * @var string  $DSN Data Source Names
-     * @var string  $username db
-     * @var string  $password for provided username
-     * @var array   $options 4th argument of \PDO constructor
      */
     private $PDO;
+    
+    /**
+     * @var string  $DSN Data Source Names
+     */
     private $DSN;
+    
+    /**
+     * @var string  $username db auth
+     */
     private $username;
+    
+    /**
+     * @var string  $password for provided username
+     */
     private $password;
+    
+    /**
+     * @var array $options 4th argument of \PDO constructor
+     * @link http://php.net/manual/en/class.pdo.php
+     */
     private $options;
 
     public function __call(string $function, array $arguments)
@@ -87,7 +100,7 @@ abstract class Base extends Debug implements Connection
 
     /**
      * Concatenate provided $settings with defaults from $config
-     * @param Gideon\Handler\Config $config
+     * @param \Gideon\Handler\Config $config
      * @param array                 $settings
      * @return array
      */
@@ -95,7 +108,7 @@ abstract class Base extends Debug implements Connection
 
     /**
      * Initialize PDO settings and Database credentials
-     * @param Gideon\Handler\Config $config
+     * @param \Gideon\Handler\Config $config
      * @param array                 $settings
      */
     public function __construct(Config $config, array $settings = null)

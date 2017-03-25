@@ -6,6 +6,9 @@ use Gideon\Router\Route;
 
 class RegexRoute extends Base
 {
+    /**
+     * @param string $value
+     */
     protected function paramFrom(string $value): Param
     {
         return new Param\RegexRouteParam($value);
