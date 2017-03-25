@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                        <li><a href="../namespaces/Gideon.html">\Gideon</a></li>
+                                                        <li><a href="../namespaces/Psr.html">\Psr</a></li>
+                                                    </ul>
+                    </li>
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">433</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">11</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-123670511"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-123670511" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1512779756"></a>
+                                <a href="../namespaces/Gideon.html" style="margin-left: 30px; padding-left: 0">Gideon</a>
+            </div>
+            <div id="namespace-1512779756" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1357437021"></a>
+                                <a href="../namespaces/Gideon.Application.html" style="margin-left: 30px; padding-left: 0">Application</a>
+            </div>
+            <div id="namespace-1357437021" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Application.IOException.html">IOException</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1640075615"></a>
+                                <a href="../namespaces/Gideon.Cache.html" style="margin-left: 30px; padding-left: 0">Cache</a>
+            </div>
+            <div id="namespace-1640075615" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Cache.InvalidArgumentException.html">InvalidArgumentException</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Cache.SimpleCache.html">SimpleCache</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2055106376"></a>
+                                <a href="../namespaces/Gideon.Controller.html" style="margin-left: 30px; padding-left: 0">Controller</a>
+            </div>
+            <div id="namespace-2055106376" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Controller.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Controller.User.html">User</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1281547021"></a>
+                                <a href="../namespaces/Gideon.Database.html" style="margin-left: 30px; padding-left: 0">Database</a>
+            </div>
+            <div id="namespace-1281547021" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-948813362"></a>
+                                <a href="../namespaces/Gideon.Database.Connection.html" style="margin-left: 30px; padding-left: 0">Connection</a>
+            </div>
+            <div id="namespace-948813362" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Database.Connection.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Database.Connection.InvalidArgumentException.html">InvalidArgumentException</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Database.Connection.MySQL.html">MySQL</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/Gideon.Database.Connection.html">Connection</a></li>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-307108178"></a>
+                                <a href="../namespaces/Gideon.Debug.html" style="margin-left: 30px; padding-left: 0">Debug</a>
+            </div>
+            <div id="namespace-307108178" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Debug.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Debug.Logger.html">Logger</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1736018706"></a>
+                                <a href="../namespaces/Gideon.Handler.html" style="margin-left: 30px; padding-left: 0">Handler</a>
+            </div>
+            <div id="namespace-1736018706" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1323905461"></a>
+                                <a href="../namespaces/Gideon.Handler.Group.html" style="margin-left: 30px; padding-left: 0">Group</a>
+            </div>
+            <div id="namespace-1323905461" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1294391869"></a>
+                                <a href="../namespaces/Gideon.Handler.Group.AsyncGroup.html" style="margin-left: 30px; padding-left: 0">AsyncGroup</a>
+            </div>
+            <div id="namespace-1294391869" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Handler.Group.AsyncGroup.Worker.html">Worker</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Handler.Group.ArrayGroup.html">ArrayGroup</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Handler.Group.AsyncGroup.html">AsyncGroup</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Handler.Group.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Handler.Group.InvalidArgumentException.html">InvalidArgumentException</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Handler.Group.MixedGroup.html">MixedGroup</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Handler.Group.UniformGroup.html">UniformGroup</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/Gideon.Handler.Group.html">Group</a></li>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Handler.Config.html">Config</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Handler.Locale.html">Locale</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-919591662"></a>
+                                <a href="../namespaces/Gideon.Http.html" style="margin-left: 30px; padding-left: 0">Http</a>
+            </div>
+            <div id="namespace-919591662" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-273013268"></a>
+                                <a href="../namespaces/Gideon.Http.Request.html" style="margin-left: 30px; padding-left: 0">Request</a>
+            </div>
+            <div id="namespace-273013268" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Http.Request.Params.html">Params</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Http.InvalidArgumentException.html">InvalidArgumentException</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Http.Request.html">Request</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1380865875"></a>
+                                <a href="../namespaces/Gideon.Renderer.html" style="margin-left: 30px; padding-left: 0">Renderer</a>
+            </div>
+            <div id="namespace-1380865875" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1133541656"></a>
+                                <a href="../namespaces/Gideon.Renderer.Response.html" style="margin-left: 30px; padding-left: 0">Response</a>
+            </div>
+            <div id="namespace-1133541656" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Renderer.Response.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Renderer.Response.JSON.html">JSON</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Renderer.Response.Text.html">Text</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Renderer.Response.View.html">View</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/Gideon.Renderer.Response.html">Response</a></li>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1187403873"></a>
+                                <a href="../namespaces/Gideon.Router.html" style="margin-left: 30px; padding-left: 0">Router</a>
+            </div>
+            <div id="namespace-1187403873" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1184714272"></a>
+                                <a href="../namespaces/Gideon.Router.Route.html" style="margin-left: 30px; padding-left: 0">Route</a>
+            </div>
+            <div id="namespace-1184714272" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-248497130"></a>
+                                <a href="../namespaces/Gideon.Router.Route.Param.html" style="margin-left: 30px; padding-left: 0">Param</a>
+            </div>
+            <div id="namespace-248497130" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Router.Route.Param.ArrayRouteParam.html">ArrayRouteParam</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Router.Route.Param.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Router.Route.Param.RegexRouteParam.html">RegexRouteParam</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/Gideon.Router.Route.Param.html">Param</a></li>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Router.Route.ArrayRoute.html">ArrayRoute</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Router.Route.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Router.Route.EmptyRoute.html">EmptyRoute</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Router.Route.RegexRoute.html">RegexRoute</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/Gideon.Router.Route.html">Route</a></li>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Router.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Router.FastRouter.html">FastRouter</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Router.LoopRouter.html">LoopRouter</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/Gideon.Controller.html">Controller</a></li>
+                                                    <li class="interface"><a href="../classes/Gideon.Debug.html">Debug</a></li>
+                                                    <li class="interface"><a href="../classes/Gideon.Router.html">Router</a></li>
+                                                                                                    <li class="class"><a href="../classes/Gideon.Application.html">Application</a></li>
+                                                    <li class="class"><a href="../classes/Gideon.Renderer.html">Renderer</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1086680417"></a>
+                                <a href="../namespaces/Psr.html" style="margin-left: 30px; padding-left: 0">Psr</a>
+            </div>
+            <div id="namespace-1086680417" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1935664975"></a>
+                                <a href="../namespaces/Psr.SimpleCache.html" style="margin-left: 30px; padding-left: 0">SimpleCache</a>
+            </div>
+            <div id="namespace-1935664975" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/Psr.SimpleCache.CacheException.html">CacheException</a></li>
+                                                    <li class="interface"><a href="../classes/Psr.SimpleCache.CacheInterface.html">CacheInterface</a></li>
+                                                    <li class="interface"><a href="../classes/Psr.SimpleCache.InvalidArgumentException.html">InvalidArgumentException</a></li>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content namespace">
+                    <nav>
+                                                <a href="../namespaces/Gideon.Router.html">\Gideon\Router</a>
+                                            </nav>
+                    <h1><small>\Gideon\Router</small>Route</h1>
+
+                                        <h2>Namespaces</h2>
+                    <table class="table table-hover">
+                                                    <tr>
+                                <td><a href="../namespaces/Gideon.Router.Route.Param.html">Param</a></td>
+                            </tr>
+                                            </table>
+                    
+                    
+                                        <h2>Interfaces</h2>
+                    <table class="table table-hover">
+                                                    <tr>
+                                <td><a href="../classes/Gideon.Router.Route.Param.html">Param</a></td>
+                                <td><em></em></td>
+                            </tr>
+                                            </table>
+                    
+                                        <h2>Classes</h2>
+                    <table class="table table-hover">
+                                            <tr>
+                            <td><a href="../classes/Gideon.Router.Route.ArrayRoute.html">ArrayRoute</a></td>
+                            <td><em></em></td>
+                        </tr>
+                                            <tr>
+                            <td><a href="../classes/Gideon.Router.Route.Base.html">Base</a></td>
+                            <td><em></em></td>
+                        </tr>
+                                            <tr>
+                            <td><a href="../classes/Gideon.Router.Route.EmptyRoute.html">EmptyRoute</a></td>
+                            <td><em>Empty implementation of Route interface
+Dispatcher returns it in case of no match for the given Request.</em></td>
+                        </tr>
+                                            <tr>
+                            <td><a href="../classes/Gideon.Router.Route.RegexRoute.html">RegexRoute</a></td>
+                            <td><em></em></td>
+                        </tr>
+                                        </table>
+                                    </div>
+
+                <aside class="span4 detailsbar">
+                    <dl>
+                        <dt>Namespace hierarchy</dt>
+                        <dd class="hierarchy">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                    <div class="namespace-wrapper"><a href="../namespaces/default.html">\</a></div>
+                                                            
+                                    <div class="namespace-wrapper"><a href="../namespaces/Gideon.html">\Gideon</a></div>
+                                                            
+                                    <div class="namespace-wrapper"><a href="../namespaces/Gideon.Router.html">\Gideon\Router</a></div>
+                                                                                        <div class="namespace-wrapper">\Gideon\Router\Route</div>
+                        </dd>
+                    </dl>
+                </aside>
+            </div>
+
+            
+            
+        </div>
+    </section>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                            <li><a href="../namespaces/Gideon.html">\Gideon</a></li>
+                                                                            <li><a href="../namespaces/Psr.html">\Psr</a></li>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on March 24th, 2017 at 21:09.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>
