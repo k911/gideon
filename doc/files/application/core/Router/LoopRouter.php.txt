@@ -1,0 +1,54 @@
+<?php
+namespace Gideon\Router;
+
+use Gideon\Http\Request;
+use Gideon\Handler\Config;
+
+class LoopRouter extends Base
+{
+
+    /**
+     * @var bool[] $prepared methods
+     */
+    private $prepared;
+
+    public function dispatch(Request $request): Route
+    {
+        $method = $request->method();
+
+        if(!$this->prepared[$method])
+            $this->prepare($method);
+
+        $routes = $this->routes[$method];
+        foreach($routes as $route)
+        {
+            if($route->validate($request))
+                return $route;
+        }
+
+        return new Route\EmptyRoute();
+    }
+
+    public function __construct(Config $config)
+    {
+        parent::__construct($config);
+        foreach($this->supportedMethods as $method)
+        {
+            $this->prepared[$method] = false;
+        }
+    }
+    
+    protected function prepare(string $method)
+    {
+        foreach($this->routes[$method] as $route)
+        {
+            $route->where($this->replacements);
+        }
+        $this->prepared[$method] = true;
+    }
+
+    protected function routeFrom(string $route, callable $callback = null): Route
+    {
+        return new Route\ArrayRoute($route, $callback);
+    }
+}
