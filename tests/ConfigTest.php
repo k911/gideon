@@ -17,7 +17,7 @@ final class ConfigTest extends TestCase
 
     public function testLoaded()
     {
-        $this->assertEquals(true, $this->config->isset('TEST_CONFIG_LOADED'));
+        $this->assertEquals(true, $this->config->has('TEST_CONFIG_LOADED'));
         $this->assertEquals(self::TEST_CONFIG_LOADED, $this->config->get('TEST_CONFIG_LOADED'));
     }
 
@@ -30,15 +30,15 @@ final class ConfigTest extends TestCase
         ];
         $c = $this->config;
         $c->extend($array);
-        $this->assertEquals(true, $c->isset('testing'));
+        $this->assertEquals(true, $c->has('testing'));
         $this->assertEquals($array['TEST_CONFIG_LOADED'], $c->get('TEST_CONFIG_LOADED'));
         $this->assertEquals(self::TEST_CONFIG_LOADED, $c->get('TEST_CONFIG_LOADED', true));
         $c->extend(['someValue' => -1]);
         $this->assertNotEquals($array['someValue'], $c->get('someValue'));
         $c->extend(['testing' => false], true);
-        $this->assertEquals(true, $c->isset('testing'));
-        $this->assertEquals(false, $c->isset('testing', true));
-        $this->assertEquals(false, $c->isset('someValue'));
+        $this->assertEquals(true, $c->has('testing'));
+        $this->assertEquals(false, $c->has('testing', true));
+        $this->assertEquals(false, $c->has('someValue'));
         $this->assertNotEquals($array['testing'], $c->get('testing'));
     }
 }

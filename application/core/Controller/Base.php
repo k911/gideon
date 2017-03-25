@@ -10,23 +10,35 @@ use Gideon\Database\Connection;
 abstract class Base implements Controller
 {
     /**
-     * @var Gideon\Handler\Config           $config
-     * @var Gideon\Handler\Locale           $locale
-     * @var Gideon\Http\Request             $request
-     * @var Gideon\Http\Request\Params      $params
-     * @var Gideon\Database\Connection      $connection;
-     *
      * @todo @var Gideon\Http\Cookie        $cookie
      * @todo @var Gideon\Http\CSRF          $csrf
      * @todo @var Gideon\Model              $model
      */
+
+    /**
+     * @var \Gideon\Handler\Config $config
+     */
     protected $config;
+    
+    /**
+     * @var \Gideon\Handler\Locale $locale
+     */
     protected $locale;
+    
+    /**
+     * @var \Gideon\Http\Request $request
+     */
     protected $request;
+    
+    /**
+     * @var \Gideon\Http\Request\Params $params
+     */
     protected $params;
 
-    public function __construct()
-    {}
+    /**
+     * @var \Gideon\Database\Connection      $connection;
+     */
+    protected $connection;
 
     public function init(Config $config, Locale $locale, Request $request, Connection $connection)
     {
@@ -34,6 +46,7 @@ abstract class Base implements Controller
         $this->locale = $locale;
         $this->request = $request;
         $this->connection = $connection;
+        
         $this->params = new Request\Params($request->method());
     }
     

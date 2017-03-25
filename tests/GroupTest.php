@@ -4,16 +4,24 @@ use PHPUnit\Framework\TestCase;
 use Gideon\Handler\Config;
 use Gideon\Handler\Group\MixedGroup;
 use Gideon\Handler\Group\UniformGroup;
+use Gideon\Handler\Group\AsyncGroup;
 
 class Foo2 
 {
     public $foo;
     public $bar = 5;
+    public $slept = false;
 
     public function zerout(bool $e, bool $e2)
     {
         if($e && !$e2)
             $this->foo = $this->bar = 0;
+    }
+
+    public function sleep()
+    {
+        sleep(1);
+        return $this;
     }
 }
 
@@ -153,4 +161,15 @@ final class GroupTest extends TestCase
         }
         $this->assertEquals(false, $add);
     }
+
+    /**
+     * @todo Maybe
+     * Needs Disabling PHP Thread Safe Mode
+     */
+    // public function testAsync()
+    // {   
+    //     $group = (new AsyncGroup('Foo2'))->add(new Foo2(), new Foo2());
+    //     $group->sleep();
+
+    // }
 }

@@ -18,10 +18,10 @@ interface Controller
 
     /**
      * Init with needed things
-     * @param Gideon\Handler\Config         $config
-     * @param Gideon\Handler\Locale         $locale
-     * @param Gideon\Http\Request           $request
-     * @param Gideon\Database\Connection    $connection
+     * @param \Gideon\Handler\Config         $config
+     * @param \Gideon\Handler\Locale         $locale
+     * @param \Gideon\Http\Request           $request
+     * @param \Gideon\Database\Connection    $connection
      */
     public function init(Config $config, Locale $locale, Request $request, Connection $connection);
 }

@@ -28,7 +28,7 @@ class RoutesTest extends TestCase
 
     public function testSimpleAddRoutes()
     {
-        $results = $this->routers->empty();
+        $results = $this->routers->isEmpty();
         foreach($results as $result)
         {
             $this->assertEquals(true, $result);

@@ -5,6 +5,7 @@ require("../vendor/autoload.php");
 $config = new Gideon\Handler\Config('debug');
 //$config->showDebugDetails();
 ?> 
+<link rel="shortcut icon" href="/comp/favicon.ico">
 <a href="<?=$config->get('UPLOAD')?>">upload directory</a>
 
 <?php
@@ -24,7 +25,7 @@ $router->addRoute('index/simple/:cst')->where(['cst' => '\d+']);
 //$router->showDebugDetails();
 
 $route = $router->dispatch($request);//->showDebugDetails();
-if(!$route->empty())
+if(!$route->isEmpty())
     $route->callback()($route->map($request)[0]);
 else echo "<p>Empty Route</p>";
 
@@ -39,6 +40,6 @@ $router2->addRoute('index/simple/:cst')->where(['cst' => '\d+']);
 //$router2->showDebugDetails();
 
 $route2 = $router2->dispatch($request);//->showDebugDetails();
-if(!$route2->empty())
+if(!$route2->isEmpty())
     $route2->callback()($route->map($request)[0]);
 else echo "<p>Empty Route 2</p>";

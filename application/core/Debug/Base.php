@@ -3,13 +3,15 @@ namespace Gideon\Debug;
 
 use Gideon\Debug;
 
+/**
+ * @todo rename to [Debug]Provider
+ */
 abstract class Base implements Debug 
 {
 
     /**
-     * Function should return actual array of dependencies
-     * that are wanted in getDebugDetails function
-     * @return array key => name, value => mixed;
+     * Gets array of dependecies used to show in function getDebugDetails
+     * @return mixed[] string => dependency
      */
     abstract protected function getDebugProperties(): array;
 

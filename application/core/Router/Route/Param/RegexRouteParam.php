@@ -1,30 +1,28 @@
 <?php
 namespace Gideon\Router\Route\Param;
 
-use Gideon\Router\Route\Param as Base;
-
 class RegexRouteParam extends Base
 {
-    public function __construct(string $param) 
+    public function __construct(string $value) 
     {
-        $param = trim($param);
+        $value = trim($value);
 
         // Determine variable basing if first character is ':'
-        if($this->volatile = ($param[0] == ':'))
+        if($this->volatile = ($value[0] == ':'))
         {
              // Check for custom defined regex pattern
-            if(preg_match('/^:{.+}$/', $param) === 1)
+            if(preg_match('/^:{.+}$/', $value) === 1)
             {
-                $this->value = trim(substr($param, 2, -1));
+                $this->value = trim(substr($value, 2, -1));
             }
             else 
             {
-                $this->name = trim(substr($param, 1));
+                $this->name = trim(substr($value, 1));
             }
         } 
         else 
         {
-            $this->value = $param;
+            $this->value = $value;
         }
     }
 }

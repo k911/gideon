@@ -11,6 +11,7 @@ composer.phar
 conf
 
 # specific
+doc/cache
 application/cache
 application/config
 application/download

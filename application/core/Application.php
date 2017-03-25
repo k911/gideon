@@ -18,11 +18,34 @@ use Gideon\Router\Route\EmptyRoute;
  */
 class Application extends Debug
 {
+    /**
+     * @var \Gideon\Database\Connection $connection
+     */
     protected $connection;
+
+    /**
+     * @var \Gideon\Handler\Config $config
+     */
     protected $config;
+    
+    /**
+     * @var \Gideon\Handler\Locale $locale
+     */
     protected $locale;
+    
+    /**
+     * @var \Gideon\Router $router
+     */
     protected $router;
+    
+    /**
+     * @var \Gideon\Http\Request $request
+     */
     protected $request;
+    
+    /**
+     * @var \Gideon\Renderer $renderer
+     */
     protected $renderer;
 
     public function __construct(Config $config, Router $router)

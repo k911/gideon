@@ -6,6 +6,7 @@ use Gideon\Handler\Config;
 use Gideon\Router\Route;
 use Gideon\Debug\Base as Debug;
 use Gideon\Http;
+use Gideon\Handler\Group\UniformGroup;
 
 /**
  * Config keys used
@@ -15,16 +16,25 @@ use Gideon\Http;
  */
 
 abstract class Base extends Debug implements Router 
-{   
+{
     /**
-     * @var array       $routes key => supported http method, value => \ArrayObject container for routes
-     * @var string[]    $replacements key => name to match Route\Param->name, value => Route\Param->value = value
-     * @var string      $controllerPrefix namespace of controllers
-     * @var string[]    $supportedMethods
+     * @var \ArrayObject[] $routes key => supported http method, value => \ArrayObject container for routes
      */
     protected $routes;
+    
+    /**
+     * @var string[] $replacements matches \Gideon\Router\Route\Param Route\Param->name => Route\Param->value
+     */
     protected $replacements;
+    
+    /**
+     * @var string $controllerPrefix namespace of controllers
+     */
     protected $controllerPrefix;
+    
+    /**
+     * @var string[] $supportedMethods
+     */
     protected $supportedMethods;
 
     /**
@@ -63,7 +73,7 @@ abstract class Base extends Debug implements Router
         }
 
         $route = $this->routeFrom($route, $callback);
-        if(!$route->empty())
+        if(!$route->isEmpty())
         {
             $this->routes[$method][] = $route;
         } 
@@ -71,6 +81,12 @@ abstract class Base extends Debug implements Router
 
         return $route;
     }
+
+    // // Regex: (\[([^\/]*?)\])(?!.+\])
+    // public function addRoutes(string $optionable_route, $callback = null, string $method = null): UniformGroup
+    // {
+
+    // }
 
     public function __construct(Config $config)
     {
@@ -95,7 +111,7 @@ abstract class Base extends Debug implements Router
         return $count;
     }
 
-    public function empty(): bool
+    public function isEmpty(): bool
     {
         return ($this->count() == 0);
     }

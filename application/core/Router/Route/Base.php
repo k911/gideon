@@ -8,20 +8,29 @@ use Gideon\Debug\Base as Debug;
 abstract class Base extends Debug implements Route 
 {
     /**
-     * @var array   $params
-     * @var int     $size number of $params
-     * @var int[]   $vars indexes of $params which are variables
-     * @var callable $callback function
+     * @var array $parameters
      */
     protected $parameters;
+
+    /** 
+     * @var int $size number of $params
+     */
     protected $size;
+    
+    /**
+     * @var int[] $variables indexes of $params which are variables
+     */
     protected $variables;
+    
+    /**
+     * @var callable $callback function
+     */
     private $callback;
 
     /**
      * Creates param specific for route
      * @param string $value
-     * @param Gideon\Router\Route\Param
+     * @return \Gideon\Router\Route\Param
      */
     abstract protected function paramFrom(string $value): Param;
 
@@ -71,7 +80,7 @@ abstract class Base extends Debug implements Route
         return $data;
     }
 
-    public function empty(): bool
+    public function isEmpty(): bool
     {
         return $this->size == 0;
     }

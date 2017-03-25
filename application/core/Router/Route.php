@@ -6,8 +6,8 @@ use Gideon\Http\Request;
 interface Route extends \Countable
 {
     /**
-     * Maps volatile parameters witch request values
-     * @param Gideon\Http\Request $request
+     * Maps volatile parameters with request values
+     * @param \Gideon\Http\Request $request
      * @return string[] values
      */
     public function map(Request $request): array;
@@ -16,12 +16,12 @@ interface Route extends \Countable
      * Checks if route has no parameters
      * @return bool
      */
-    public function empty(): bool;
+    public function isEmpty(): bool;
     
     /**
      * Replaces parameters which names are in replacements array
      * @param array $replacements
-     * @return Gideon\Rotuer\Route
+     * @return \Gideon\Rotuer\Route
      */
     public function where(array $replacements): self;
 

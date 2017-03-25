@@ -9,14 +9,23 @@ use Gideon\Handler\Locale;
 abstract class Base extends Debug implements Response
 {
     /**
-     * @var mixed       $handler    a unknown type data (e.g. filename)
-     * @var string      $type       http content-type value
-     * @var int         $code       http response code
-     * @var \stdClass   $params     variables used in rendering process
+     * @var mixed   $handler    a unknown type data (e.g. filename)
      */
     protected $handler;
+    
+    /**
+     * @var string      $type       http content-type value
+     */
     protected $type;
+    
+    /** 
+     * @var int         $code       http response code
+     */
     protected $code;
+    
+    /**
+     * @var \stdClass   $params     variables used in rendering process
+     */
     protected $params;
 
     abstract public function setup(Config $config);

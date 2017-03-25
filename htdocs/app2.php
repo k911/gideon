@@ -6,7 +6,7 @@ $cache->clear();
 if(!$cache->has('ROUTER'))
 {
     $router = new Gideon\Router\FastRouter($config);
-    $router->addRoute('app2.php/user/:id', ['User', 'index'], 'GET');
+    $router->addRoute('app2.php/user/:id', ['User', 'index'], 'GET'); // app2.php/user/[:id]/[:action]/
     $router->prepareAll();
     $cache->set('ROUTER', $router, 60*3600);
 } 

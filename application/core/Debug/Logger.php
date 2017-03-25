@@ -8,12 +8,12 @@ use Gideon\Handler\Config;
  * - LOGGER_RESET_LOG
  * - LOGGER_FILE
  * - LOGGER_ROOT
+ * @todo implement Psr\Log https://github.com/php-fig/log
  */
-
 class Logger 
 {
     /**
-     * @var Gideon\Debug\Logger $Logger
+     * @var \Gideon\Debug\Logger $Logger
      * @var string              $root        how deep should string with pathes in messages should be logged
      * @var string              $logfile     path to writable/creatable file
      */
@@ -78,7 +78,7 @@ class Logger
         if(!isset(self::$Logger))
         {
             $logfile = $config->get('LOGGER_FILE');
-            $root = $config->isset('LOGGER_ROOT') ? $config->get('LOGGER_ROOT') : 'vendor';
+            $root = $config->has('LOGGER_ROOT') ? $config->get('LOGGER_ROOT') : 'vendor';
 
             if(!file_exists($logfile) && !touch($logfile))
                 return false;

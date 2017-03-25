@@ -19,14 +19,23 @@ use Psr\SimpleCache\CacheInterface;
 class SimpleCache implements CacheInterface
 {
     /**
-     * @var string  $path
-     * @var string  $fmode file mode
-     * @var int     $ttl default time to live - in seconds
-     * @var string  $hash function used to generate cached filenames
+     * @var string $path to cache dir
      */
     private $path;
+
+    /**
+     * @var string $fmode file mode
+     */
     private $fmode;
+    
+    /**
+     * @var int $ttl default cache files time to live - in seconds
+     */
     private $ttl;
+    
+    /**
+     * @var string $hash function used to generate cached filenames
+     */
     private $hash;
 
     /**
@@ -50,7 +59,7 @@ class SimpleCache implements CacheInterface
     public function __construct(Config $config)
     {
         $path = $config->get('CACHE_PATH');
-        $dmode = $config->isset('CACHE_MODE_DIR') ? $config->get('CACHE_MODE_DIR') 
+        $dmode = $config->has('CACHE_MODE_DIR') ? $config->get('CACHE_MODE_DIR') 
             : 0777; // default
         
         // Verify path settings
@@ -73,9 +82,9 @@ class SimpleCache implements CacheInterface
 
         $this->path = $path;
         $this->fmode = $config->get('CACHE_MODE_FILE');
-        $this->ttl = $config->isset('CACHE_TTL_DEFAULT') ? $config->get('CACHE_TTL_DEFAULT') 
+        $this->ttl = $config->has('CACHE_TTL_DEFAULT') ? $config->get('CACHE_TTL_DEFAULT') 
             : 10*365*86400; // aprox. 10 years
-        $this->hash = $config->isset('CACHE_HASH_DEFAULT') ? $config->get('CACHE_HASH_DEFAULT')
+        $this->hash = $config->has('CACHE_HASH_DEFAULT') ? $config->get('CACHE_HASH_DEFAULT')
             : 'sha256';
 
     }
