@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Gideon\Handler\Config;
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 
 final class ConfigTest extends TestCase 
 {

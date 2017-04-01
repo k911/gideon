@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Handler;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
 
 /**
@@ -59,10 +59,10 @@ class Locale extends Debug
                 }
             }
 
-            $this->log("Imported $i unique values from default locale '$default'.");
+            $this->logger()->info("Imported $i unique values from default locale '$default'.");
             $this->extended = true;
         }
-        else $this->log("Cannot import unique default values, due to not existing default locale '$default' file.");
+        else $this->logger()->warning("Cannot import unique default values, due to not existing default locale '$default' file.");
     }
 
     public function setConfig(Config $config) 
@@ -81,7 +81,7 @@ class Locale extends Debug
         {
             if($name != $this->config->get('LOCALE_DEFAULT')) 
             {
-                $this->log("Language: $name doesn't exists. Setting defualt.");
+                $this->logger()->warning("Language: $name doesn't exists. Setting defualt.");
                 return $this->setLanguage($this->config->get('LOCALE_DEFAULT'));
             }
             else throw new \Error("Default locale '$name' is not set in config file.");
@@ -105,7 +105,7 @@ class Locale extends Debug
                 $this->importUniqueDefault();
                 $key = $this->get($key);
             } 
-            else $this->log('Locale: "' . $this->language . '" doesn\'t recognize key: "' . $key . '".');
+            else $this->logger()->warning('Locale: "' . $this->language . '" doesn\'t recognize key: "' . $key . '".');
         }
         else $key = $this->data[$key];
         return $key;

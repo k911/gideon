@@ -2,7 +2,7 @@
 
 namespace Gideon\Http\Request;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 
 /**
  * Class handling request's parameters of every HTTP method

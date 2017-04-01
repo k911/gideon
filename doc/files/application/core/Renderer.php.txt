@@ -1,7 +1,7 @@
 <?php
 namespace Gideon;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Renderer\Response;
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
@@ -47,7 +47,7 @@ class Renderer extends Debug
         // Verify
         if($this->response->code != http_response_code())
         {
-            $this->log("Setting HTTP status response code: {$this->response->code}. Failed.");
+            $this->logger()->error("Setting HTTP status response code: {$this->response->code}. Failed.");
         }
     }
 
@@ -99,7 +99,7 @@ class Renderer extends Debug
         if(isset($this->document->{$key}))
             return $this->document->{$key};
 
-        else $this->log("Trying to access unset variable: \$document->$key");
+        else $this->logger()->warning("Trying to access unset variable: \$document->$key");
     }
 
     public function __set($key, $value) 

@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Renderer\Response;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Renderer\Response;
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;

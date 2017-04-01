@@ -2,7 +2,7 @@
 
 namespace Gideon;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
 use Gideon\Http\Request;
@@ -91,7 +91,7 @@ class Application extends Debug
         else 
         {
             $controller_name = get_class($handler);
-            $this->log("Unrecognized callable: $controller_name");
+            $this->logger()->warning("Unrecognized callable: $controller_name");
         }
 
         $this->renderer->controller = $controller_name;
@@ -105,7 +105,7 @@ class Application extends Debug
         catch (\Throwable $thrown)
         {
             $this->renderer->init($this->error(500));
-            $this->logException($thrown);
+            $this->logger()->alert($thrown);
         }
     }
 

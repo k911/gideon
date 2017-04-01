@@ -4,7 +4,7 @@ namespace Gideon\Router;
 use Gideon\Router;
 use Gideon\Handler\Config;
 use Gideon\Router\Route;
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Http;
 use Gideon\Handler\Group\UniformGroup;
 
@@ -77,7 +77,7 @@ abstract class Base extends Debug implements Router
         {
             $this->routes[$method][] = $route;
         } 
-        else $this->log("Cannot add empty route: `$route`");
+        else $this->logger()->warning("Cannot add empty route: `$route`");
 
         return $route;
     }

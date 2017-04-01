@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Http;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
 
 class Request extends Debug implements 

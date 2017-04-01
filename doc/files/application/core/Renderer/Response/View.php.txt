@@ -33,7 +33,7 @@ class View extends Base
 
         if(!file_exists($this->handler->file = $config->get('VIEW_PATH') . $this->handler->file))
         {
-            $this->log("View '{$this->handler->name}' doesn't exists. Setting default.");
+            $this->logger()->warning("View '{$this->handler->name}' doesn't exists. Setting default.");
             $this->handler->name = $config->get('VIEW_DEFAULT');
             $this->handler->file = $this->handler->name . '.php';
         }

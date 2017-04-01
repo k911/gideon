@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Handler;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
 
 /**

@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Database\Connection;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
 use Gideon\Database\Connection;
 
@@ -70,7 +70,7 @@ abstract class Base extends Debug implements Connection
             catch (\PDOException $e) 
             {
                 if($log)
-                    $this->logException($e);
+                    $this->logger()->error($e);
                 return false;
             }
         }

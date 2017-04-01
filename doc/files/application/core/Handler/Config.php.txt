@@ -8,7 +8,7 @@ use Gideon\Debug;
  * - LOGGER_INIT_DEFAULT
  */
 
-class Config extends Debug\Base
+class Config extends Debug\Provider
 {
 
     /**
@@ -57,7 +57,7 @@ class Config extends Debug\Base
         elseif (isset($this->origin[$key])) 
             return $this->origin[$key];
 
-        $this->log("Key '$key' is not set.");
+        $this->logger()->warning("Key '$key' is not set.");
         return $key;
     }
     /**
@@ -109,7 +109,8 @@ class Config extends Debug\Base
         // Enable debug on everything
         if ($this->get('LOGGER_INIT_DEFAULT') === true)
         {
-            Debug\Logger::init($this);
+            Debug\Provider::initLogger($this);
+                // TODO: initLogger should throw exception
         }
     }
 

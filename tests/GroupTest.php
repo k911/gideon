@@ -108,6 +108,7 @@ final class GroupTest extends TestCase
         $foo = new Foo2();
         $foo2 = new class extends Foo2 {};
         $group;
+        $logger = $this->config->logger()->withPrefix('GroupTest');
         
         // Creation of not existent class/interface : Should fail
         $init = false;
@@ -130,7 +131,7 @@ final class GroupTest extends TestCase
         } 
         catch(\Exception $e)
         {
-            $this->config->log($e);
+            $logger->error($e);
         }
         $this->assertEquals(true, $init);
         $this->assertEquals(true, $add);
@@ -144,12 +145,13 @@ final class GroupTest extends TestCase
         } 
         catch(\Throwable $e)
         {
-            $this->config->log($e);
+            $logger->error($e);
         }
         $this->assertEquals(true, $add);
     
         // Adding descendant of foo to group in strict mode : Should fail
         $add = false;
+        //$logger->info('Upcoming error from GroupTest');
         try {
             $group = new UniformGroup(get_class($foo), true);
             $group->add($foo2);
@@ -157,7 +159,7 @@ final class GroupTest extends TestCase
         } 
         catch(\Throwable $e)
         {
-            $this->config->logException($e);
+            //$logger->error($e);
         }
         $this->assertEquals(false, $add);
     }
