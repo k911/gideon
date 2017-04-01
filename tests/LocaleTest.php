@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 
 final class LocaleTest extends TestCase
 {

@@ -5,7 +5,7 @@ use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
 use Gideon\Renderer;
 use Gideon\Renderer\Response;
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 
 final class RendererTest extends TestCase 
 {

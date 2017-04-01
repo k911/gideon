@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Handler\Group;
 
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Group;
 
 abstract class Base extends Debug implements Group
@@ -46,7 +46,7 @@ abstract class Base extends Debug implements Group
             
             else 
             {
-                $this->log("Couldn't call: " . get_class($obj) . "->$name(). Method doesn't exists.");
+                $this->logger()->error("Couldn't call: " . get_class($obj) . "->$name(). Method doesn't exists.");
                 $results[] = null;
             }
         }
@@ -65,7 +65,7 @@ abstract class Base extends Debug implements Group
             catch (\Exception $e)
             {
                 $results[] = null;
-                $this->log($e);
+                $this->logger()->error($e);
             }
         }
         return $results;
@@ -84,7 +84,7 @@ abstract class Base extends Debug implements Group
             catch (\Exception $e)
             {
                 $results[] = false;
-                $this->log($e);
+                $this->logger()->error($e);
             }
         }
         return $results;

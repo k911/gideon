@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Gideon\Handler\Config;
 use Gideon\Database\Connection;
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 
 final class ConnectionTest extends TestCase
 {

@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use Gideon\Router;
 use Gideon\Http\Request;
 use Gideon\Handler\Config;
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Group\MixedGroup;
 use Gideon\Handler\Group\UniformGroup;
 
@@ -215,8 +215,8 @@ final class RoutersAndItsSpeedTest extends TestCase
             $this->config->get('TEST_INT_REQUESTS'), 
             $this->config->get('TEST_INT_MAX_PARAMS')
         ];
-        $this->assertEquals(true, $this->config->log("Config: 'ROUTES' => $settings[0], 'REQUESTS' => $settings[1], 'MAX_PARAMS' => $settings[2]"));
-        $this->assertEquals(true, $routers[1]->log("FastRouter Speed: $rps_fast requests per second (+ ".($rps_fast-$rps_normal).")"));
+        $this->config->logger()->info("Config: 'ROUTES' => $settings[0], 'REQUESTS' => $settings[1], 'MAX_PARAMS' => $settings[2]");
+        $routers[1]->logger()->debug("FastRouter Speed: $rps_fast requests per second (+ ".($rps_fast-$rps_normal).")");
     }
 
 }

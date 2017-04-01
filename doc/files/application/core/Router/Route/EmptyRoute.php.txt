@@ -3,7 +3,7 @@ namespace Gideon\Router\Route;
 
 use Gideon\Http\Request;
 use Gideon\Router\Route;
-use Gideon\Debug\Base as Debug;
+use Gideon\Debug\Provider as Debug;
 
 /**
  * Empty implementation of Route interface
