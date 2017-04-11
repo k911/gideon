@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
  * - LOGGER_FILE
  * - LOGGER_ROOT
  */
-abstract class Provider implements Debug 
+abstract class Provider implements Debug
 {
     /**
      * @var Gideon\Debug\Logger $Logger
@@ -32,17 +32,12 @@ abstract class Provider implements Debug
     public function getDebugDetails(): array
     {
         $data = $this->getDebugProperties();
-        foreach($data as $index => $dependency) 
-        {
-            if($dependency instanceof Debug)
+        foreach ($data as $index => $dependency) {
+            if ($dependency instanceof Debug) {
                 $data[$index] = $dependency->getDebugDetails();
-
-            elseif (is_array($dependency) || $dependency instanceof \ArrayObject)
-            {
-                foreach($dependency as $i => $item)
-                {
-                    if($item instanceof Debug)
-                    {
+            } elseif (is_array($dependency) || $dependency instanceof \ArrayObject) {
+                foreach ($dependency as $i => $item) {
+                    if ($item instanceof Debug) {
                         $data[$index][$i] = $item->getDebugDetails();
                     }
                 }
@@ -56,10 +51,11 @@ abstract class Provider implements Debug
     {
         $details = $this->getDebugDetails();
 
-        if($json)
+        if ($json) {
             echo '<pre>' . json_encode($details, JSON_PRETTY_PRINT) . '</pre>';
-        else
+        } else {
             var_dump($details);
+        }
     }
 
     /**
@@ -79,22 +75,20 @@ abstract class Provider implements Debug
      */
     public static function initLogger(Config $config): bool
     {
-        if(!isset(self::$Logger))
-        {
+        if (!isset(self::$Logger)) {
             $logfile = $config->get('LOGGER_FILE');
             $root = $config->has('LOGGER_ROOT') ? $config->get('LOGGER_ROOT') : 'vendor';
+            $clear = $config->get('LOGGER_RESET_LOG') === true;
 
-            if(!file_exists($logfile) && !touch($logfile))
-                return false;
-            
-            $reset = ($config->get('LOGGER_RESET_LOG') === true);
-            if($reset && file_put_contents($logfile, '') === false)
-                return false;
+            // Create logger
+            $logger = (new Logger($logfile, $root))->withPrefix('Debug\Provider');
 
-            self::$Logger = new Logger($logfile, $root);
-            self::$Logger->withPrefix('Debug\Provider')->info(($reset ? 'Reset' : 'Init'));
+            // Clear logfile if wanted
+            if ($clear) {
+                $logger->clear()->info('Reset');
+            }
+            self::$Logger = $logger;
         }
         return true;
     }
-
 }

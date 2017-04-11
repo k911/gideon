@@ -1,12 +1,16 @@
 <?php
 
-namespace Gideon\Renderer;
+namespace Gideon\Http;
 
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
 
 interface Response 
 {
+
+    /**
+     * @todo method setHeader(string $name, string $value): self;
+     */
 
     /**
      * Sets data that is used by this object
@@ -27,14 +31,14 @@ interface Response
      * Add variable to rendering scope
      * @param   string    $name 
      * @param   mixed     $value
-     * @return  Gideon\Renderer\Response
+     * @return  Gideon\Http\Response
      */
     public function bindParam(string $name, $value): self;
 
     /**
      * Add multiple variables to rendering scope
      * @param   array    $data  key => name, value => data
-     * @return  Gideon\Renderer\Response
+     * @return  Gideon\Http\Response
      */
     public function bindParams(array $data): self;
 

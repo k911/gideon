@@ -1,9 +1,9 @@
 <?php
-namespace Gideon\Renderer\Response;
+namespace Gideon\Http\Response;
 
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
-use Gideon\Renderer\Response;
+use Gideon\Http\Response;
 
 /**
  * Config keys used:

@@ -1,6 +1,8 @@
 <?php
 namespace Gideon\Debug;
 
+use Throwable;
+use Gideon\Exception\IOException;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 
@@ -9,6 +11,11 @@ use Psr\Log\LogLevel;
  */
 class Logger extends AbstractLogger
 {
+    /**
+     * @var string STRUCTURE
+     */
+    const STRUCTURE = "[Timestamp] [Type] [Prefix] [Message]";
+
     /**
      * @var string $root how deep should string with pathes in messages should be logged
      */
@@ -26,12 +33,19 @@ class Logger extends AbstractLogger
 
     /**
      * @param string $logfile
-     *      @see $this->logfile
      * @param string $root 
-     *      @see $this->root
      */
     public function __construct(string $logfile, string $root)
     {
+        if(!file_exists($logfile)) 
+        {
+            if(!touch($logfile))
+                throw new IOException('Cannot create logfile', $logfile);
+
+            // write log structure
+            $this->writeln($logfile, self::STRUCTURE);
+        }
+
         $this->logfile = $logfile;
         $this->root = $root;
     }
@@ -48,6 +62,21 @@ class Logger extends AbstractLogger
     }
 
     /**
+     * Clear logfile
+     * @throws IOException
+     * @return Logger
+     */
+    public function clear(): Logger
+    {
+        if(file_put_contents($this->logfile, '') === false)
+            throw new IOException('Cannot clear content of file', $this->logfile);
+        
+        // write log structure
+        $this->writeln($this->logfile, self::STRUCTURE);
+        return $this;
+    }
+
+    /**
      * Main log function
      * @param string $level 
      *      @see Psr\Log\LogLevel
@@ -59,7 +88,7 @@ class Logger extends AbstractLogger
         // Parse object to string
         if(!is_string($message))
         {
-            if($message instanceof \Throwable)
+            if($message instanceof Throwable)
                 $message = $this->parseThrowable($message);
             
             elseif (!is_array($message) && (!is_object($message) || method_exists($message, '__toString')))
@@ -84,25 +113,26 @@ class Logger extends AbstractLogger
             ($level === LogLevel::DEBUG || $level === LogLevel::INFO) ? 
             "  $level" :
             "- $level" );
-        $this->writeln("$timestamp $level:\t$message");
+        $this->writeln($this->logfile, "$timestamp $level: $message");
     }
 
     /**
      * Write log line
      * Tries to save it in utf-8 encoding using this hack:
      * @link http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
+     * @param string $file
      * @param string $line
      * @throws IOException
      * @return void
      */
-    protected function writeln(string $line)
+    protected function writeln(string $file, string $line)
     {
         // Convert to UTF-8 and remove newline from endings
         $line = trim($line);
         $line = iconv(mb_detect_encoding($line, mb_detect_order(), true), "UTF-8", $line);
         
-        if(file_put_contents($this->logfile, $line . PHP_EOL, FILE_APPEND) === false)
-            ; // TODO: throw IOException
+        if(file_put_contents($file, $line . PHP_EOL, FILE_APPEND) === false)
+            throw new IOException('Cannot write line to a file', $file);
     }
 
     /**
@@ -131,7 +161,7 @@ class Logger extends AbstractLogger
      * @param \Throwable $thrown
      * @return string
      */
-    protected function parseThrowable(\Throwable $thrown): string
+    protected function parseThrowable(Throwable $thrown): string
     {
         $file = substr($thrown->getFile(), strpos($thrown->getFile(), $this->root) + strlen($this->root)); 
         $message = preg_replace("~class\@anonymous[^\s\'\"\,]*~", 'class@anonymous', $thrown->getMessage());

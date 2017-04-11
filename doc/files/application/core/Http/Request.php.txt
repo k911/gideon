@@ -1,6 +1,7 @@
 <?php
 namespace Gideon\Http;
 
+use Gideon\Exception\InvalidArgumentException;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
 

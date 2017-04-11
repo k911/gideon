@@ -1,23 +1,42 @@
 <?php
+declare(strict_types=1);
+
 namespace Gideon\Http;
 
+use Countable;
+use IteratorAggregate;
+use ArrayAccess;
+use ArrayIterator;
+use Traversable;
+use Gideon\Exception\InvalidArgumentException;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
+use Gideon\Http\Request\Params;
 
-class Request extends Debug implements 
-    \ArrayAccess, 
-    \IteratorAggregate,
-    \Countable
+class Request extends Debug implements
+    ArrayAccess,
+    IteratorAggregate,
+    Countable
 {
     /**
-     * @var int                         $position position in current iteration
-     * @var string[]                    $values of the request
-     * @var int                         $size of the $values
-     * @var string                      $method uppercased HTTP_METHOD
+     * @var string[] $values path values of the request
      */
     private $values;
+
+    /**
+     * @var int $size number of path values
+     */
     private $size;
+
+    /**
+     * @var string uppercased http method
+     */
     private $method;
+
+    /**
+     * @var Gideon\Http\Request\Params $params
+     */
+    private $params;
 
     private function parseUri(Config $config, string $uri): array
     {
@@ -26,35 +45,39 @@ class Request extends Debug implements
         $uri = filter_var($uri, FILTER_SANITIZE_URL);
         $uri = explode('/', $uri);
         $parsed = [];
-        foreach($uri as $param)
-        {
-            if(!empty($param) || $param === '0')
+        foreach ($uri as $param) {
+            if (!empty($param) || $param === '0') {
                 $parsed[] = $param;
+            }
         }
         return $parsed;
     }
 
-    public function __construct(Config $config, string $request = null, string $method = null) 
+    public function __construct(Config $config, string $request = null, string $method = null)
     {
         // Obtain request and method from server
-        if(is_null($request))
-        {
+        if (is_null($request)) {
             $request = $_SERVER['REQUEST_URI'];
             $method = $_SERVER['REQUEST_METHOD'];
+        } // Obtain default method from config
+        elseif (is_null($method)) {
+            $method = $config->get('REQUEST_METHOD_DEFAULT');
         }
 
-        // Obtain default method from config
-        elseif(is_null($method))
-            $method = $config->get('REQUEST_METHOD_DEFAULT');
-
         // Verify if selected method is accepted by application
-        if(!in_array($method, $config->get('REQUEST_METHODS_SUPPORTED')))
+        $method = strtoupper($method);
+        if (!in_array($method, $config->get('REQUEST_METHODS_SUPPORTED'))) {
             throw new InvalidArgumentException("Undefined/not accepted HTTP_METHOD: $method");
+        }
+
+        // Try to obtain query string
+        $request = explode('?', $request, 2);
         
         $this->method = $method;
         $this->position = 0; // request uri params iterator
-        $this->values = $this->parseUri($config, $request);
+        $this->values = $this->parseUri($config, $request[0]);
         $this->size = count($this->values);
+        $this->params = new Params($method, $request[1] ?? null);
     }
 
     public function count(): int
@@ -75,41 +98,50 @@ class Request extends Debug implements
     /**
      * \ArrayAccess implementation
      */
-    public function offsetSet($offset, $value) 
+    public function offsetSet($offset, $value)
     {
-        if (is_null($offset)) 
-        {
+        if (is_null($offset)) {
             $this->values[] = $value;
         } else {
             $this->values[$offset] = $value;
         }
     }
-    public function offsetExists($offset) 
+    public function offsetExists($offset)
     {
         return isset($this->values[$offset]);
     }
-    public function offsetUnset($offset) 
+    public function offsetUnset($offset)
     {
         unset($this->values[$offset]);
     }
-    public function offsetGet($offset) 
+    public function offsetGet($offset)
     {
         return $this->values[$offset] ?? null;
     }
 
     /**
      * \IteratorAgregate implementation
+     * @return Traversable
      */
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->values);
+        return new ArrayIterator($this->values);
+    }
+
+    /**
+     * @return Gideon\Http\Request\Params 
+     */
+    public function getParams(): Params
+    {
+        return $this->params;
     }
 
     protected function getDebugProperties(): array
     {
         return [
             'values' => $this->values,
-            'method' => $this->method
+            'method' => $this->method,
+            'params' => $this->params
         ];
     }
 }
