@@ -2,7 +2,7 @@
 namespace Gideon;
 
 use Gideon\Debug\Provider as Debug;
-use Gideon\Renderer\Response;
+use Gideon\Http\Response;
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
 
@@ -12,7 +12,7 @@ use Gideon\Handler\Locale;
  * - 'RESPONSE_TYPE_DEFAULT'
  */
 
-class Renderer extends Debug 
+class Renderer extends Debug
 {
     /**
      * @var \Gideon\Handler\Config  $config
@@ -29,24 +29,25 @@ class Renderer extends Debug
      */
     private $document;
     
-    /** 
-     * @var \Gideon\Renderer\Response   $response
+    /**
+     * @var \Gideon\Http\Response   $response
      */
     private $response;
 
     /**
      * Set HTTP headers
      * Remarks: Must be called before any output sent
-     * @param \Gideon\Renderer\Response  $response
+     * @param \Gideon\Http\Response  $response
      */
-    private function setHeaders() 
+    private function setHeaders()
     {
         // Set
         header('Content-Type: ' . $this->response->type, true, $this->response->code);
 
+        // TODO: Set additional headers from $this->response->headers
+
         // Verify
-        if($this->response->code != http_response_code())
-        {
+        if ($this->response->code != http_response_code()) {
             $this->logger()->error("Setting HTTP status response code: {$this->response->code}. Failed.");
         }
     }
@@ -57,31 +58,31 @@ class Renderer extends Debug
     public function render(bool $with_headers = true)
     {
         // render HTTP headers
-        if($with_headers)
+        if ($with_headers) {
             $this->setHeaders();
+        }
 
         // buffer and output Response
-        try 
-        {
+        try {
             $this->response->render($this->config, $this->locale, $this->document);
-        } 
-        catch (\Throwable $any)
-        {
+        } catch (\Throwable $any) {
             // TODO: ..
         }
 
         // TODO: Error handling..
     }
 
-    public function init(Response $response)
+    public function initResponse(Response $response)
     {
         $response->setup($this->config);
 
-        if(!isset($response->code))
+        if (!isset($response->code)) {
             $response->setCode($this->config->get('RESPONSE_CODE_DEFAULT'));
+        }
 
-        if(!isset($response->type))
+        if (!isset($response->type)) {
             $response->setType($this->config->get('RESPONSE_TYPE_DEFAULT'));
+        }
 
         $this->response = $response;
     }
@@ -94,20 +95,21 @@ class Renderer extends Debug
         $this->document->LANG = $locale->getLanguage();
     }
 
-    public function __get($key) 
+    public function __get($key)
     {
-        if(isset($this->document->{$key}))
+        if (isset($this->document->{$key})) {
             return $this->document->{$key};
-
-        else $this->logger()->warning("Trying to access unset variable: \$document->$key");
+        } else {
+            $this->logger()->warning("Trying to access unset variable: \$document->$key");
+        }
     }
 
-    public function __set($key, $value) 
+    public function __set($key, $value)
     {
         $this->document->{$key} = $value;
     }
 
-    public function __isset($key): bool 
+    public function __isset($key): bool
     {
         return isset($this->document->{$key}) ? true : false;
     }
@@ -122,5 +124,4 @@ class Renderer extends Debug
             'response' => $this->response
         ];
     }
-
 }

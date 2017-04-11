@@ -1,30 +1,30 @@
 <?php
-namespace Gideon\Renderer\Response;
+namespace Gideon\Http\Response;
 
 use Gideon\Debug\Provider as Debug;
-use Gideon\Renderer\Response;
+use Gideon\Http\Response;
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
 
 abstract class Base extends Debug implements Response
 {
     /**
-     * @var mixed   $handler    a unknown type data (e.g. filename)
+     * @var mixed $handler a unknown type data (e.g. filename)
      */
     protected $handler;
     
     /**
-     * @var string      $type       http content-type value
+     * @var string $type http content-type value
      */
     protected $type;
     
     /** 
-     * @var int         $code       http response code
+     * @var int $code http response code
      */
     protected $code;
     
     /**
-     * @var \stdClass   $params     variables used in rendering process
+     * @var array|\stdClass $params variables used in rendering process
      */
     protected $params;
 
@@ -55,7 +55,7 @@ abstract class Base extends Debug implements Response
     public function bindParams(array $params): Response 
     {
         foreach($params as $key => $value)
-            $this->params->{$key} = $value;
+            $this->bindParam($key, $value);
         return $this;
     }
 

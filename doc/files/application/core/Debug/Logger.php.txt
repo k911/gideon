@@ -1,6 +1,8 @@
 <?php
 namespace Gideon\Debug;
 
+use Throwable;
+use Gideon\Exception\IOException;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 
@@ -26,9 +28,7 @@ class Logger extends AbstractLogger
 
     /**
      * @param string $logfile
-     *      @see $this->logfile
      * @param string $root 
-     *      @see $this->root
      */
     public function __construct(string $logfile, string $root)
     {
@@ -48,6 +48,22 @@ class Logger extends AbstractLogger
     }
 
     /**
+     * Clear logfile
+     * @throws IOException
+     * @return Logger
+     */
+    public function clear(): Logger
+    {
+        if(file_put_contents($this->logfile, '') === false)
+            throw new IOException('Cannot clear content of file', $this->logfile);
+        
+        // write log structure
+        $this->writeln("[Timestamp]\t[Type]\t[Prefix]\t[Message]");
+
+        return $this;
+    }
+
+    /**
      * Main log function
      * @param string $level 
      *      @see Psr\Log\LogLevel
@@ -59,7 +75,7 @@ class Logger extends AbstractLogger
         // Parse object to string
         if(!is_string($message))
         {
-            if($message instanceof \Throwable)
+            if($message instanceof Throwable)
                 $message = $this->parseThrowable($message);
             
             elseif (!is_array($message) && (!is_object($message) || method_exists($message, '__toString')))
@@ -102,7 +118,7 @@ class Logger extends AbstractLogger
         $line = iconv(mb_detect_encoding($line, mb_detect_order(), true), "UTF-8", $line);
         
         if(file_put_contents($this->logfile, $line . PHP_EOL, FILE_APPEND) === false)
-            ; // TODO: throw IOException
+            throw new IOException('Cannot write line to a file', $this->logfile);
     }
 
     /**
@@ -131,7 +147,7 @@ class Logger extends AbstractLogger
      * @param \Throwable $thrown
      * @return string
      */
-    protected function parseThrowable(\Throwable $thrown): string
+    protected function parseThrowable(Throwable $thrown): string
     {
         $file = substr($thrown->getFile(), strpos($thrown->getFile(), $this->root) + strlen($this->root)); 
         $message = preg_replace("~class\@anonymous[^\s\'\"\,]*~", 'class@anonymous', $thrown->getMessage());

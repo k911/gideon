@@ -1,28 +1,36 @@
 <?php
+declare(strict_types=1);
 
 namespace Gideon\Http\Request;
 
+use Countable;
 use Gideon\Debug\Provider as Debug;
 
 /**
- * Class handling request's parameters of every HTTP method
+ * Class handling request's query parameters of every HTTP method
  * But only when its content-type is: application/x-www-form-urlencoded
  */
-class Params extends Debug implements \Countable
+class Params extends Debug implements Countable
 {
+    /**
+     * @var string[] $data parsed query parameters
+     */
     private $data;
     
     /**
-     * @param string $method uppercased HTTP_METHOD
+     * @param string $method http method
+     * @param string $query parameters
      */
-    public function __construct(string $method)
+    public function __construct(string $method, string $query = null)
     {
-        if($method === 'POST' || $method === 'GET')
-        {
+        $method = strtoupper($method);
+
+        if (!empty($query)) {
+            $query = trim($query, "?\s\t\n");
+            $this->date = parse_str($query);
+        } elseif ($method === 'POST' || $method === 'GET') {
             $this->data = $GLOBALS["_$method"];
-        }
-        else 
-        {
+        } else {
             parse_str(file_get_contents('php://input'), $this->data);
         }
     }
@@ -43,15 +51,15 @@ class Params extends Debug implements \Countable
      */
     public function __get($key)
     {
-        if(isset($this->data->{$key}))
+        if (isset($this->data->{$key})) {
             return $this->data->{$key};
+        }
     }
 
     public function count(): int
     {
         return count($this->data);
     }
-
 
     /**
      * @override

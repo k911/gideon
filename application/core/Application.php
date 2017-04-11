@@ -5,8 +5,10 @@ namespace Gideon;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
+use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Http\Request;
-use Gideon\Renderer\Response;
+use Gideon\Http\Response;
+use Gideon\Exception\InvalidArgumentException;
 use Gideon\Database\Connection;
 use Gideon\Router\Route\EmptyRoute;
 
@@ -66,47 +68,23 @@ class Application extends Debug
         $this->connection = $connection;
     }
 
-    public function error(int $id): Response
+    protected function exec(callable $handler, ...$arguments)
     {
-        return ($this->request->method() === 'GET') ? 
-            (new Response\View($this->config->get('VIEW_ERRROR') . $id, $id)) :
-            (new Response\JSON(['error_id' => $id], $id));
-    }
-
-    protected function exec(callable $handler, array $args)
-    {
-        // Init some things depending if using Gideon\Controller or anonymous function (\Closure)
-        $controller_name = $action = '';
-        if($handler instanceof \Closure)
-        {
-            $controller_name = substr(get_class($handler), 1);
-            $action = $this->config->get('APPLICATION_CLOSURE_ACTION_NAME');
-        } 
-        elseif (is_array($handler) && $handler[0] instanceof Controller)
-        {
-            list($controller, $action) = $handler;
-            $controller->init($this->config, $this->locale, $this->request, $this->connection);
-            $controller_name = str_replace($this->config->get('APPLICATION_CONTROLLER_PREFIX'), '', get_class($controller));
+        if ($handler instanceof \Closure) {
+            $handler = [(new Controller\Anonymous())->setCallback($handler), 'callback'];
         }
-        else 
-        {
-            $controller_name = get_class($handler);
-            $this->logger()->warning("Unrecognized callable: $controller_name");
+        
+        if (!is_array($handler) || !($handler[0] instanceof Controller)) {
+            throw new InvalidArgumentException('Given object is not a valid Controller');
         }
 
-        $this->renderer->controller = $controller_name;
+        [$controller, $action] = $handler;
+        $controller->initController($this->config, $this->locale, $this->request, $this->connection);
+        $name = str_replace($this->config->get('APPLICATION_CONTROLLER_PREFIX'), '', get_class($controller));
+
+        $this->renderer->controller = $name;
         $this->renderer->action = $action;
-
-        // Execute function
-        try 
-        {
-            $this->renderer->init(call_user_func_array($handler, $args));
-        } 
-        catch (\Throwable $thrown)
-        {
-            $this->renderer->init($this->error(500));
-            $this->logger()->alert($thrown);
-        }
+        $this->renderer->initResponse($controller->callAction($action, $arguments));
     }
 
     public function run()
@@ -114,16 +92,24 @@ class Application extends Debug
         // Open neeeded things
         session_start();
 
-        $route = $this->router->dispatch($this->request);
-        if($route instanceof EmptyRoute)
-        {
-            $this->response = $this->error(404);
-        }
-        else
-        {
-            $args = $route->map($this->request);
-            $handler = $route->callback();
-            $this->exec($handler, $args);
+        $handler = new ErrorHandler($this->config->get('LOGGER_ROOT'));
+        $handler->handle(function ($app) {
+            // Dispatch
+            $route = $app->router->dispatch($this->request);
+
+            // Execute MVC
+            if ($route instanceof EmptyRoute) {
+                $app->exec([new Controller\Error(), 'NotFound'], $route);
+            } else {
+                $app->exec($route->callback(), $route->map($app->request));
+            }
+        }, $this);
+
+        // Log not resolved throwables
+        if (!$handler->isEmpty()) {
+            foreach ($handler->getAll() as $err) {
+                $this->logger()->error($err);
+            }
         }
 
         // Close not needed things
@@ -136,7 +122,7 @@ class Application extends Debug
         $this->renderer->render();
     }
 
-    protected function getDebugProperties(): array 
+    protected function getDebugProperties(): array
     {
         return [
             'config' => $this->config,
@@ -146,5 +132,4 @@ class Application extends Debug
             'renderer' => $this->renderer,
         ];
     }
-
 }

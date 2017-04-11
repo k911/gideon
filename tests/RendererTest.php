@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
 use Gideon\Renderer;
-use Gideon\Renderer\Response;
+use Gideon\Http\Response;
 use Gideon\Debug\Provider as Debug;
 
 final class RendererTest extends TestCase 
@@ -80,6 +80,47 @@ EOT;
         $this->assertEquals("<pre>$alredy_parsed</pre>", $output);
     }
 
+
+    public function testJSON()
+    {
+        $obj['string'] = 'string';
+        $obj['test'] = [0 => '1', 2 => '3'];
+        $obj['nestedArray'] = [0,1,2,3,4,5,6,'object'=>['array'=>[1,2,3], 0]];
+
+        // Build tested object
+        $response = new Response\JSON($obj);
+        $this->renderer->init($response);
+        
+        $this->assertEquals($this->config->get('RESPONSE_CODE_DEFAULT'), $response->code);
+        $this->assertEquals($this->config->get('JSON_TYPE_DEFAULT'), $response->type);
+
+        // Render bare object
+        ob_start();
+        $this->renderer->render(false);
+        $output = ob_get_clean();
+        $this->assertNotEquals(true, empty($output));
+        $this->assertEquals(json_encode($obj), $output);
+
+        // override with params
+        $string = 'notstring';
+        $test = [0 => '1', 2 => '3'];
+        $response->bindParam('string', $string);
+        $response->bindParam('test', $test);
+
+        // Render with overriden params
+        ob_start();
+        $this->renderer->render(false);
+        $output = ob_get_clean();
+
+        $this->assertEquals($string, $response->params['string']);
+        $this->assertEquals($test, $response->params['test']);
+        $this->assertNotEquals(true, empty($output));
+        $this->assertNotEquals(json_encode($obj), $output);
+        $obj['string'] = $string;
+        $obj['test'] = $test;
+        $this->assertEquals(json_encode($obj), $output);
+        $this->assertEquals($obj, array_merge($response->handler, $response->params));
+    }
 
 
 }

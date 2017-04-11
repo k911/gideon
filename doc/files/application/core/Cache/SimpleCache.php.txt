@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Cache;
 
-use Gideon\Application\IOException;
+use Gideon\Exception\IOException;
 use Gideon\Handler\Config;
 use Psr\SimpleCache\CacheInterface;
 
@@ -67,17 +67,17 @@ class SimpleCache implements CacheInterface
         {
             $old = umask(0);
             if(!mkdir($path, $dmode, true))
-                throw new IOException($path, "Cannot create dir");
+                throw new IOException('Cannot create directory', $path);
             umask($old);
         }
 
         elseif(!is_dir($path))
-            throw new IOException($path, "Not a directory");
+            throw new IOException('Not a directory', $path);
 
         elseif((fileperms($path) & 0777) != $dmode)
         {
             if(!chmod($path))
-                throw new IOException($path, "Cannot set dir mode $dmode");
+                throw new IOException("Cannot set dir mode $dmode", $path);
         }
 
         $this->path = $path;

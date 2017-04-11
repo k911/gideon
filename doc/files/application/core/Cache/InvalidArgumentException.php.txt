@@ -1,5 +1,7 @@
 <?php
 namespace Gideon\Cache;
 
-class InvalidArgumentException extends \InvalidArgumentException implements \Psr\SimpleCache\InvalidArgumentException
+use Gideon\Exception\InvalidArgumentException as Base;
+
+class InvalidArgumentException extends Base implements \Psr\SimpleCache\InvalidArgumentException
 {}

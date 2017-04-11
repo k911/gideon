@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Controller;
 
-use Gideon\Renderer\Response;
+use Gideon\Http\Response;
 
 class User extends Base 
 {
