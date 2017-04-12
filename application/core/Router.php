@@ -10,15 +10,16 @@ interface Router extends \Countable
     /**
      * Adds single routes
      * @param string    $route
-     * @param mixed     $callback can be: \Closure, callable or ['ControllerName', 'method'] 
+     * @param mixed     $callback can be: \Closure, callable or ['ControllerName', 'method']
      * @param string    $method http
      * @return \Gideon\Router\Route created route
      */
     public function addRoute(string $route, $callback = null, string $method = 'GET'): Route;
-    
+
     /**
      * Matches request with available routes
      * @param \Gideon\Http\Request
+     * @throws \Gideon\Router\Route\NotFound
      * @return \Gideon\Router\Route
      */
     public function dispatch(Request $request): Route;

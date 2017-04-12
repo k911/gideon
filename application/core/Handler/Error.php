@@ -6,6 +6,8 @@ namespace Gideon\Handler;
 use Countable;
 use Throwable;
 use Gideon\Handler\Config;
+use Gideon\Debug\Logger;
+use Psr\Log\LogLevel;
 
 class Error implements Countable
 {
@@ -23,7 +25,7 @@ class Error implements Countable
 
     protected function parsePath(string $path): string
     {
-        return substr($path, strpos($path, $this->root) + strlen($this->root));
+        return is_null($this->root) ? $path : substr($path, strpos($path, $this->root) + strlen($this->root));
     }
 
     protected function parseTraces(array $traces): array
@@ -48,9 +50,11 @@ class Error implements Countable
         ];
     }
 
-    public function __construct(string $root)
+    // TODO: Require logger
+    public function __construct(string $root = null, Logger $logger = null)
     {
         $this->root = $root;
+        $this->logger = $logger;
     }
 
     public function has(string $err_instance)
@@ -67,20 +71,28 @@ class Error implements Countable
     {
         do {
             $this->errors[] = $err;
+            if(isset($this->logger))
+                $this->logger->error($err);
         } while ($err = $err->getPrevious());
     }
 
-				/**
-				 * @param callable $callback
-					* @param array $arguments
-					* @return mixed
-					*/
+    public function clean()
+    {
+        $this->errors = [];
+    }
+
+    /**
+     * @param callable $callback
+     * @param array $arguments
+     * @return mixed
+     */
     public function handle(callable $callback, ...$arguments)
     {
         $result = null;
         try {
             $result = (isset($arguments)) ?
-                call_user_func_array($callback, (count($arguments) == 1 && is_array($arguments[0])) ? $arguments[0] : $arguments) :
+                call_user_func_array($callback,
+                    (count($arguments) == 1 && is_array($arguments[0])) ? $arguments[0] : $arguments) :
                 call_user_func($callback);
         } catch (Throwable $err) {
             $this->add($err);
@@ -90,10 +102,6 @@ class Error implements Countable
             return $result;
         }
     }
-
-
-
-
 
     public function getAll(): array
     {

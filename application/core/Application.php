@@ -2,6 +2,7 @@
 
 namespace Gideon;
 
+use ReflectionClass;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
@@ -68,23 +69,25 @@ class Application extends Debug
         $this->connection = $connection;
     }
 
-    protected function exec(callable $handler, array $arguments = null)
+    protected function prepare(callable $handler): callable
     {
+        // Construct controller for closures
         if ($handler instanceof \Closure) {
             $handler = [(new Controller\Anonymous())->setCallback($handler), 'callback'];
         }
 
+        // Verify
         if (!is_array($handler) || !($handler[0] instanceof Controller)) {
             throw new InvalidArgumentException('Given object is not a valid Controller');
         }
+        if (!method_exists($handler[0], $handler[1])) {
+            $controller = get_class($handler[0]);
+            throw new InvalidArgumentException("Controller $controller does NOT have action {$handler[1]}");
+        }
 
-        [$controller, $action] = $handler;
-        $controller->initController($this->config, $this->locale, $this->request, $this->connection);
-        $name = str_replace($this->config->get('APPLICATION_CONTROLLER_PREFIX'), '', get_class($controller));
-
-        $this->renderer->controller = $name;
-        $this->renderer->action = $action;
-        $this->renderer->initResponse($controller->callAction($action, $arguments));
+        // Init Controller
+        $handler[0]->initController($this->config, $this->locale, $this->request, $this->connection);
+        return $handler;
     }
 
     public function run()
@@ -93,24 +96,47 @@ class Application extends Debug
         session_start();
 
         $handler = new ErrorHandler($this->config->get('LOGGER_ROOT'));
-        $handler->handle(function ($app) {
-            // Dispatch
-            $route = $app->router->dispatch($this->request);
 
-            // Execute MVC
-            if ($route instanceof EmptyRoute) {
-                $app->exec([new Controller\Error(), 'NotFound'], [$route]);
-            } else {
-                $app->exec($route->callback(), $route->map($app->request));
-            }
+        // Catch dispatching errors
+        [$callback, $arguments] = $handler->handle(function ($app) {
+            $route = $app->router->dispatch($this->request);
+            $callback = $route->callback();
+            $arguments = $route->map($app->request);
+            return [$callback, $arguments];
         }, $this);
 
-        // Log not resolved throwables
+        // Handle Routing Errors
         if (!$handler->isEmpty()) {
-            foreach ($handler->getAll() as $err) {
-                $this->logger()->error($err);
-            }
+            $callback = [new Controller\Error(), 'innerStage'];
+            $arguments = [$handler];
         }
+
+        // Delegate request to proper controller
+        $response = $handler->handle(function ($app, $handler, $callback, $arguments) {
+            [$controller, $action] = $app->prepare($callback);
+            return $controller->callAction($handler, $action, $arguments);
+        }, $this, $handler, $callback, $arguments);
+
+        // Proper Error Handler
+        if(!$handler->isEmpty()) {
+            $callback = [new Controller\Error(), 'outerStage'];
+            $response = $handler->handle(function ($app, $handler, $callback) {
+                [$controller, $action] = $app->prepare($callback);
+                return $controller->callAction($handler, $action, [$handler]);
+            }, $this, $handler, $callback);
+        }
+
+        // Last line of defence if error handler fails.. NOT SAFE but very practical
+        if (!isset($response) && !$handler->isEmpty()) {
+            var_dump($handler->getAll());
+            exit(1);
+        }
+
+        // Store some informations
+        [$controller, $action] = $callback;
+        $this->renderer->controller = (new ReflectionClass($controller))->getShortName();
+        $this->renderer->action = $action;
+        $this->renderer->initResponse($response);
 
         // Close not needed things
         $this->connection->close();

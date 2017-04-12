@@ -34,13 +34,6 @@ interface Controller
      * @param array $arguments
      * @return Response
      */
-    public function callAction(string $action, array $arguments = null): Response;
-
-    /**
-     * Error Handler
-     * @param ErrorHandler $error
-     * @return Response
-     */
-    public function handleErrors(ErrorHandler $handler): Response;
+    public function callAction(ErrorHandler $handler, string $action, array $arguments = null): Response;
 
 }

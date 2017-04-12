@@ -53,7 +53,7 @@ class Request extends Debug implements
         return $parsed;
     }
 
-    public function __construct(Config $config, string $request = null, string $method = null)
+    public function __construct(Config $config, string $request = null, string $method = null, Params $params = null)
     {
         // Obtain request and method from server
         if (is_null($request)) {
@@ -70,29 +70,27 @@ class Request extends Debug implements
             throw new InvalidArgumentException("Undefined/not accepted HTTP_METHOD: $method");
         }
 
-        // Try to obtain query string
-        $request = explode('?', $request, 2);
-        
+        // Sanitize request
+        $request = filter_var($request, FILTER_SANITIZE_URL);
+        if(!strpos($request, '?'))
+            $request .= '?';
+        [$uri, $query] = explode('?', $request, 2);
+
+        // Obtain request parameters if not given
+        if (is_null($params)) {
+            $params = new Params($method, $query);
+        }
+
         $this->method = $method;
         $this->position = 0; // request uri params iterator
-        $this->values = $this->parseUri($config, $request[0]);
+        $this->values = $this->parseUri($config, $uri);
         $this->size = count($this->values);
-        $this->params = new Params($method, $request[1] ?? null);
+        $this->params = $params;
     }
 
     public function count(): int
     {
         return $this->size;
-    }
-
-    public function uri(): string
-    {
-        return implode('/', $this->values);
-    }
-
-    public function method(): string
-    {
-        return $this->method;
     }
 
     /**
@@ -129,11 +127,42 @@ class Request extends Debug implements
     }
 
     /**
-     * @return Gideon\Http\Request\Params 
+     * @return Gideon\Http\Request\Params
      */
     public function getParams(): Params
     {
         return $this->params;
+    }
+
+    /**
+     * Get protocol name in lowercase (http or https)
+     * @return string
+     */
+    public function getProtocol(): string
+    {
+        return (isset($_SERVER['HTTPS']) &&
+            ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
+            isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+            $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') ? 'https' : 'http';
+    }
+
+    // TODO: rename to getURI()
+    public function uri(): string
+    {
+        return implode('/', $this->values);
+    }
+
+    // TODO: rename to getHttpMethod()
+    public function method(): string
+    {
+        return $this->method;
+    }
+
+    public function getHttpRequest(): string
+    {
+        $protocol = $this->getProtocol();
+        $uri = $this->uri();
+        return "{$this->method} $protocol://$uri {$_SERVER['SERVER_PROTOCOL']}";
     }
 
     protected function getDebugProperties(): array

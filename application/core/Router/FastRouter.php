@@ -26,7 +26,7 @@ class FastRouter extends Base
         $elements = count($this->routes[$method]);
         $chunks = round($elements / $this->max);
         return ($chunks) ? ceil($elements/ $chunks) : $elements;
-    } 
+    }
 
     protected function prepare(string $method)
     {
@@ -49,10 +49,10 @@ class FastRouter extends Base
 
                 // dunno if needed
                 $map[$dummies] = $route;
-                
+
                 $iterator->next();
             }
-            
+
             $this->chunks[$method][] = '~^(?|' . implode('|', $regexes) . ')$~';
             $this->maps[$method][] = $map;
         }
@@ -68,7 +68,7 @@ class FastRouter extends Base
 
         $maps = $this->maps[$method];
         $chunks = $this->chunks[$method];
-        foreach ($chunks as $i => $regex) 
+        foreach ($chunks as $i => $regex)
         {
             if (preg_match($regex, $uri, $matches) === 1)
             {
@@ -76,7 +76,7 @@ class FastRouter extends Base
             }
         }
 
-        return new Route\EmptyRoute();
+        throw new NotFoundException('Not Found: ' . $request->getHttpRequest());
     }
 
     protected function routeFrom(string $route, callable $callback = null): Route

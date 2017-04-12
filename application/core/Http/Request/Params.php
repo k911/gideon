@@ -16,7 +16,7 @@ class Params extends Debug implements Countable
      * @var string[] $data parsed query parameters
      */
     private $data;
-    
+
     /**
      * @param string $method http method
      * @param string $query parameters
@@ -27,7 +27,7 @@ class Params extends Debug implements Countable
 
         if (!empty($query)) {
             $query = trim($query, "?\s\t\n");
-            $this->date = parse_str($query);
+            parse_str($query, $this->data);
         } elseif ($method === 'POST' || $method === 'GET') {
             $this->data = $GLOBALS["_$method"];
         } else {

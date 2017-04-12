@@ -62,34 +62,11 @@ abstract class Base implements Controller
         $this->logger = $config->logger()->withPrefix(get_class($this)); // TODO: fix double logger prefix change
     }
 
-    public function callAction(string $action, array $arguments = null): Response
+    /**
+     * Overridable
+     */
+    public function callAction(ErrorHandler $handler, string $action, array $arguments = null): Response
     {
-        if (!method_exists($this, $action)) {
-            $controller = get_class($this);
-            throw new InvalidArgumentException("Controller $controller has NOT defined action `$action`.");
-        }
-
-        // TODO: LOGGER_ROOT => ERROR_ROOT in config
-        $handler = new ErrorHandler($this->config->get('LOGGER_ROOT'));
-
-        $response = $handler->handle([$this, $action], $arguments);
-        if (!$handler->isEmpty()) {
-            // log each error
-            foreach ($handler->getAll() as $err) {
-                $this->logger->error($err);
-            }
-
-            // resolve error response
-            $response = $this->handleErrors($handler);
-        }
-        return $response;
-    }
-
-    public function handleErrors(ErrorHandler $handler): Response
-    {
-        $errorResponse = ($this->request->method() == 'GET') ?
-            (new Response\View('error/500'))->bindParam('errors', $handler->getAll()) :
-            new Response\JSON($handler->getFirst()) ;
-        return $errorResponse->setCode(500);
+        return $handler->handle([$this, $action], $arguments);
     }
 }
