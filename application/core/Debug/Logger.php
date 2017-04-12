@@ -25,19 +25,19 @@ class Logger extends AbstractLogger
      * @var string $logfile path to writable/creatable file
      */
     protected $logfile;
-    
+
     /**
-     * @var string $prefix to write in log line after log level 
+     * @var string $prefix to write in log line after log level
      */
     protected $prefix;
 
     /**
      * @param string $logfile
-     * @param string $root 
+     * @param string $root
      */
     public function __construct(string $logfile, string $root)
     {
-        if(!file_exists($logfile)) 
+        if(!file_exists($logfile))
         {
             if(!touch($logfile))
                 throw new IOException('Cannot create logfile', $logfile);
@@ -70,7 +70,7 @@ class Logger extends AbstractLogger
     {
         if(file_put_contents($this->logfile, '') === false)
             throw new IOException('Cannot clear content of file', $this->logfile);
-        
+
         // write log structure
         $this->writeln($this->logfile, self::STRUCTURE);
         return $this;
@@ -78,9 +78,9 @@ class Logger extends AbstractLogger
 
     /**
      * Main log function
-     * @param string $level 
+     * @param string $level
      *      @see Psr\Log\LogLevel
-     * @param string|\Throwable|\Serializable $message 
+     * @param string|\Throwable|\Serializable $message
      * @param array $context
      */
     public function log($level, $message, array $context = [])
@@ -90,27 +90,27 @@ class Logger extends AbstractLogger
         {
             if($message instanceof Throwable)
                 $message = $this->parseThrowable($message);
-            
+
             elseif (!is_array($message) && (!is_object($message) || method_exists($message, '__toString')))
                 $message = (string)$message;
-            
+
             // TODO: throw exception
             else $message = serialize($message);
         }
-        
+
         // Replace templates
         if(!empty($context))
             $message = $this->interpolate($message, $context);
-        
+
         // Add prefix
         if(!empty($this->prefix))
             $message = "[{$this->prefix}] $message";
-        
+
         // Create and save line to log file
         $timestamp = time();
-        $level = ($level === LogLevel::ERROR || $level === LogLevel::CRITICAL || $level === LogLevel::ALERT || $level === LogLevel::EMERGENCY) ? 
+        $level = ($level === LogLevel::ERROR || $level === LogLevel::CRITICAL || $level === LogLevel::ALERT || $level === LogLevel::EMERGENCY) ?
             "! $level" : (
-            ($level === LogLevel::DEBUG || $level === LogLevel::INFO) ? 
+            ($level === LogLevel::DEBUG || $level === LogLevel::INFO) ?
             "  $level" :
             "- $level" );
         $this->writeln($this->logfile, "$timestamp $level: $message");
@@ -130,7 +130,7 @@ class Logger extends AbstractLogger
         // Convert to UTF-8 and remove newline from endings
         $line = trim($line);
         $line = iconv(mb_detect_encoding($line, mb_detect_order(), true), "UTF-8", $line);
-        
+
         if(file_put_contents($file, $line . PHP_EOL, FILE_APPEND) === false)
             throw new IOException('Cannot write line to a file', $file);
     }
@@ -138,7 +138,7 @@ class Logger extends AbstractLogger
     /**
      * Interpolates context values into the message placeholders.
      * @param string $message with optional templates: {template_name}
-     * @param array $context replacement => convertable to string value 
+     * @param array $context replacement => convertable to string value
      * @return string interpolated
      */
     protected function interpolate(string $message, array $context = []): string
@@ -158,13 +158,15 @@ class Logger extends AbstractLogger
 
     /**
      * Parses Throwable object to string
+     * @deprecated
      * @param \Throwable $thrown
      * @return string
      */
     protected function parseThrowable(Throwable $thrown): string
     {
-        $file = substr($thrown->getFile(), strpos($thrown->getFile(), $this->root) + strlen($this->root)); 
+        $file = substr($thrown->getFile(), strpos($thrown->getFile(), $this->root) + strlen($this->root));
         $message = preg_replace("~class\@anonymous[^\s\'\"\,]*~", 'class@anonymous', $thrown->getMessage());
-        return "[{$thrown->getCode()}] `$file:{$thrown->getLine()}` $message";
+        $line = $thrown->getLine();
+        return "[{$thrown->getCode()}] `$file:{$line}` $message";
     }
 }

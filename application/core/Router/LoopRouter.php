@@ -26,7 +26,7 @@ class LoopRouter extends Base
                 return $route;
         }
 
-        return new Route\EmptyRoute();
+        throw new NotFoundException('Not Found: ' . $request->getHttpRequest());
     }
 
     public function __construct(Config $config)
@@ -37,7 +37,7 @@ class LoopRouter extends Base
             $this->prepared[$method] = false;
         }
     }
-    
+
     protected function prepare(string $method)
     {
         foreach($this->routes[$method] as $route)
