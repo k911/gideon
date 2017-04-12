@@ -12,7 +12,7 @@ use Gideon\Database\Connection;
 /**
  * Controller should be as light as possible
  */
-interface Controller 
+interface Controller
 {
     /**
      * Require no constructor parameters
@@ -34,7 +34,7 @@ interface Controller
      * @param array $arguments
      * @return Response
      */
-    public function callAction(string $action, ...$arguments): Response;
+    public function callAction(string $action, array $arguments = null): Response;
 
     /**
      * Error Handler

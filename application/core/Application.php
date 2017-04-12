@@ -29,22 +29,22 @@ class Application extends Debug
      * @var \Gideon\Handler\Config $config
      */
     protected $config;
-    
+
     /**
      * @var \Gideon\Handler\Locale $locale
      */
     protected $locale;
-    
+
     /**
      * @var \Gideon\Router $router
      */
     protected $router;
-    
+
     /**
      * @var \Gideon\Http\Request $request
      */
     protected $request;
-    
+
     /**
      * @var \Gideon\Renderer $renderer
      */
@@ -68,12 +68,12 @@ class Application extends Debug
         $this->connection = $connection;
     }
 
-    protected function exec(callable $handler, ...$arguments)
+    protected function exec(callable $handler, array $arguments = null)
     {
         if ($handler instanceof \Closure) {
             $handler = [(new Controller\Anonymous())->setCallback($handler), 'callback'];
         }
-        
+
         if (!is_array($handler) || !($handler[0] instanceof Controller)) {
             throw new InvalidArgumentException('Given object is not a valid Controller');
         }
@@ -99,7 +99,7 @@ class Application extends Debug
 
             // Execute MVC
             if ($route instanceof EmptyRoute) {
-                $app->exec([new Controller\Error(), 'NotFound'], $route);
+                $app->exec([new Controller\Error(), 'NotFound'], [$route]);
             } else {
                 $app->exec($route->callback(), $route->map($app->request));
             }

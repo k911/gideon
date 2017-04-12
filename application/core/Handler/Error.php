@@ -55,10 +55,10 @@ class Error implements Countable
 
     public function has(string $err_instance)
     {
-        foreach($this->errors as $err)
-        {
-            if($err instanceof $err_instance)
+        foreach ($this->errors as $err) {
+            if ($err instanceof $err_instance) {
                 return true;
+            }
         }
         return false;
     }
@@ -70,12 +70,17 @@ class Error implements Countable
         } while ($err = $err->getPrevious());
     }
 
+				/**
+				 * @param callable $callback
+					* @param array $arguments
+					* @return mixed
+					*/
     public function handle(callable $callback, ...$arguments)
     {
         $result = null;
         try {
             $result = (isset($arguments)) ?
-                call_user_func_array($callback, $arguments) :
+                call_user_func_array($callback, (count($arguments) == 1 && is_array($arguments[0])) ? $arguments[0] : $arguments) :
                 call_user_func($callback);
         } catch (Throwable $err) {
             $this->add($err);
@@ -85,6 +90,10 @@ class Error implements Countable
             return $result;
         }
     }
+
+
+
+
 
     public function getAll(): array
     {
