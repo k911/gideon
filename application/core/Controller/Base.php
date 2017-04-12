@@ -23,17 +23,17 @@ abstract class Base implements Controller
      * @var \Gideon\Handler\Config $config
      */
     protected $config;
-    
+
     /**
      * @var \Gideon\Handler\Locale $locale
      */
     protected $locale;
-    
+
     /**
      * @var \Gideon\Http\Request $request
      */
     protected $request;
-    
+
     /**
      * @var \Gideon\Http\Request\Params $params
      */
@@ -49,7 +49,7 @@ abstract class Base implements Controller
      */
     protected $logger;
 
-    public function __construct() 
+    public function __construct()
     {}
 
     public function initController(Config $config, Locale $locale, Request $request, Connection $connection)
@@ -59,10 +59,10 @@ abstract class Base implements Controller
         $this->request = $request;
         $this->params = $request->getParams();
         $this->connection = $connection;
-        $this->logger = $config->logger()->withPrefix(get_class($this));
+        $this->logger = $config->logger()->withPrefix(get_class($this)); // TODO: fix double logger prefix change
     }
 
-    public function callAction(string $action, ...$arguments): Response
+    public function callAction(string $action, array $arguments = null): Response
     {
         if (!method_exists($this, $action)) {
             $controller = get_class($this);
@@ -71,7 +71,7 @@ abstract class Base implements Controller
 
         // TODO: LOGGER_ROOT => ERROR_ROOT in config
         $handler = new ErrorHandler($this->config->get('LOGGER_ROOT'));
-        
+
         $response = $handler->handle([$this, $action], $arguments);
         if (!$handler->isEmpty()) {
             // log each error

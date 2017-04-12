@@ -4,7 +4,7 @@ require("../vendor/autoload.php");
 
 $config = new Gideon\Handler\Config('debug');
 //$config->showDebugDetails();
-?> 
+?>
 <link rel="shortcut icon" href="/comp/favicon.ico">
 <a href="<?=$config->get('UPLOAD')?>">upload directory</a>
 
