@@ -11,10 +11,8 @@ composer.phar
 conf
 
 # specific
-doc/cache
-application/cache
-application/config
-application/download
-application/log
+doc/*
+application/*
+htdocs/*
 ref
 vendor

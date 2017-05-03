@@ -4,7 +4,7 @@
   "description": "Gideon Fast Tiny Framework - tiny php MVC framework featuring Material Design, Restful Fast Router, Anti-CSRF and TWIG support",
   "main": "gulpfile.js",
   "directories": {
-    "test": "test"
+    "test": "tests"
   },
   "dependencies": {
     "mdi": "^1.7.22",
@@ -19,7 +19,7 @@
     "gulp-uglify": "^2.0.0"
   },
   "scripts": {
-    "test": "test"
+    "test": " vendor\\bin\\phpunit"
   },
   "repository": {
     "type": "git",

@@ -7,7 +7,7 @@ use Gideon\Renderer;
 use Gideon\Http\Response;
 use Gideon\Debug\Provider as Debug;
 
-final class RendererTest extends TestCase 
+final class RendererTest extends TestCase
 {
     private $config;
     private $locale;
@@ -58,7 +58,7 @@ EOT;
         // Build tested object
         $response = new Response\Text($text);
         $response->bindParam('NAME', $name);
-        $this->renderer->init($response);
+        $this->renderer->attach($response);
         $response->bindParam('COUNTRY', $country);
 
         $this->assertEquals($name, $response->params->NAME);
@@ -72,6 +72,7 @@ EOT;
         $this->assertEquals($alredy_parsed, $output);
 
         // Test object with specified output
+        $this->assertSame(true, $this->config->get('TEXT_HTML_RENDER_IN_PRE'));
         $type = 'text/html';
         $response->setType('text/html');
         ob_start();
@@ -89,8 +90,8 @@ EOT;
 
         // Build tested object
         $response = new Response\JSON($obj);
-        $this->renderer->init($response);
-        
+        $this->renderer->attach($response);
+
         $this->assertEquals($this->config->get('RESPONSE_CODE_DEFAULT'), $response->code);
         $this->assertEquals($this->config->get('JSON_TYPE_DEFAULT'), $response->type);
 

@@ -7,6 +7,8 @@ use Gideon\Handler\Config;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Group\MixedGroup;
 use Gideon\Handler\Group\UniformGroup;
+use Gideon\Router\NotFoundException;
+use Gideon\Router\Route\EmptyRoute;
 
 class RoutersSpeedMeter
 {
@@ -22,7 +24,7 @@ class RoutersSpeedMeter
         $this->requests = $requests;
         $this->swithRouter($router);
     }
-    
+
     /**
      * @return mixed[] key 'request' => request obj that was dispatched
      *                 key 'route' => dispatched route obj
@@ -34,11 +36,13 @@ class RoutersSpeedMeter
 
         foreach($this->requests as $request)
         {
-            $results[] = ['request' => $request, 'route' => $this->router->dispatch($request)];
+
+            $result = $this->router->dispatch($request);
+            $results[] = ['request' => $request, 'route' => $result];
         }
 
         $this->stopTime = microtime(true);
-        
+
         return $results;
     }
 
@@ -63,7 +67,7 @@ class RoutersSpeedMeter
 
 final class RoutersAndItsSpeedTest extends TestCase
 {
-    
+
     private $config;
 
     public function setUp()
@@ -139,14 +143,14 @@ final class RoutersAndItsSpeedTest extends TestCase
         $requests = [];
         $array[0] = ['foo', 'bar', 'param', 'var', 'test', 'value'];
         $array[1] = [
-                'foo', 
-                (string)mt_rand(0, $this->config->get('TEST_INT_REQUESTS')), 
-                (string)mt_rand(0,1).mt_rand(0, $this->config->get('TEST_INT_ROUTES')), 
-                dechex(mt_rand(0, $this->config->get('TEST_INT_REQUESTS'))), 
-                'bar', 
+                'foo',
+                (string)mt_rand(0, $this->config->get('TEST_INT_REQUESTS')),
+                (string)mt_rand(0,1).mt_rand(0, $this->config->get('TEST_INT_ROUTES')),
+                dechex(mt_rand(0, $this->config->get('TEST_INT_REQUESTS'))),
+                'bar',
                 (string)mt_rand(900, 1100)
             ];
-        
+
         for($i = 0; $i < $this->config->get('TEST_INT_REQUESTS'); ++$i)
         {
             // Generate random request
@@ -181,11 +185,11 @@ final class RoutersAndItsSpeedTest extends TestCase
 
         $this->assertNotEquals(-1, $rps_normal);
         $this->assertEquals($this->config->get('TEST_INT_REQUESTS'), count($results_normal));
-    
+
         $tester->swithRouter($routers[1]);
         $results_fast = $tester->run();
         $rps_fast = $tester->requestsPerSec();
-        
+
         $this->assertNotEquals(-1, $rps_fast);
         $this->assertEquals($this->config->get('TEST_INT_REQUESTS'), count($results_fast));
 
@@ -195,28 +199,28 @@ final class RoutersAndItsSpeedTest extends TestCase
             $this->assertEquals($results_normal[$i]['request'], $results_fast[$i]['request']);
 
             $this->assertEquals(
-                $results_normal[$i]['route']->regex($this->config->get('ROUTER_REPLACEMENTS_DEFAULT')),
-                $results_fast[$i]['route']->regex($this->config->get('ROUTER_REPLACEMENTS_DEFAULT'))
+                $results_normal[$i]['route']->toPattern($this->config->get('ROUTER_REPLACEMENTS_DEFAULT')),
+                $results_fast[$i]['route']->toPattern($this->config->get('ROUTER_REPLACEMENTS_DEFAULT'))
             );
             $this->assertEquals(
                 $results_normal[$i]['route']->map($results_normal[$i]['request']),
                 $results_fast[$i]['route']->map($results_fast[$i]['request'])
             );
             $this->assertEquals($results_normal[$i]['route']->isEmpty(), $results_fast[$i]['route']->isEmpty());
-            $this->assertEquals(count($results_normal[$i]['route']), count($results_fast[$i]['route']));  
+            $this->assertEquals(count($results_normal[$i]['route']), count($results_fast[$i]['route']));
         }
 
         // fast router should be always faster
         $this->assertGreaterThan($rps_normal, $rps_fast);
-        
+
         // save log
         $settings = [
-            $this->config->get('TEST_INT_ROUTES'), 
-            $this->config->get('TEST_INT_REQUESTS'), 
+            $this->config->get('TEST_INT_ROUTES'),
+            $this->config->get('TEST_INT_REQUESTS'),
             $this->config->get('TEST_INT_MAX_PARAMS')
         ];
-        $this->config->logger()->info("Config: 'ROUTES' => $settings[0], 'REQUESTS' => $settings[1], 'MAX_PARAMS' => $settings[2]");
-        $routers[1]->logger()->debug("FastRouter Speed: $rps_fast requests per second (+ ".($rps_fast-$rps_normal).")");
+        $this->config->getLogger()->info("Config: 'ROUTES' => $settings[0], 'REQUESTS' => $settings[1], 'MAX_PARAMS' => $settings[2]");
+        $routers[1]->getLogger()->debug("FastRouter Speed: $rps_fast requests per second (+ ".($rps_fast-$rps_normal).")");
     }
 
 }
