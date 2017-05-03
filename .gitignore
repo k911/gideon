@@ -8,11 +8,11 @@ composer.lock
 composer.phar
 
 # configs
-conf
+/conf
 
 # specific
-doc/*
-application/*
-htdocs/*
-ref
-vendor
+/doc
+/application
+/htdocs
+/ref
+/vendor
