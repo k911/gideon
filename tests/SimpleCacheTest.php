@@ -45,7 +45,7 @@ final class SimpleCacheTest extends TestCase
         $i = 10;
         $s = "string";
         $array = ["string" => $s, "int" => $i];
-        $sobj = new \stdClass();
+        $sobj = new stdClass();
         $sobj->i = $i;
         $sobj->s = $s;
         $sobj->array = $array;

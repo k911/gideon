@@ -1,7 +1,6 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-
 use Gideon\Handler\Config;
 use Gideon\Handler\Locale;
 use Gideon\Debug\Provider as Debug;
@@ -35,6 +34,6 @@ final class LocaleTest extends TestCase
         $default->setLanguage($this->config->get('LOCALE_DEFAULT'));
         $this->assertNotEquals($locale->getLanguage(), $default->getLanguage());
         $this->assertEquals($locale->get('TEXT_LANGUAGE'), $default->get('TEXT_LANGUAGE'));
-    } 
+    }
 
 }

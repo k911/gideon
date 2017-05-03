@@ -60,7 +60,7 @@
 //      */
 //     public function testLog($logfile)
 //     {
-//         $this->config->logger()->error('WTF');
+//         $this->config->getLogger()->error('WTF');
 //         $this->assertEquals(true, TestLogProvider::isset());
 //         $this->assertEquals(true, file_exists($logfile));
 //         $this->assertNotSame(false, file_put_contents($logfile, ''));

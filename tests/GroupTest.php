@@ -6,7 +6,7 @@ use Gideon\Handler\Group\MixedGroup;
 use Gideon\Handler\Group\UniformGroup;
 use Gideon\Handler\Group\AsyncGroup;
 
-class Foo2 
+class Foo2
 {
     public $foo;
     public $bar = 5;
@@ -25,7 +25,7 @@ class Foo2
     }
 }
 
-final class GroupTest extends TestCase 
+final class GroupTest extends TestCase
 {
     private $config;
 
@@ -51,7 +51,7 @@ final class GroupTest extends TestCase
         $this->assertEquals(true, isset($obj2->foo));
         $this->assertEquals(false, isset($group->foo));
         $obj1->foo = 'x';
-        $this->assertEquals(true, isset($group->foo)); 
+        $this->assertEquals(true, isset($group->foo));
     }
 
     public function testBase()
@@ -68,7 +68,7 @@ final class GroupTest extends TestCase
 
         $group = new MixedGroup();
         $group->addMultiple($foos);
-        
+
         // test __get()
         $this->assertEquals($iis, $group->foo);
 
@@ -108,16 +108,18 @@ final class GroupTest extends TestCase
         $foo = new Foo2();
         $foo2 = new class extends Foo2 {};
         $group;
-        $logger = $this->config->logger()->withPrefix('GroupTest');
-        
+        $logger = $this->config->getLogger()->withPrefix('GroupTest');
+
         // Creation of not existent class/interface : Should fail
         $init = false;
         try {
             $group = new UniformGroup(get_class($foo) . '_NotExistent');
             $init = true;
-        } 
-        catch(\Exception $e)
-        {}
+        }
+        catch(Exception $e)
+        {
+            $init = false;
+        }
         $this->assertEquals(false, $init);
 
         // Creation and add proper class/interface : Should success
@@ -128,8 +130,8 @@ final class GroupTest extends TestCase
             $init = true;
             $group->add($foo);
             $add = true;
-        } 
-        catch(\Exception $e)
+        }
+        catch(Exception $e)
         {
             $logger->error($e);
         }
@@ -142,24 +144,26 @@ final class GroupTest extends TestCase
             $group = new UniformGroup(get_class($foo));
             $group->add($foo2);
             $add = true;
-        } 
-        catch(\Throwable $e)
+        }
+        catch(Throwable $e)
         {
             $logger->error($e);
+            $add = false;
         }
         $this->assertEquals(true, $add);
-    
+
         // Adding descendant of foo to group in strict mode : Should fail
         $add = false;
-        //$logger->info('Upcoming error from GroupTest');
+        // $logger->info('Upcoming error from GroupTest');
         try {
             $group = new UniformGroup(get_class($foo), true);
             $group->add($foo2);
             $add = true;
-        } 
-        catch(\Throwable $e)
+        }
+        catch(Throwable $e)
         {
-            //$logger->error($e);
+            $add = false;
+            // $logger->error($e);
         }
         $this->assertEquals(false, $add);
     }
@@ -169,7 +173,7 @@ final class GroupTest extends TestCase
      * Needs Disabling PHP Thread Safe Mode
      */
     // public function testAsync()
-    // {   
+    // {
     //     $group = (new AsyncGroup('Foo2'))->add(new Foo2(), new Foo2());
     //     $group->sleep();
 

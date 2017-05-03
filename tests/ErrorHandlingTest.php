@@ -4,9 +4,10 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use Gideon\Handler\Config;
 use Gideon\Handler\Error as ErrorHandler;
-use Gideon\Exception\ErrorResponseException;
+use Gideon\Http\ResponseException;
+use Gideon\Handler\Call\SafeCall;
 
-final class MyCustomError extends ErrorResponseException
+final class MyCustomException extends ResponseException
 {}
 
 class ErrorHandlingTest extends TestCase
@@ -17,21 +18,24 @@ class ErrorHandlingTest extends TestCase
     public function setUp()
     {
         $this->config = $config = new Config('test');
-        $this->handler = new ErrorHandler($config->get('LOGGER_ROOT'));
+        $this->handler = new ErrorHandler($config, $config->getLogger());
     }
 
-    public function testErrorResponse()
+    public function testResponseException()
     {
-        $errs = $this->handler;
-        $thrownMess = 'test_message';
+        $ERROR_TEXT = 'Custom error has occured.';
+        $handler = $this->handler;
+        $safe = (new SafeCall($handler, function(string $txt) {
+            throw new MyCustomException($txt);
+            return true;
+        }))->setArguments($ERROR_TEXT);
 
-        $errs->handle(function($mess) {
-            throw new MyCustomError($mess);
-        }, $thrownMess);
-        $this->assertNotEquals(0, count($errs));
-        $this->assertEquals(true, $errs->has(get_class(new MyCustomError('d'))));
-        $this->assertEquals($thrownMess, $errs->getFirst()->getMessage());
-        $this->assertEquals(500, $errs->getFirst()->getCode());
-        $this->assertEquals('MY_CUSTOM', $errs->getFirst()->getErrorCode());
+        $this->assertNotEquals(true, $safe->call());
+        $this->assertNotEquals(0, count($handler));
+        $this->assertEquals(true, $handler->has(get_class(new MyCustomException('t'))));
+        $this->assertEquals($ERROR_TEXT, $handler->getFirst()->getMessage());
+        $this->assertEquals(500, $handler->getFirst()->getCode());
+        $this->assertEquals('MY_CUSTOM', $handler->getFirst()->getErrorCode());
+        $this->assertEquals(true, $handler->clear()->isEmpty());
     }
 }

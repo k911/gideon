@@ -7,7 +7,7 @@ use Gideon\Handler\Config;
 use Gideon\Handler\Group\ArrayGroup;
 use Gideon\Http\Request;
 
-class RoutesTest extends TestCase 
+class RoutesTest extends TestCase
 {
     private $config;
     private $routers;
@@ -24,7 +24,12 @@ class RoutesTest extends TestCase
             $this->assertEquals(true, $router instanceof Gideon\Router);
 
         $this->routers = $routers;
-    } 
+    }
+
+    /**public function testRouteAddidtion()
+    {
+
+    }*/
 
     public function testSimpleAddRoutes()
     {
@@ -52,7 +57,7 @@ class RoutesTest extends TestCase
                 $this->assertEquals([$id, $any, $false_numeric], $route->map($matching_req));
 
                 // must match to request
-                $regex = $route->regex($this->config->get('ROUTER_REPLACEMENTS_DEFAULT'));
+                $regex = $route->toPattern($this->config->get('ROUTER_REPLACEMENTS_DEFAULT'));
                 $this->assertSame(1, preg_match('~^' . $regex . '$~', $uri));
             }
         }
