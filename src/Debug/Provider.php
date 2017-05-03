@@ -1,8 +1,11 @@
 <?php
 namespace Gideon\Debug;
 
+use ReflectionClass;
 use Gideon\Debug;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
+use Gideon\Handler\Error as ErrorHandler;
+use Gideon\Exception\Fatal;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -22,6 +25,11 @@ abstract class Provider implements Debug
      * @var Gideon\Debug\Logger $Logger
      */
     protected static $Logger;
+
+    /**
+     * @var Gideon\Handler\ErrorHandler $ErrorHandler
+     */
+    protected static $ErrorHandler;
 
     /**
      * Gets array of dependecies used to show in function getDebugDetails
@@ -64,29 +72,57 @@ abstract class Provider implements Debug
      */
     public function getLogger(): LoggerInterface
     {
-        $className = isset($this) ? get_class($this) : get_called_class();
-        return self::$Logger->withPrefix($className);
+        if(!isset(self::$Logger))
+            throw new Fatal('Trying to access uninitialized logger');
+        return self::$Logger->withPrefix(isset($this) ? (new ReflectionClass($this))->getShortName() : get_called_class());
+    }
+
+    /**
+     * Gets error handler instance
+     * @return Gideon\Handler\ErrorHandler
+     */
+    public static function getErrorHandler(): ErrorHandler
+    {
+        if(!isset(self::$Logger))
+            throw new Fatal('Trying to access uninitialized error handler');
+        return self::$ErrorHandler;
+    }
+
+    private static function setUpLogger(Config $config): Logger
+    {
+        $logfile = $config->get('LOGGER_FILE');
+        $clear = $config->get('LOGGER_RESET_LOG') === true;
+
+        // Create logger
+        $logger = new Logger($logfile);
+
+        // Clear logfile if wanted
+        if ($clear) {
+            $logger->clear()->withPrefix('Debug\Provider')->info('Reset');
+        }
+
+        return $logger;
+    }
+
+    private static function setUpErrorHandler(Config $config, Logger $logger): ErrorHandler
+    {
+        // Create Error Handler instance
+        $errorHandler = new ErrorHandler($config, $logger);
+        $errorHandler->fullErrorHandling();
+        return $errorHandler;
     }
 
     /**
      * Intialize Gideon\Debug\Logger object
-     * @param Gideon\Handler\Config $config
+     * @param Gideon\Application\Config $config
      * @return bool success
      */
-    public static function initLogger(Config $config): bool
+    public static function initDebugProvider(Config $config): bool
     {
-        if (!isset(self::$Logger)) {
-            $logfile = $config->get('LOGGER_FILE');
-            $clear = $config->get('LOGGER_RESET_LOG') === true;
+        if (!isset(self::$Logger) || !isset(self::$ErrorHandler)) {
 
-            // Create logger
-            $logger = (new Logger($logfile))->withPrefix('Debug\Provider');
-
-            // Clear logfile if wanted
-            if ($clear) {
-                $logger->clear()->info('Reset');
-            }
-            self::$Logger = $logger;
+            self::$Logger = $logger = self::setUpLogger($config);
+            self::$ErrorHandler = self::setUpErrorHandler($config, $logger);
         }
         return true;
     }

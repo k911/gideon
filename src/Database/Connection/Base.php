@@ -4,7 +4,7 @@ namespace Gideon\Database\Connection;
 use PDO;
 use PDOException;
 use Gideon\Debug\Provider as Debug;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Database\Connection;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Handler\Call\SafeCall;
@@ -99,7 +99,7 @@ abstract class Base extends Debug implements Connection
 
     /**
      * Concatenate provided $options with default settings from $config
-     * @param \Gideon\Handler\Config $config
+     * @param \Gideon\Application\Config $config
      * @param array $options
      * @return array
      */
@@ -107,7 +107,7 @@ abstract class Base extends Debug implements Connection
 
     /**
      * Initialize PDO settings and Database credentials
-     * @param \Gideon\Handler\Config $config
+     * @param \Gideon\Application\Config $config
      * @param array                 $settings
      */
     public function __construct(Config $config, array $options = null)

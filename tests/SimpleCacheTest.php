@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Cache\SimpleCache;
 
 class Foo11

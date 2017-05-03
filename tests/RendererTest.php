@@ -1,8 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Handler\Config;
-use Gideon\Handler\Locale;
+use Gideon\Handler\Error as ErrorHandler;
+use Gideon\Application\Config;
+use Gideon\Application\Locale;
 use Gideon\Renderer;
 use Gideon\Http\Response;
 use Gideon\Debug\Provider as Debug;
@@ -12,12 +13,14 @@ final class RendererTest extends TestCase
     private $config;
     private $locale;
     private $renderer;
+    private $errorHandler;
 
     public function setUp()
     {
-        $this->config = new Config('test');
+        $this->config = $config = new Config('test');
         $this->locale = new Locale($this->config);
         $this->renderer = new Renderer($this->config, $this->locale);
+        $this->errorHandler = new ErrorHandler($config, $config->getLogger());
     }
 
     public function testRenderer()
@@ -67,8 +70,9 @@ EOT;
         $this->assertEquals($this->config->get('RESPONSE_TYPE_DEFAULT'), $response->type);
 
         ob_start();
-        $this->renderer->render(false);
+        $this->renderer->render($this->errorHandler, false);
         $output = ob_get_clean();
+        $this->assertEquals(true, $this->errorHandler->isEmpty());
         $this->assertEquals($alredy_parsed, $output);
 
         // Test object with specified output
@@ -76,8 +80,9 @@ EOT;
         $type = 'text/html';
         $response->setType('text/html');
         ob_start();
-        $this->renderer->render(false);
+        $this->renderer->render($this->errorHandler, false);
         $output = ob_get_clean();
+        $this->assertEquals(true, $this->errorHandler->isEmpty());
         $this->assertEquals("<pre>$alredy_parsed</pre>", $output);
     }
 
@@ -97,8 +102,9 @@ EOT;
 
         // Render bare object
         ob_start();
-        $this->renderer->render(false);
+        $this->renderer->render($this->errorHandler, false);
         $output = ob_get_clean();
+        $this->assertEquals(true, $this->errorHandler->isEmpty());
         $this->assertNotEquals(true, empty($output));
         $this->assertEquals(json_encode($obj), $output);
 
@@ -110,9 +116,10 @@ EOT;
 
         // Render with overriden params
         ob_start();
-        $this->renderer->render(false);
+        $this->renderer->render($this->errorHandler, false);
         $output = ob_get_clean();
 
+        $this->assertEquals(true, $this->errorHandler->isEmpty());
         $this->assertEquals($string, $response->params['string']);
         $this->assertEquals($test, $response->params['test']);
         $this->assertNotEquals(true, empty($output));

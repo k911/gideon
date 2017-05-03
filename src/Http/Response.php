@@ -3,8 +3,8 @@
 namespace Gideon\Http;
 
 use stdClass;
-use Gideon\Handler\Config;
-use Gideon\Handler\Locale;
+use Gideon\Application\Config;
+use Gideon\Application\Locale;
 
 interface Response
 {
@@ -45,14 +45,14 @@ interface Response
 
     /**
      * Verifies propeties with configs and fixes them if possible
-     * @param \Gideon\Handler\Config $config
+     * @param \Gideon\Application\Config $config
      */
     public function setup(Config $config);
 
     /**
      * Rendering method; outputs ready response to main buffer
-     * @param \Gideon\Handler\Config $config
-     * @param \Gideon\Handler\Locale $locale
+     * @param \Gideon\Application\Config $config
+     * @param \Gideon\Application\Locale $locale
      * @param stdClass $document general informations provided by application (not from controller)
      */
     public function render(Config $config, Locale $locale = null, stdClass $document = null);

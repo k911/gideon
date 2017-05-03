@@ -9,8 +9,8 @@ use Gideon\Debug\Logger;
 use Gideon\Controller;
 use Gideon\Controller\Error as ErrorController;
 use Gideon\Handler\Call\SafeCall;
-use Gideon\Handler\Config;
-use Gideon\Handler\Locale;
+use Gideon\Application\Config;
+use Gideon\Application\Locale;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Http\Request;
 use Gideon\Http\Response;
@@ -25,12 +25,12 @@ abstract class Base implements Controller
      */
 
     /**
-     * @var \Gideon\Handler\Config $config
+     * @var \Gideon\Application\Config $config
      */
     protected $config;
 
     /**
-     * @var \Gideon\Handler\Locale $locale
+     * @var \Gideon\Application\Locale $locale
      */
     protected $locale;
 

@@ -4,7 +4,7 @@
 // use PHPUnit\Framework\TestCase;
 // use Gideon\Debug\Provider;
 // use Gideon\Debug\Logger;
-// use Gideon\Handler\Config;
+// use Gideon\Application\Config;
 
 // final class TestLogProvider extends Provider 
 // {
@@ -49,7 +49,7 @@
 //             unlink($testfile);
 
 //         $this->config->extend(['LOGGER_FILE' => $testfile]);
-//         $this->assertEquals(true, TestLogProvider::initLogger($this->config));
+//         $this->assertEquals(true, TestLogProvider::initDebugProvider($this->config));
 //         $this->assertEquals(true, file_exists($testfile));
 //         $this->assertNotEquals('', file_get_contents($testfile));
 //         return $testfile;
@@ -82,7 +82,7 @@
 //         // Saving some values into clear log
 //         if(file_exists($testfile))
 //             unlink($testfile);
-//         $this->assertEquals(true, TestLogProvider::initLogger($this->config));
+//         $this->assertEquals(true, TestLogProvider::initDebugProvider($this->config));
 //         TestLogProvider::getLogger()->error('something more');
 //         TestLogProvider::getLogger()->error(new Error('test'));
 //         TestLogProvider::getLogger()->error(['something more', 'yes']);
@@ -91,7 +91,7 @@
 //         // Testing that previous values will be keeped when initialized again without reset
 //         TestLogProvider::delete();
 //         $this->assertEquals(false, TestLogProvider::isset());
-//         $this->assertEquals(true, TestLogProvider::initLogger($this->config));
+//         $this->assertEquals(true, TestLogProvider::initDebugProvider($this->config));
 //         TestLogProvider::getLogger()->error('X');
 //         $size2 = strlen(file_get_contents($testfile));
 //         $this->assertGreaterThan($size1, $size2);
@@ -100,7 +100,7 @@
 //         TestLogProvider::delete();
 //         $this->assertEquals(false, TestLogProvider::isset());
 //         $this->config->extend(['LOGGER_RESET_LOG' => true]);
-//         $this->assertEquals(true, TestLogProvider::initLogger($this->config));
+//         $this->assertEquals(true, TestLogProvider::initDebugProvider($this->config));
 //         $this->assertEquals(true, file_exists($testfile));
 //         $size3 = strlen(file_get_contents($testfile));
 //         $this->assertGreaterThan($size3, $size1);

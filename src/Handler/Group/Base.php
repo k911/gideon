@@ -8,6 +8,9 @@ use Gideon\Handler\Group;
 
 abstract class Base extends Debug implements Group
 {
+    /**
+     * @var mixed[] $items
+     */
     protected $items;
 
     /**
@@ -32,11 +35,10 @@ abstract class Base extends Debug implements Group
     public function addMultiple(iterable $items): Group
     {
         foreach ($items as $item) {
-            if ($this->verify($item)) {
-                $this->items[] = $item;
-            } else {
+            if (!$this->verify($item)) {
                 throw new InvalidArgumentException("Provided item for addition is invalid.");
             }
+            $this->items[] = $item;
         }
         return $this;
     }
@@ -46,13 +48,13 @@ abstract class Base extends Debug implements Group
         $results = [];
         $args = is_null($arguments);
         foreach ($this->items as $obj) {
-            if (method_exists($obj, $name)) {
-                $results[] = ($args) ?
-                    call_user_func([$obj, $name]) :
-                    call_user_func_array([$obj, $name], $arguments);
-            } else {
+            if (!method_exists($obj, $name)) {
                 throw new InvalidArgumentException("Couldn't call: " . get_class($obj) . "->$name(). Method doesn't exists.");
             }
+
+            $results[] = ($args) ?
+                call_user_func([$obj, $name]) :
+                call_user_func_array([$obj, $name], $arguments);
         }
         return $results;
     }

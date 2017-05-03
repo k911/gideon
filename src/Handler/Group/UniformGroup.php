@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Gideon\Handler\Group;
 
+use ReflectionClass;
+use Gideon\Exception\Warning;
+
 /**
  * Group accepting only instances of specific objects
  */
@@ -24,8 +27,8 @@ class UniformGroup extends Base
         // Log
         if (!$r) {
             $strict_txt = ($this->strict) ? "ON" : "OFF";
-            $class_name = get_class($item);
-            $this->getLogger()->warning("Object `$class_name` is not compatible uniform for `{$this->uniform}`. Strict mode $strict_txt.");
+            $class_name = (new ReflectionClass($item))->getShortName();
+            $this->getErrorHandler()->log(new Warning("Object `$class_name` is not compatible uniform for `{$this->uniform}`. Strict mode $strict_txt."));
         }
         return $r;
     }

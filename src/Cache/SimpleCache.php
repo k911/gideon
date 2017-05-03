@@ -2,7 +2,7 @@
 namespace Gideon\Cache;
 
 use Gideon\Exception\IOException;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Psr\SimpleCache\CacheInterface;
 
 /**
