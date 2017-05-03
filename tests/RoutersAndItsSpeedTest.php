@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use Gideon\Router;
 use Gideon\Http\Request;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Group\MixedGroup;
 use Gideon\Handler\Group\UniformGroup;

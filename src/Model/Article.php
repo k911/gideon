@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Gideon\Model;
 
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Database\Connection\MySQL;
 

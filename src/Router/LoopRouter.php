@@ -2,7 +2,7 @@
 namespace Gideon\Router;
 
 use Gideon\Http\Request;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Router\Route\EmptyRoute;
 
 class LoopRouter extends Base

@@ -1,7 +1,8 @@
 <?php
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Handler\Group\MixedGroup;
 use Gideon\Handler\Group\UniformGroup;
 use Gideon\Handler\Group\AsyncGroup;
@@ -29,7 +30,7 @@ final class GroupTest extends TestCase
 {
     private $config;
 
-    public function __construct()
+    public function setUp()
     {
         $this->config = new Config('test');
     }

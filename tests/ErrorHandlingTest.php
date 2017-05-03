@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Http\ResponseException;
 use Gideon\Handler\Call\SafeCall;

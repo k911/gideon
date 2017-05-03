@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Database\Connection;
 use Gideon\Debug\Provider as Debug;

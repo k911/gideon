@@ -6,8 +6,8 @@ use ReflectionClass;
 use Gideon\Exception\InvalidArgumentException;
 use Gideon\Application\SystemFailure;
 use Gideon\Debug\Provider as Debug;
-use Gideon\Handler\Config;
-use Gideon\Handler\Locale;
+use Gideon\Application\Config;
+use Gideon\Application\Locale;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Handler\Call\SafeCall;
 use Gideon\Http\Request;
@@ -30,12 +30,12 @@ class Application extends Debug
     protected $connection;
 
     /**
-     * @var \Gideon\Handler\Config $config
+     * @var \Gideon\Application\Config $config
      */
     protected $config;
 
     /**
-     * @var \Gideon\Handler\Locale $locale
+     * @var \Gideon\Application\Locale $locale
      */
     protected $locale;
 

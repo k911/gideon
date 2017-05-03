@@ -10,7 +10,7 @@ use ArrayIterator;
 use Traversable;
 use Gideon\Exception\InvalidArgumentException;
 use Gideon\Debug\Provider as Debug;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Http\Request\Params;
 
 class Request extends Debug implements

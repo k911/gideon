@@ -14,7 +14,7 @@ use Gideon\Exception\Fatal;
 use Gideon\Exception\Unknown;
 use Gideon\Exception\ErrorException;
 use Gideon\Http\ResponseException;
-use Gideon\Handler\Config;
+use Gideon\Application\Config;
 use Gideon\Debug\Logger;
 use Psr\Log\LogLevel;
 
@@ -62,11 +62,6 @@ final class Error implements Countable
             }
         }
         return $traces;
-    }
-
-    protected function normalizeMessage(string $message): string
-    {
-        return preg_replace("~class\@anonymous[^\s\'\"\,]*~", 'class@anonymous', $message);
     }
 
     public function fullErrorHandling(): self
@@ -143,7 +138,7 @@ final class Error implements Countable
 
         $this->logger
             ->withPrefix('')
-            ->log($context['loglevel'] ?? 'error', $message, $context);
+            ->log($context['logLevel'] ?? 'error', $message, $context);
     }
 
     /**
@@ -156,7 +151,7 @@ final class Error implements Countable
         $transofrmed = [
             'type' => (new ReflectionClass($err))->getShortName(),
             'code' => $err->getCode(),
-            'message' => $this->normalizeMessage($err->getMessage()),
+            'message' => $err->getMessage(),
             'line' => $err->getLine(),
             'file' => $this->normalizePath($err->getFile()),
             'traces' => $this->normalizeTraces($err->getTrace())
