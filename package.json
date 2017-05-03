@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test": "vendor\\bin\\phpunit",
-    "lint": "phplint src/**/*.php tests/**/*.php"
+    "lint": "phplint src/**/*.php tests/**/*.php",
+    "doc": "vendor\\bin\\phpdoc"
   },
   "repository": {
     "type": "git",
