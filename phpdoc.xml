@@ -7,10 +7,7 @@
     <target>./doc</target>
   </transformer>
   <files>
-    <directory>./application/core</directory>
+    <directory>./src</directory>
     <directory>./vendor/psr</directory>
-    <ignore>./vendor/*</ignore>
-    <ignore>./application/config/*</ignore>
-    <ignore>./ref/*</ignore>
   </files>
 </phpdoc>
