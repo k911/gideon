@@ -10,28 +10,29 @@ use Gideon\Http\NotFoundException;
 
 class Error extends Base
 {
-    public function router(ErrorHandler $handler, array $arguments = null): Response
+    public function router(ErrorHandler $handler): Response
     {
-        throw new Exception();
-        if(($err = $handler->getFirst()) instanceof NotFoundException)
+        [$i, $error] = $handler->findOne('Gideon\Http\NotFoundException');
+        if(isset($error))
         {
-            $handler->pop();
-            return (new Response\Text("{{PARAM_MESSAGE}}\n ..with arguments: {{PARAM_ARGS}}"))
+            $handler->pop($i);
+            $params = json_encode($this->params->getAll(), JSON_PRETTY_PRINT);
+            return (new Response\Text("{{PARAM_MESSAGE}}\n ..with data: {{PARAM_ARGS}}"))
                 ->setCode(404)
-                ->bindParam('MESSAGE', $err->getMessage())
-                ->bindParam('ARGS', json_encode($arguments ?? [], JSON_PRETTY_PRINT));
+                ->bindParam('MESSAGE', $error->getMessage())
+                ->bindParam('ARGS', $params);
         }
     }
 
-    public function controller(ErrorHandler $handler, Controller $controller): Response
+    public function controller(ErrorHandler $handler, Controller $controller, string $action): Response
     {
         $html = '';
-        foreach($handler->getAll() as $error)
+        foreach($handler->findAll() as $i => $error)
         {
-            $html .= "<table>{$error->xdebug_message}</table>";
+            $html .= "<table>{$error->xdebug_message}</table><br />";
         }
 
-        $response = new Response\Text("Executing {{PARAM_CONTROLLER}}->{{PARAM_ACTION}} resulted in errors:\n{{PARAM_ERRORS_HTML}}");
+        $response = new Response\Text("<p><h2>Executing `{{PARAM_CONTROLLER}}->{{PARAM_ACTION}}` resulted in errors:</h2></p>{{PARAM_ERRORS_HTML}}");
         $response->setCode(500);
         $response->setType('text/html');
         $response->bindParams([
@@ -45,12 +46,12 @@ class Error extends Base
     public function failure(ErrorHandler $handler): Response
     {
         $html = '';
-        foreach($handler->getAll() as $error)
+        foreach($handler->findAll() as $i => $error)
         {
-            $html .= "<table>{$error->xdebug_message}</table>";
+            $html .= "<table>{$error->xdebug_message}</table><br />";
         }
 
-        $response = new Response\Text("Complete failure errors:\n{{PARAM_ERRORS_HTML}}");
+        $response = new Response\Text("<p><h2>Complete failure errors:</h2></p>{{PARAM_ERRORS_HTML}}");
         $response->setCode(500);
         $response->setType('text/html');
         $response->bindParam('ERRORS_HTML', $html);
@@ -60,15 +61,20 @@ class Error extends Base
 
     public function unhandled(ErrorHandler $handler, Response $response): Response
     {
-        $errors = $handler->getAllTransformed();
         if($response instanceof Response\Text)
         {
-            $txt = json_encode($errors, JSON_PRETTY_PRINT);
-            $responseException = (new Response\Text("Some errors has not been handled properly:\n{{PARAM_ERRORS}}"))
-                ->bindParam('ERRORS', $txt)
-                ->setCode(500);
-            return $response->mergeWith($responseException);
+            $html = '';
+            foreach($handler->findAll() as $i => $error)
+            {
+                $html .= "<table>{$error->xdebug_message}</table><br />";
+            }
+            $response = $response->mergeWith((new Response\Text("<p><h2>Some errors has not been handled properly:</h2></p>{{PARAM_ERRORS}}"))
+                ->bindParam('ERRORS', $html)
+                ->setType('text/html'));
+
+            $handler->clear();
         }
+
         return $response->setCode(500);
     }
 }

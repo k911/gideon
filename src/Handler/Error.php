@@ -205,25 +205,50 @@ final class Error implements Countable
         } while ($err = $err->getPrevious());
     }
 
-    public function clear()
+    public function clear(): self
     {
         $this->errors = [];
         return $this;
     }
 
-    public function getAll(): array
+    /**
+     * @return Throwable[]
+     */
+    public function findAll(string $instance = null): array
     {
-        return $this->errors;
+        if(is_null($instance))
+            return $this->errors;
+
+        $ret = [];
+        foreach($this->errors as $i => $error)
+        {
+            if($error instanceof $instance)
+                $ret[$i] = $error;
+        }
+        return $ret;
     }
 
-    public function getFirst(): Throwable
+    /**
+     * @return Throwable[]
+     */
+    public function findOne(string $instance = null): array
     {
-        return $this->errors[0];
+        if(is_null($instance))
+            return $this->errors[0];
+
+        foreach($this->errors as $i => $error)
+        {
+            if($error instanceof $instance)
+            {
+                return [$i, $error];
+            }
+        }
     }
 
-    public function pop()
+    public function pop(int $i = null): self
     {
-        unset($this->errors[0]);
+        unset($this->errors[$i ?? 0]);
+        return $this;
     }
 
     /**
