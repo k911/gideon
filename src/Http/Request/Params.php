@@ -61,6 +61,11 @@ class Params extends Debug implements Countable
         return count($this->data);
     }
 
+    public function getAll(): array
+    {
+        return $this->data;
+    }
+
     /**
      * @override
      */
