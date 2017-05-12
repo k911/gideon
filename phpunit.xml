@@ -20,6 +20,7 @@
   <whitelist processUncoveredFilesFromWhitelist="true">
     <directory suffix=".php">./src/</directory>
     <exclude>
+      <directory suffix=".php">./config/</directory>
       <directory suffix=".php">./src/Handler/Group/AsyncGroup/</directory>
       <file>./src/Handler/Group/AsyncGroup.php</file>
     </exclude>
