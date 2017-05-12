@@ -16,3 +16,5 @@ composer.phar
 /htdocs
 /ref
 /vendor
+codeclimate.json
+send-cc

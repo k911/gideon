@@ -229,12 +229,12 @@ final class Error implements Countable
     }
 
     /**
-     * @return Throwable[]
+     * @return [int, Throwable]
      */
     public function findOne(string $instance = null): array
     {
         if(is_null($instance))
-            return $this->errors[0];
+            return [0, $this->errors[0]];
 
         foreach($this->errors as $i => $error)
         {

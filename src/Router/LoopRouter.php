@@ -9,7 +9,7 @@ class LoopRouter extends Base
 {
 
     /**
-     * @var bool[] $prepared methods
+     * @var bool[] $prepared methods that are ready to dispatch
      */
     private $prepared;
 
