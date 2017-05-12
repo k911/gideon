@@ -3,6 +3,7 @@ namespace Gideon\Application;
 
 use Gideon\Debug;
 use Gideon\Exception\IOException;
+use Gideon\Application\SystemFailure;
 
 /**
  * Config keys used:
@@ -77,7 +78,7 @@ class Config extends Debug\Provider
      * echo $config('TEXT_TEST');
      *
      * @param array $keys array of arguments $keys => [$arg1, $arg2, $arg3]
-     * @return mixed null, string or string[]
+     * @return mixed|null
      */
     public function __invoke(...$keys)
     {
@@ -138,8 +139,9 @@ class Config extends Debug\Provider
 
         // Enable debug on everything
         if ($this->get('LOGGER_INIT_DEFAULT') === true) {
-            Debug\Provider::initDebugProvider($this);
-                // TODO: initLogger should throw exception
+            if (!Debug\Provider::initDebugProvider($this)) {
+                throw new SystemFailure('Logger cannot be intialized, therefore system is not debugable');
+            }
         }
     }
 

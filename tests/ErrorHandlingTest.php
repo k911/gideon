@@ -33,9 +33,12 @@ class ErrorHandlingTest extends TestCase
         $this->assertNotEquals(true, $safe->call());
         $this->assertNotEquals(0, count($handler));
         $this->assertEquals(true, $handler->has(get_class(new MyCustomException('t'))));
-        $this->assertEquals($ERROR_TEXT, $handler->getFirst()->getMessage());
-        $this->assertEquals(500, $handler->getFirst()->getCode());
-        $this->assertEquals('MY_CUSTOM', $handler->getFirst()->getErrorCode());
+        [$index, $err] = $handler->findOne();
+        $this->assertEquals(0, $index);
+        $this->assertEquals($ERROR_TEXT, $err->getMessage());
+        $this->assertEquals(500, $err->getCode());
+        $this->assertEquals('MY_CUSTOM', $err->getErrorCode());
+        $this->assertEquals($handler->findOne(), $handler->findOne('MyCustomException'));
         $this->assertEquals(true, $handler->clear()->isEmpty());
     }
 }

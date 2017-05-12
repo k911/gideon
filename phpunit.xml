@@ -12,8 +12,21 @@
         syntaxCheck="false"
         >
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory>./tests/</directory>
-        </testsuite>
+      <testsuite name="Application Test Suite">
+        <directory>./tests/</directory>
+      </testsuite>
     </testsuites>
+    <filter>
+  <whitelist processUncoveredFilesFromWhitelist="true">
+    <directory suffix=".php">./src/</directory>
+    <exclude>
+      <directory suffix=".php">./src/Handler/Group/AsyncGroup/</directory>
+      <file>./src/Handler/Group/AsyncGroup.php</file>
+    </exclude>
+  </whitelist>
+  </filter>
+    <logging>
+        <log type="coverage-clover" target="application/log/tests/clover.xml"/>
+        <log type="coverage-php" target="application/log/tests/coverage.serialized"/>
+    </logging>
 </phpunit>

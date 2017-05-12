@@ -13,15 +13,32 @@ class FastRouter extends Base
 {
 
     /**
-     * @var FastRouter\RegexRoute[] $maps key => HTTP_METHOD, values => map of FastRouter\RegexRoute for dispatcher
-     * @var string[]                $chunks key => HTTP_METHOD, values => chunks containing string regexes for fast dispatcher
-     * @var int                     $max number of chunks in HTTP_METHOD that router can create
+     * Map for chunks to provide route object from unique index number
+     * Array<string(name of the http method), FastRouter\RegexRoute[]>
+     * Chunks and maps for one method are bound by array indexes
+     * @var array
      */
     private $maps;
-    private $chunks;
+
+    /**
+     * Max number of chunks for one supported http method
+     * @var int
+     */
     private $max;
 
-    private function computeChunkSize(string $method)
+    /**
+     * Array<string(name of the http method), array(of regex string chunks covering some routes)>
+     * Chunks and maps for one method are bound by array indexes
+     * @var array
+     */
+    private $chunks;
+
+    /**
+     * Computes how many routes one chunk should cover
+     * @param string $method name of http method
+     * @return int
+     */
+    private function computeChunkSize(string $method): int
     {
         $elements = count($this->routes[$method]);
         $chunks = round($elements / $this->max);
