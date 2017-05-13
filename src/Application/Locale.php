@@ -1,10 +1,7 @@
 <?php
 namespace Gideon\Application;
 
-use Error;
-use Gideon\Debug\Provider as Debug;
-use Gideon\Application\Config;
-use Gideon\Exception\IOException;
+use Gideon\Handler\Container\FileContainer;
 
 /**
  * Config keys used:
@@ -12,20 +9,24 @@ use Gideon\Exception\IOException;
  * - LOCALE_DEFAULT
  * - LOCALE_PATH
  */
-class Locale extends Debug
+class Locale extends FileContainer
 {
     /**
-     * @var string PATTERN regex pattern of the langauge file (eg. 'en_EN')
-     * @var string[] $data array consisting all the language strings (completed with default ones if not found all)
-     * @var string $language is the current langauge in PATTERN style
+     * Regex pattern for locale name
+     * @var string
      */
     const PATTERN = '[a-z]{2}_[A-Z]{2}';
-    private $data;
-    private $extended = false;
-    private $language;
 
     /**
-     * @var string $localeDefault default langauge name e.g. 'en_EN'
+     * Name of active locale, it must pass validateLocale() validation
+     * @var string
+     */
+    private $localeActive;
+
+    /**
+     * Base locale name, values from there are imported
+     * whenever active locale doesnt have proper key
+     * @var string
      */
     private $localeDefault;
 
@@ -35,144 +36,158 @@ class Locale extends Debug
     private $localePath;
 
     /**
-     * @var string $sid
+     * Name of session used to maintain active locale
+     * @var string
      */
-    private $sid;
+    private $localeSid;
 
-    private function saveLanguage(string $name)
+    /**
+     * Indicates whether function importUniqueDefaults() was executed
+     * @var boolean
+     */
+    private $importedUniqueDefaults = false;
+
+    /**
+     * Indicates whether container data can be extended by default values
+     * @return bool
+     */
+    public function isImportPossible(): bool
     {
-        $_SESSION[$this->sid] = $this->language = $name;
-    }
-
-    private function loadLanguage(): string
-    {
-        return $_SESSION[$this->sid] ?? $this->localeDefault;
-    }
-
-    private function importUniqueDefault()
-    {
-        $file = $this->localePath . $this->localeDefault. '.php';
-
-        if(!file_exists($file))
-        {
-            throw new IOException("Can't find default locale `{$this->localeDefault}` file.", $file);
-        }
-
-        $origins = require $file;
-        $i = 0;
-        foreach($origins as $key => $value)
-        {
-            if(!isset($this->data[$key]))
-            {
-                ++$i;
-                $this->data[$key] = $value;
-            }
-        }
-
-        $this->getLogger()->debug("Imported $i unique values from default locale `{$this->localeDefault}`.");
-        $this->extended = true;
-    }
-
-    public function setLanguage(string $name)
-    {
-        $pattern = '/^' . self::PATTERN . '$/';
-        if(!preg_match($pattern, $name))
-            throw new Error("String: $name doesn't match Locale::PATTERN");
-
-        $file = $this->localePath. $name . '.php';
-        if(!file_exists($file))
-        {
-            if($name != $this->localeDefault)
-            {
-                $this->getLogger()->warning("Language: $name doesn't exists. Setting defualt.");
-                return $this->setLanguage($this->localeDefault);
-            }
-            else throw new Error("Default locale '$name' is not set in config file.");
-        }
-
-        $this->data = require $file;
-        $this->saveLanguage($name);
-    }
-
-    public function getLanguage()
-    {
-        return $this->language;
-    }
-
-    public function get(string $key)
-    {
-        if(!isset($this->data[$key]))
-        {
-            if(!$this->extended)
-            {
-                $this->importUniqueDefault();
-                $key = $this->get($key);
-            }
-            else $this->getLogger()->warning('Locale: "' . $this->language . '" doesn\'t recognize key: "' . $key . '".');
-        }
-        else $key = $this->data[$key];
-        return $key;
+        return !$this->importedUniqueDefaults && $this->localeActive !== $this->localeDefault;
     }
 
     /**
-     * Example usage:
-     * $locale = new Locale(...);
-     * echo $locale('TEXT_TEST');
-     *
-     * @param array $keys array of arguments $keys => [$arg1, $arg2, $arg3]
-     * @return mixed null, string or string[]
+     * Check wheter given locale is valid with locale pattern
+     * @param string $locale
+     * @return bool
      */
-    public function __invoke(...$keys)
+    public function validateLocale(string $locale): bool
     {
-        $count = count($keys);
-        if($count === 1 && is_string($keys[0]))
-            return $this->get($keys[0]);
-        elseif ($count > 1)
-        {
-            $result = [];
-            foreach($keys as $key)
-            {
-                if(is_string($key))
-                {
-                    $result[] = $this->get($key);
-                }
-            }
-            return $result;
-        }
-    }
-    public function __get(string $key)
-    {
-        return $this->get($key);
+        return preg_match('~^' . self::PATTERN . '$~', $locale) === 1;
     }
 
+    /**
+     * @override
+     */
+    protected function createPathFromName(string $locale): string
+    {
+        return $this->localePath . "$locale.php";
+    }
+
+    /**
+     * Saves active langague to set session
+     * @return self
+     */
+    public function setSession(): self
+    {
+        $_SESSION[$this->localeSid] = $this->localeActive;
+    }
+
+    /**
+     * Gets value from session
+     * @return string|null
+     */
+    public function getSession(): ?string
+    {
+        return $_SESSION[$this->localeSid] ?? null;
+    }
+
+    /**
+     * Performs update of object and session
+     * @param string $locale
+     * @return self
+     */
+    public function setLocale(string $locale)
+    {
+        if ($this->localeActive !== $locale) {
+            if (!$this->validateLocale($locale)) {
+                $this->getLogger()->warning("Locale `$locale` is not valid. Setting default.");
+                $locale = $this->localeDefault;
+            }
+
+            $this->data = $this->loadFromFile($locale);
+            $this->localeActive = $locale;
+        }
+        return $this;
+    }
+
+    /**
+     * Returns active locale
+     * @return string
+     */
+    public function getLocale(): string
+    {
+        return $this->localeActive ?? $this->localeDefault;
+    }
+
+    /**
+     * Performs an import form default locale file
+     * to extension, without overriding already set values
+     * @return this
+     */
+    private function importUniqueDefaults(): self
+    {
+        if ($this->isImportPossible()) {
+            $uniques = $this->loadFromFile($this->localeDefault);
+            $uniques = array_filter($uniques, function ($key) {
+                return !$this->has($key);
+            }, ARRAY_FILTER_USE_KEY);
+            $this->extend($uniques);
+            $this->importedUniqueDefaults = true;
+            $this->getLogger()->info('Performend import of default locale unique values ('. count($uniques) . ')');
+        }
+        return $this;
+    }
+
+    /**
+     * Gets value from container by given key
+     * @override
+     * @param string $key
+     * @return mixed|null
+     */
+    public function findOne(string $key)
+    {
+        $result = parent::findOne($key);
+        if (is_null($result) && $this->isImportPossible()) {
+            $this->importUniqueDefaults();
+            $result = parent::findOne($key);
+        }
+        return $result;
+    }
+
+    /**
+     * Checks wheter value exists in container
+     * @override
+     * @param string $key
+     * @return bool
+     */
     public function has(string $key): bool
     {
-        if(!isset($this->data[$key]))
-        {
-            if(!$this->extended)
-            {
-                $this->importUniqueDefault();
-                return isset($this->data[$key]);
-            }
-            return false;
+        $result = parent::has($key);
+        if (is_null($result) && $this->isImportPossible()) {
+            $this->importUniqueDefaults();
+            $result = parent::findOne($key);
         }
-        return true;
+        return $result;
     }
 
-    public function __isset(string $key): bool
+    /**
+     * Alias to function findOne()
+     * @param string $key
+     * @return mixed
+     */
+    public function get(string $key)
     {
-        return $this->has($key);
+        return $this->findOne($key);
     }
 
-    public function __construct(Config $config, string $language = null)
+    public function __construct(Config $config, string $locale = null)
     {
         $this->localeDefault = $config->get('LOCALE_DEFAULT');
         $this->localePath = $config->get('LOCALE_PATH');
-        $this->sid = $config->get('LOCALE_SESSION_ID');
+        $this->localeSid = $config->get('LOCALE_SESSION_ID');
 
-        if(is_null($language))
-            $language = $this->loadLanguage();
-        $this->setLanguage($language);
+        $this->setLocale($locale ?? $this->localeDefault);
     }
 
     /**
@@ -180,10 +195,14 @@ class Locale extends Debug
      */
     protected function getDebugProperties(): array
     {
-        return [
-            'data' => $this->data,
-            'extended' => $this->extended,
-            'langauge' => $this->language
-        ];
+        return array_merge(parent::getDebugProperties(),
+        [
+            'localeActive' => $this->localeActive,
+            'localeDefault' => $this->localeDefault,
+            'localePath' => $this->localePath,
+            'localeSid' => $this->localeSid,
+            'importedUniqueDefaults' => $this->importedUniqueDefaults,
+            '$_SESSION[localeSid]' => $_SESSION[$this->localeSid]
+        ]);
     }
 }
