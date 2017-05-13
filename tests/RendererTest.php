@@ -25,7 +25,7 @@ final class RendererTest extends TestCase
 
     public function testRenderer()
     {
-        $this->assertEquals($this->locale->getLanguage(), $this->renderer->LANG);
+        $this->assertEquals($this->locale->getLocale(), $this->renderer->LANG);
 
         $this->renderer->ISSET = 'yes';
         $this->assertEquals(true, isset($this->renderer->ISSET));
@@ -36,7 +36,7 @@ final class RendererTest extends TestCase
         $name = "a php object Tester";
         $country = "Testlandia";
         $status = $this->config->get('TEST_RENDERER_TEXT_CONFIG');
-        $lang = $this->locale->getLanguage();
+        $lang = $this->locale->getLocale();
 
         // Input for Response\Text
         $text = <<<EOT

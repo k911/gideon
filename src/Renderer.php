@@ -98,7 +98,7 @@ class Renderer extends Debug
         $this->document = new stdClass();
 
         if(isset($locale))
-            $this->document->LANG = $locale->getLanguage();
+            $this->document->LANG = $locale->getLocale();
     }
 
     public function __get($key)

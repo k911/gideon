@@ -73,7 +73,7 @@ class SimpleCache implements CacheInterface
         } elseif (!is_dir($path)) {
             throw new IOException('Not a directory', $path);
         } elseif ((fileperms($path) & 0777) != $dmode) {
-            if (!chmod($path)) {
+            if (!chmod($path, $dmode)) {
                 throw new IOException("Cannot set dir mode $dmode", $path);
             }
         }
