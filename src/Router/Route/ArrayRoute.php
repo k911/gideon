@@ -13,22 +13,24 @@ class ArrayRoute extends Base
 
     public function check(Param $param, string $value)
     {
-        if($param->volatile)
+        if ($param->volatile) {
             return ($param->regex) ? (preg_match('~^' . $param->value . '$~', $value) === 1)  : true;
+        }
 
         return $param->value === $value;
     }
 
     public function validate(Request $request): bool
     {
-        if($this->count() != $request->count())
+        if ($this->count() != $request->count()) {
             return false;
+        }
 
         $iterator = $request->getIterator();
-        foreach($iterator as $i => $value)
-        {
-            if(!$this->check($this->parameters[$i], $value))
+        foreach ($iterator as $i => $value) {
+            if (!$this->check($this->parameters[$i], $value)) {
                 return false;
+            }
         }
 
         return true;
@@ -37,8 +39,7 @@ class ArrayRoute extends Base
     public function toPattern(array $replacements): string
     {
         $trimmed = [];
-        foreach($this->parameters as $param)
-        {
+        foreach ($this->parameters as $param) {
             $trimmed[] = ($param->volatile) ?
                 '(' . ($param->regex ? $param->value : $replacements['any']) . ')' :
                 $param->value;
@@ -48,10 +49,8 @@ class ArrayRoute extends Base
 
     public function where(array $replacements): Route
     {
-        foreach($this->parameters as $param)
-        {
-            if($param->volatile && isset($replacements[$param->name]))
-            {
+        foreach ($this->parameters as $param) {
+            if ($param->volatile && isset($replacements[$param->name])) {
                  $param->value = $replacements[$param->name];
                  $param->regex = true;
             }

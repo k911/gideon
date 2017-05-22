@@ -13,20 +13,14 @@ class ArrayRouteParam extends Base
         $value = trim($value);
 
         // Determine variable basing if first character is ':'
-        if($this->volatile = (mb_substr($value, 0, 1) === ':'))
-        {
+        if ($this->volatile = (mb_substr($value, 0, 1) === ':')) {
              // Check for custom defined regex pattern
-            if($this->regex = (preg_match('/^:{.+}$/', $value)) === 1)
-            {
+            if ($this->regex = (preg_match('/^:{.+}$/', $value)) === 1) {
                 $this->value = trim(mb_substr($value, 2, -1));
-            }
-            else
-            {
+            } else {
                 $this->name = trim(mb_substr($value, 1));
             }
-        }
-        else
-        {
+        } else {
             $this->value = $value;
         }
     }

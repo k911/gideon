@@ -10,7 +10,7 @@ use ArrayIterator;
 use Traversable;
 use Gideon\Exception\InvalidArgumentException;
 use Gideon\Debug\Provider as Debug;
-use Gideon\Application\Config;
+use Gideon\Config;
 use Gideon\Http\Request\Params;
 
 class Request extends Debug implements
@@ -40,7 +40,7 @@ class Request extends Debug implements
 
     private function parseUri(Config $config, string $uri): array
     {
-        $uri = str_replace($config->get('ALIAS'), '', $uri);
+        $uri = str_replace($config->get('PUBLIC_HTML'), '', $uri);
         $uri = trim($uri, '/');
         $uri = filter_var($uri, FILTER_SANITIZE_URL);
         $uri = explode('/', $uri);

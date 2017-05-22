@@ -1,7 +1,11 @@
 <?php
-namespace Gideon\Application;
+declare(strict_types=1);
 
-use Gideon\Handler\Container\FileContainer;
+namespace Gideon\Locale;
+
+use Gideon\Locale;
+use Gideon\Config;
+use Gideon\Collection\FileLoader;
 
 /**
  * Config keys used:
@@ -9,7 +13,7 @@ use Gideon\Handler\Container\FileContainer;
  * - LOCALE_DEFAULT
  * - LOCALE_PATH
  */
-class Locale extends FileContainer
+class SimpleLocale extends FileLoader implements Locale
 {
     /**
      * Regex pattern for locale name

@@ -1,36 +1,31 @@
 <?php
 
-// Application directory
-$app = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'application') . DIRECTORY_SEPARATOR;
+// Root directory for application
+$root = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR;
 
-// Root directory
-$root = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+// Src directory is root directory of source code (used only for defaults configs/locales)
+$src = realpath(__DIR__ . '/../../') . DIRECTORY_SEPARATOR;
+$locale = $src . 'Locale' . DIRECTORY_SEPARATOR . 'defaults' . DIRECTORY_SEPARATOR;
 
-// Public directory root
-$htdocs = $root . 'htdocs' . DIRECTORY_SEPARATOR;
-
-// Site alias with ending '/' if not null
-$site_alias = 'comp/';
+// Application directory in public_html folder.
+// http(s)://domain.com/{$public_html}
+// e.g. for `localhost/gideon` => 'gideon/'
+// and for `localhost` => '' (no slash if in root public directory)
+$public_html = 'gideon/';
 
 // Useful pathes
+$htdocs = $root . 'htdocs' . DIRECTORY_SEPARATOR;
+$app = $root . 'application' . DIRECTORY_SEPARATOR;
 $log = $app . 'log' . DIRECTORY_SEPARATOR;
 $view = $app . 'view' . DIRECTORY_SEPARATOR;
 $cache = $app . 'cache' . DIRECTORY_SEPARATOR;
-$locale = $root . 'locale' . DIRECTORY_SEPARATOR;
 
 return
 [
     /**
      * Basic informations, paths, urls
-     * Remarks: '//' stands for choose current browser protocol
      */
-    'ALIAS' => $site_alias,
-    'URL' => "//{$_SERVER['HTTP_HOST']}/$site_alias",
-    'CSS' => "//{$_SERVER['HTTP_HOST']}/{$site_alias}css",
-    'IMG' => "//{$_SERVER['HTTP_HOST']}/{$site_alias}img",
-    'ASSETS' => "//{$_SERVER['HTTP_HOST']}/{$site_alias}assets",
-    'UPLOAD' => "//{$_SERVER['HTTP_HOST']}/{$site_alias}assets/upload",
-    'JS' => "//{$_SERVER['HTTP_HOST']}/{$site_alias}js",
+    'PUBLIC_HTML' => $public_html,
 
     /**
      * @see Gideon\Application
@@ -41,7 +36,7 @@ return
     /**
      * @see Gideon\Cache\SimpleCache
      */
-    'CACHE_PATH' => $cache,
+    'CACHE_PATH' => $cache . 'test' . DIRECTORY_SEPARATOR,
     'CACHE_MODE_DIR' => 0775,
     'CACHE_MODE_FILE' => 0664,
     //'CACHE_TTL_DEFAULT' => 10*365*86400,
@@ -54,8 +49,8 @@ return
     [
         'host' => 'localhost',
         'dbname' => 'comp_tests',
-        'username' => 'test',
-        'password' => 'p5sVz8FRZvXzhMXQ',
+        'username' => 'comp_tester',
+        'password' => 'V8OPYeZhs5Xt1GHp',
         'charset' => 'utf8'
     ],
 
@@ -63,22 +58,22 @@ return
      * @see Gideon\Debug\Logger
      */
     'LOGGER_INIT_DEFAULT' => true,
-    'LOGGER_FILE' => $log . 'debug.log',
+    'LOGGER_FILE' => $log . 'test.log',
     'LOGGER_RESET_LOG' => false,
-    'LOGGER_ROOT' => 'src',
-    'LOGGER_LOG_TRACES' => true,
+    'LOGGER_ROOT' => 'WebDev',
+    'LOGGER_LOG_TRACES' => false,
 
     /**
      * @see Gideon\Handler\Locale
      */
     'LOCALE_DEFAULT' => 'en_EN',
-    'LOCALE_SESSION_ID' => 'dasjs',
+    'LOCALE_SESSION_ID' => 'sometestsesasdin',
     'LOCALE_PATH' => $locale,
 
     /**
      * @see Gideon\Handler\Throwable
      */
-    'THROWABLE_SESSION_ARRAY' => 'thrwaos',
+    'THROWABLE_SESSION_ARRAY' => 'test_throwable',
 
     /**
      * @see Gideon\Router\FastRouter
@@ -108,6 +103,13 @@ return
     ],
 
     /**
+     * @see RouterSpeedTest
+     */
+    'TEST_INT_MAX_PARAMS' => 10,
+    'TEST_INT_ROUTES' => 100,
+    'TEST_INT_REQUESTS' => 1000,
+
+    /**
      * @see Gideon\Renderer\Response
      */
     'RESPONSE_CODE_DEFAULT' => 200,
@@ -121,7 +123,6 @@ return
         'application/json',
         'text/json'
     ],
-    'JSON_CONTAINER_RESULT' => 'data',
 
     /**
      * @see Gideon\Renderer\Reponse\View
@@ -137,6 +138,34 @@ return
      * @see Gideon\Renderer\Response\Text
      */
     'TEXT_REPLACE_PATTERN' => '~{{2}([A-Z]+)_([A-Z_]+)}{2}~',
-    'TEXT_REPLACE_UNDEFINED' => 'undefined',
+    'TEXT_REPLACE_UNDEFINED' => '??undefined',
+    'TEXT_HTML_RENDER_IN_PRE' => true,
 
+    /**
+     * @see DebugTest
+     */
+    'TEST_LOGFILE' => $log . 'log.test',
+
+    /**
+     * @see ConfigTest
+     */
+    'TEST_CONFIG_LOADED' => 'tstcnfglded',
+
+    /**
+     * @see RendererTest
+     */
+     'TEST_RENDERER_TEXT_CONFIG' => 'Currently testing text rendering.',
+
+    /**
+     * @see ConnectionTest
+     */
+    'TEST_MYSQL_HOST' => '127.0.0.1',
+    'TEST_MYSQL_PORT' => 3306,
+
+    /**
+     * @see LocaleTest
+     */
+    'TEST_NOT_DEFAULT_LOCALE' => 'pl_PL',
+    'TEST_NOT_EXISTING_KEY' => 'someNotExistingKey',
+    'TEST_EXISTING_KEY' => 'TEXT'
 ];

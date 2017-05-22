@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Gideon\Application;
-
-use Gideon\Http\ResponseException;
+namespace Gideon\Http;
 
 class InternalServerError extends ResponseException
 {

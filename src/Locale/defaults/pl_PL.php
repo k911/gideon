@@ -1,6 +1,6 @@
 <?php
 return [
-    'TEXT' => 'text',
+    'TEXT' => 'tekst',
     'TEXT_ERROR' => 'błąd',
     'TEXT_LANGAUGE' => 'język',
 ];

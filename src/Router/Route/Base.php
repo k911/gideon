@@ -45,14 +45,13 @@ abstract class Base extends Debug implements Route
         $params = [];
         $vars = [];
         $index = 0;
-        foreach($values as $value)
-        {
+        foreach ($values as $value) {
             $value = trim($value);
-            if(!empty($value) || $value === '0')
-            {
+            if (!empty($value) || $value === '0') {
                 $params[] = $param = $this->paramFrom($value);
-                if($param->volatile)
+                if ($param->volatile) {
                     $vars[] = $index;
+                }
                 ++$index;
             }
         }
@@ -76,8 +75,7 @@ abstract class Base extends Debug implements Route
     public function map(Request $request): array
     {
         $data = [];
-        foreach($this->variables as $index)
-        {
+        foreach ($this->variables as $index) {
             $data[] = $request[$index];
         }
         return $data;
@@ -98,9 +96,9 @@ abstract class Base extends Debug implements Route
         return $this->size;
     }
 
-    public function getCallback(): callable
+    public function getCallback(): ?callable
     {
-        return is_null($this->callback) ? (function(){}) : $this->callback;
+        return $this->callback;
     }
 
     /**

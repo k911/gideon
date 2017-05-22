@@ -2,8 +2,8 @@
 namespace Gideon;
 
 use Gideon\Http\Response;
-use Gideon\Application\Config;
-use Gideon\Application\Locale;
+use Gideon\Config;
+use Gideon\Locale;
 use Gideon\Http\Request;
 use Gideon\Database\Connection;
 use Gideon\Handler\Error as ErrorHandler;
@@ -16,8 +16,8 @@ interface Controller
 {
     /**
      * @param \Gideon\Handler\Error $handler
-     * @param \Gideon\Application\Config $config
-     * @param \Gideon\Application\Locale $locale
+     * @param \Gideon\Config $config
+     * @param \Gideon\Locale $locale
      * @param \Gideon\Http\Request $request
      * @param \Gideon\Database\Connection $connection
      */
@@ -26,8 +26,8 @@ interface Controller
     /**
      * Late constructor
      * @param \Gideon\Handler\Error $handler
-     * @param \Gideon\Application\Config $config
-     * @param \Gideon\Application\Locale $locale
+     * @param \Gideon\Config $config
+     * @param \Gideon\Locale $locale
      * @param \Gideon\Http\Request $request
      * @param \Gideon\Database\Connection $connection
      */

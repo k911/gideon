@@ -2,8 +2,8 @@
 
 use PHPUnit\Framework\TestCase;
 use Gideon\Handler\Error as ErrorHandler;
-use Gideon\Application\Config;
-use Gideon\Application\Locale;
+use Gideon\Config\SimpleConfig;
+use Gideon\Locale\SimpleLocale;
 use Gideon\Renderer;
 use Gideon\Http\Response;
 use Gideon\Debug\Provider as Debug;
@@ -17,8 +17,8 @@ final class RendererTest extends TestCase
 
     public function setUp()
     {
-        $this->config = $config = new Config('test');
-        $this->locale = new Locale($this->config);
+        $this->config = $config = new SimpleConfig('test');
+        $this->locale = new SimpleLocale($this->config);
         $this->renderer = new Renderer($this->config, $this->locale);
         $this->errorHandler = new ErrorHandler($config, $config->getLogger());
     }

@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Database\Connection;
 
-use Gideon\Application\Config;
+use Gideon\Config;
 
 /**
  * Config keys used:

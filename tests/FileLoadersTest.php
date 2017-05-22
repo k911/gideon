@@ -2,15 +2,15 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Application\Config;
+use Gideon\Config\SimpleConfig;
 use Gideon\Exception\IOException;
-use Gideon\Handler\Container\FileContainer;
+use Gideon\Collection\FileLoader;
 use Gideon\Debug\Provider as Debug;
 
-final class FileContainersTest extends TestCase {
+final class FileLoadersTest extends TestCase {
 
     const TEST_CONFIG_LOADED = 'tstcnfglded';
-    const TEST_CONTAINER_PATH = __DIR__ . DIRECTORY_SEPARATOR . 'TestContainers' . DIRECTORY_SEPARATOR;
+    const TEST_CONTAINER_PATH = __DIR__ . DIRECTORY_SEPARATOR . 'TestCollections' . DIRECTORY_SEPARATOR;
     private $test1_not_afile = self::TEST_CONTAINER_PATH . 'NoSuchFile';
     private $test1_file = self::TEST_CONTAINER_PATH . 'TestArray';
     private $test1_contents = [
@@ -28,10 +28,10 @@ final class FileContainersTest extends TestCase {
 
     public function testSimpleLoad()
     {
-        $container = new FileContainer($this->test1_file);
+        $container = new FileLoader($this->test1_file);
         $this->assertNotEquals(0, count($container));
 
-        $containerExtended = new FileContainer($this->test1_file, $this->test1_extension);
+        $containerExtended = new FileLoader($this->test1_file, $this->test1_extension);
         $this->assertNotEquals(0, count($containerExtended));
         $this->assertGreaterThan(count($container), count($containerExtended));
     }
@@ -39,7 +39,7 @@ final class FileContainersTest extends TestCase {
     public function testNotValidLoad() {
         $exception = null;
         try {
-            $container = new FileContainer($this->test1_not_afile);
+            $container = new FileLoader($this->test1_not_afile);
         } catch (IOException $err)
         {
             $exception = $err;
@@ -48,7 +48,7 @@ final class FileContainersTest extends TestCase {
     }
 
     public function testDataIntegrity() {
-        $container = new FileContainer($this->test1_file);
+        $container = new FileLoader($this->test1_file);
 
         foreach($this->test1_contents as $key => $value)
         {
@@ -69,11 +69,11 @@ final class FileContainersTest extends TestCase {
     }
 
     public function testExtension() {
-        $container = new FileContainer($this->test1_file);
+        $container = new FileLoader($this->test1_file);
         $this->assertEquals(false, $container->isExtended());
         $count1 = count($container);
 
-        $container = new FileContainer($this->test1_file, $this->test1_extension);
+        $container = new FileLoader($this->test1_file, $this->test1_extension);
         $this->assertEquals(true, $container->isExtended());
         $this->assertGreaterThan($count1, count($container));
 
@@ -85,7 +85,7 @@ final class FileContainersTest extends TestCase {
     }
 
     public function testClear() {
-        $container = new FileContainer($this->test1_file, $this->test1_extension);
+        $container = new FileLoader($this->test1_file, $this->test1_extension);
         $this->assertEquals(true, $container->isExtended());
         $count1 = count($container);
 
@@ -95,7 +95,7 @@ final class FileContainersTest extends TestCase {
     }
 
     public function testConfigLoad() {
-        $config = new Config('test-test', self::TEST_CONTAINER_PATH);
+        $config = new SimpleConfig('test-test', self::TEST_CONTAINER_PATH);
         $this->assertGreaterThan(0, count($config));
         $this->assertEquals(self::TEST_CONFIG_LOADED, $config->get('TEST_CONFIG_LOADED'));
         $this->assertEquals($config->findOne('TEST_CONFIG_LOADED'), $config->get('TEST_CONFIG_LOADED'));

@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Application\Config;
+use Gideon\Config\SimpleConfig;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Database\Connection;
 use Gideon\Debug\Provider as Debug;
@@ -13,7 +13,7 @@ final class ConnectionTest extends TestCase
 
     public function setUp()
     {
-        $this->config = $config = new Config('test');
+        $this->config = $config = new SimpleConfig('test');
         $this->handler = new ErrorHandler($config, $config->getLogger());
     }
 

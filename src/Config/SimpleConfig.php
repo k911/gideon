@@ -1,18 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Gideon\Application;
+namespace Gideon\Config;
 
+use Gideon\Config;
 use Gideon\Debug\Provider;
-use Gideon\Handler\Container\FileContainer;
-use Gideon\Application\SystemFailure;
+use Gideon\Collection\FileLoader;
+use Gideon\Exception\SystemFailure;
 
 /**
  * Config keys used:
  * - LOGGER_INIT_DEFAULT
  */
 
-class Config extends FileContainer
+class SimpleConfig extends FileLoader implements Config
 {
 
     /**
@@ -45,7 +46,7 @@ class Config extends FileContainer
      */
     protected function getDefaultPath(): string
     {
-        return realpath(__DIR__ . '/../../config/') . DIRECTORY_SEPARATOR;
+        return realpath(__DIR__ . DIRECTORY_SEPARATOR . 'defaults') . DIRECTORY_SEPARATOR;
     }
 
     public function __construct(string $config, string $path = null, array $extension = null)
@@ -55,7 +56,7 @@ class Config extends FileContainer
         parent::__construct($config, $extension);
 
         // Enable debug on everything
-        if ($test = $this->get('LOGGER_INIT_DEFAULT') === true) {
+        if ($this->get('LOGGER_INIT_DEFAULT') === true) {
             if (!Provider::initDebugProvider($this)) {
                 throw new SystemFailure('Logger cannot be intialized, therefore system is not debugable');
             }

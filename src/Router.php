@@ -2,7 +2,7 @@
 namespace Gideon;
 
 use Countable;
-use Gideon\Application\Config;
+use Gideon\Config;
 use Gideon\Http\Request;
 use Gideon\Router\Route;
 

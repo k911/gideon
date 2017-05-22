@@ -3,7 +3,7 @@ namespace Gideon\Debug;
 
 use ReflectionClass;
 use Gideon\Debug;
-use Gideon\Application\Config;
+use Gideon\Config;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Exception\Fatal;
 use Psr\Log\LoggerInterface;

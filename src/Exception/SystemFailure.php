@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Gideon\Application;
+namespace Gideon\Exception;
 
 use Gideon\Exception\Failure;
 

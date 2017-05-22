@@ -3,7 +3,7 @@ namespace Gideon\Router;
 
 use ArrayObject;
 use Gideon\Router;
-use Gideon\Application\Config;
+use Gideon\Config;
 use Gideon\Router\Route;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Http;
