@@ -71,11 +71,6 @@ return
     'LOCALE_PATH' => $locale,
 
     /**
-     * @see Gideon\Handler\Throwable
-     */
-    'THROWABLE_SESSION_ARRAY' => 'test_throwable',
-
-    /**
      * @see Gideon\Router\FastRouter
      */
     'FAST_ROUTER_MAX_CHUNKS' => 10,
