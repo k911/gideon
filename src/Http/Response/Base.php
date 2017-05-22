@@ -4,8 +4,8 @@ namespace Gideon\Http\Response;
 use stdClass;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Http\Response;
-use Gideon\Application\Config;
-use Gideon\Application\Locale;
+use Gideon\Config;
+use Gideon\Locale;
 
 abstract class Base extends Debug implements Response
 {

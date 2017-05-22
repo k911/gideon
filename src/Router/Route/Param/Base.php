@@ -3,13 +3,13 @@ namespace Gideon\Router\Route\Param;
 
 use Gideon\Router\Route\Param;
 
-abstract class Base implements Param 
+abstract class Base implements Param
 {
     /**
      * @var string $name
      */
     public $name;
-    
+
     /**
      * @var string  $value
      */

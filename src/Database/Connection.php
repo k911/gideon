@@ -1,7 +1,7 @@
 <?php
 namespace Gideon\Database;
 
-use Gideon\Application\Config;
+use Gideon\Config;
 use Gideon\Handler\Error as ErrorHandler;
 
 interface Connection

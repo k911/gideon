@@ -14,7 +14,7 @@ use Gideon\Exception\Fatal;
 use Gideon\Exception\Unknown;
 use Gideon\Exception\ErrorException;
 use Gideon\Http\ResponseException;
-use Gideon\Application\Config;
+use Gideon\Config;
 use Gideon\Debug\Logger;
 use Psr\Log\LogLevel;
 

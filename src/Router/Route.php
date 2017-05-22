@@ -37,6 +37,5 @@ interface Route extends Countable
      * Gets valid callback function (if none an empty anonymous function is returned)
      * @return callable
      */
-    public function getCallback(): callable;
-
+    public function getCallback(): ?callable;
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use Gideon\Router;
 use Gideon\Http\Request;
-use Gideon\Application\Config;
+use Gideon\Config\SimpleConfig;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Handler\Group\MixedGroup;
 use Gideon\Handler\Group\UniformGroup;
@@ -73,7 +73,7 @@ final class RoutersAndItsSpeedTest extends TestCase
 
     public function setUp()
     {
-        $this->config = new Config('test');
+        $this->config = new SimpleConfig('test');
     }
 
     public function testFastRouterEmpty(): Router

@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Application\Config;
-use Gideon\Application\Locale;
+use Gideon\Config\SimpleConfig;
+use Gideon\Locale\SimpleLocale;
 use Gideon\Exception\IOException;
 
 final class LocaleTest extends TestCase
@@ -12,12 +12,13 @@ final class LocaleTest extends TestCase
 
     public function setUp()
     {
-        $this->config = new Config('test', null, ['LOCALE_PATH' => realpath(__DIR__ . DIRECTORY_SEPARATOR . 'TestContainers' ) . DIRECTORY_SEPARATOR]);
+        $this->config = new SimpleConfig('test', null, ['LOCALE_PATH' => realpath(__DIR__ . DIRECTORY_SEPARATOR . 'TestCollections' ) . DIRECTORY_SEPARATOR]);
     }
 
     public function testLoadLocale()
     {
-        $locale = new Locale($this->config);
+        $locale = new SimpleLocale($this->config);
+
         $this->assertEquals(true, $this->config->has('LOCALE_DEFAULT'));
         $this->assertEquals($this->config->get('LOCALE_DEFAULT'), $locale->getLocale());
 
@@ -39,7 +40,7 @@ final class LocaleTest extends TestCase
     public function testImportDefaults($locale)
     {
         $config = $this->config;
-        $default = new Locale($config);
+        $default = new SimpleLocale($config);
 
         // should be same right know
         $this->assertEquals($locale->getLocale(), $default->getLocale());

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Gideon\Handler\Container;
+namespace Gideon\Collection;
 
-use Gideon\Handler\Container;
+use Gideon\Collection;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Exception\IOException;
 
-class FileContainer extends Debug implements Container
+class FileLoader extends Debug implements Collection
 {
 
     /**
@@ -117,9 +117,9 @@ class FileContainer extends Debug implements Container
     /**
      * Removes values added via extend
      * @override
-     * @return Container
+     * @return Collection
      */
-    public function clear(): Container
+    public function clear(): Collection
     {
         $this->extension = [];
         return $this;

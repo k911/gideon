@@ -4,7 +4,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use Gideon\Router;
 use Gideon\Router\Route;
-use Gideon\Application\Config;
+use Gideon\Config\SimpleConfig;
 use Gideon\Handler\Group\ArrayGroup;
 use Gideon\Http\Request;
 
@@ -15,7 +15,7 @@ class RoutesTest extends TestCase
 
     public function setUp()
     {
-        $this->config = $config = new Config('test');
+        $this->config = $config = new SimpleConfig('test');
         $routers = (new ArrayGroup())->add(new Router\FastRouter($config), new Router\LoopRouter($config));
         foreach($routers as $router)
             $this->assertEquals(true, $router instanceof Gideon\Router);

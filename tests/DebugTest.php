@@ -4,9 +4,9 @@
 // use PHPUnit\Framework\TestCase;
 // use Gideon\Debug\Provider;
 // use Gideon\Debug\Logger;
-// use Gideon\Application\Config;
+// use Gideon\Config\SimpleConfig;
 
-// final class TestLogProvider extends Provider 
+// final class TestLogProvider extends Provider
 // {
 //     protected function getDebugProperties(): array
 //     {
@@ -21,7 +21,7 @@
 //     public static function getLogger()
 //     {
 //         return self::$Logger;
-//     } 
+//     }
 
 //     public function isset(): bool
 //     {
@@ -36,7 +36,7 @@
 
 //     public function setUp()
 //     {
-//         $this->config = new Config('test');
+//         $this->config = new SimpleConfig('test');
 //         $this->assertEquals(false, ($this->config->get('LOGGER_RESET_LOG') === true));
 //     }
 

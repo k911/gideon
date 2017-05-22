@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Application\Config;
+use Gideon\Config\SimpleConfig;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Http\ResponseException;
 use Gideon\Handler\Call\SafeCall;
@@ -17,7 +17,7 @@ class ErrorHandlingTest extends TestCase
 
     public function setUp()
     {
-        $this->config = $config = new Config('test');
+        $this->config = $config = new SimpleConfig('test');
         $this->handler = new ErrorHandler($config, $config->getLogger());
     }
 

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Gideon\Application\Config;
+use Gideon\Config\SimpleConfig;
 use Gideon\Cache\SimpleCache;
 
 class Foo11
@@ -16,7 +16,7 @@ final class SimpleCacheTest extends TestCase
 
     public function setUp()
     {
-        $this->config = new Config('test');
+        $this->config = new SimpleConfig('test');
     }
 
     public function testInit()

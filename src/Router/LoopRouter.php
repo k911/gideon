@@ -2,7 +2,7 @@
 namespace Gideon\Router;
 
 use Gideon\Http\Request;
-use Gideon\Application\Config;
+use Gideon\Config;
 use Gideon\Router\Route\EmptyRoute;
 
 class LoopRouter extends Base
@@ -17,14 +17,15 @@ class LoopRouter extends Base
     {
         $method = $request->method();
 
-        if(!$this->prepared[$method])
+        if (!$this->prepared[$method]) {
             $this->prepare($method);
+        }
 
         $routes = $this->routes[$method];
-        foreach($routes as $route)
-        {
-            if($route->validate($request))
+        foreach ($routes as $route) {
+            if ($route->validate($request)) {
                 return $route;
+            }
         }
 
         return $this->defaultRoute;
@@ -33,16 +34,14 @@ class LoopRouter extends Base
     public function __construct(Config $config)
     {
         parent::__construct($config);
-        foreach($this->supportedMethods as $method)
-        {
+        foreach ($this->supportedMethods as $method) {
             $this->prepared[$method] = false;
         }
     }
 
     protected function prepare(string $method)
     {
-        foreach($this->routes[$method] as $route)
-        {
+        foreach ($this->routes[$method] as $route) {
             $route->where($this->replacements);
         }
         $this->prepared[$method] = true;

@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Gideon\Handler;
+namespace Gideon;
 
 use Countable;
 use Gideon\Exception\IOException;
 
-interface Container extends Countable
+interface Collection extends Countable
 {
 
     /**

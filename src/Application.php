@@ -4,10 +4,10 @@ namespace Gideon;
 
 use ReflectionClass;
 use Gideon\Exception\InvalidArgumentException;
-use Gideon\Application\SystemFailure;
+use Gideon\Exception\SystemFailure;
 use Gideon\Debug\Provider as Debug;
-use Gideon\Application\Config;
-use Gideon\Application\Locale;
+use Gideon\Config;
+use Gideon\Locale\SimpleLocale;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Handler\Call\SafeCall;
 use Gideon\Http\Request;
@@ -30,12 +30,12 @@ class Application extends Debug
     protected $connection;
 
     /**
-     * @var \Gideon\Application\Config $config
+     * @var \Gideon\Config $config
      */
     protected $config;
 
     /**
-     * @var \Gideon\Application\Locale $locale
+     * @var \Gideon\Locale $locale
      */
     protected $locale;
 
@@ -66,7 +66,7 @@ class Application extends Debug
 
     public function __construct(Config $config, Router $router)
     {
-        $locale = new Locale($config);
+        $locale = new SimpleLocale($config);
         $request = new Request($config);
         $errorHandler = new ErrorHandler($config, $config->getLogger());
         $errorHandler->fullErrorHandling();

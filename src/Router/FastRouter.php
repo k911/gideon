@@ -2,7 +2,7 @@
 namespace Gideon\Router;
 
 use Gideon\Http\Request;
-use Gideon\Application\Config;
+use Gideon\Config;
 
 /**
  * Config keys used:
@@ -50,23 +50,17 @@ class FastRouter extends Base
         $chunk_size = $this->computeChunkSize($method);
         $iterator = $this->routes[$method]->getIterator();
 
-        while($iterator->valid())
-        {
+        while ($iterator->valid()) {
             $regexes = [];
             $map = [];
             $dummies = 0;
-            for($i = 0; $i < $chunk_size; ++$i)
-            {
+            for ($i = 0; $i < $chunk_size; ++$i) {
                 $route = $iterator->current();
-
                 $vars = $route->variables();
                 $dummies = max($dummies, $vars);
                 $regexes[] = $route->toPattern($this->replacements) . str_repeat('()', $dummies - $vars);
                 ++$dummies;
-
-                // dunno if needed
                 $map[$dummies] = $route;
-
                 $iterator->next();
             }
 
@@ -80,15 +74,14 @@ class FastRouter extends Base
         $method = $request->method();
         $uri = $request->uri();
 
-        if(empty($this->chunks[$method]))
+        if (empty($this->chunks[$method])) {
             $this->prepare($method);
+        }
 
         $maps = $this->maps[$method];
         $chunks = $this->chunks[$method];
-        foreach ($chunks as $i => $regex)
-        {
-            if (preg_match($regex, $uri, $matches) === 1)
-            {
+        foreach ($chunks as $i => $regex) {
+            if (preg_match($regex, $uri, $matches) === 1) {
                 return $maps[$i][count($matches)];
             }
         }
@@ -106,8 +99,7 @@ class FastRouter extends Base
         parent::__construct($config);
         $this->max = $config->get('FAST_ROUTER_MAX_CHUNKS');
 
-        foreach($this->supportedMethods as $method)
-        {
+        foreach ($this->supportedMethods as $method) {
             $this->chunks[$method] = [];
             $this->maps[$method] = [];
         }

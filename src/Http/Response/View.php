@@ -2,8 +2,8 @@
 namespace Gideon\Http\Response;
 
 use stdClass;
-use Gideon\Application\Config;
-use Gideon\Application\Locale;
+use Gideon\Config;
+use Gideon\Locale;
 use Gideon\Http\Response;
 
 /**

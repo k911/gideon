@@ -5,8 +5,8 @@ use stdClass;
 use Throwable;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Http\Response;
-use Gideon\Application\Config;
-use Gideon\Application\Locale;
+use Gideon\Config;
+use Gideon\Locale;
 use Gideon\Handler\Call\SafeCall;
 use Gideon\Handler\Error as ErrorHandler;
 
@@ -19,12 +19,12 @@ use Gideon\Handler\Error as ErrorHandler;
 class Renderer extends Debug
 {
     /**
-     * @var \Gideon\Application\Config $config
+     * @var \Gideon\Config $config
      */
     private $config;
 
     /**
-     * @var \Gideon\Application\Locale $locale
+     * @var \Gideon\Locale $locale
      */
     private $locale;
 
