@@ -1,6 +1,6 @@
 {
-  "name": "gideon-ftf",
-  "version": "0.0.0",
+  "name": "k911/gideon",
+  "version": "1.0.0",
   "description": "Gideon Fast Tiny Framework - tiny php MVC framework featuring Material Design, Restful Fast Router, Anti-CSRF and TWIG support",
   "main": "index.js",
   "directories": {
