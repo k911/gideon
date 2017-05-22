@@ -182,14 +182,14 @@ class Application extends Debug
                 ->call();
         }
 
+        // Close not needed things
+        $this->connection->close();
+        session_write_close();
+
         // Store some informations
         $this->renderer->controller = (new ReflectionClass($controller))->getShortName();
         $this->renderer->action = $action;
         $this->renderer->attach($response);
-
-        // Close not needed things
-        $this->connection->close();
-        session_write_close();
     }
 
     public function render()

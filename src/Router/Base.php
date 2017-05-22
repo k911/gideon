@@ -71,20 +71,11 @@ abstract class Base extends Debug implements Router
         }
 
         $route = $this->createRouteFrom($route, $callback);
-        if (!$route->isEmpty()) {
-            $this->routes[$method][] = $route;
-        } else {
-            $this->getLogger()->warning("Cannot add empty route: `{$route->toPattern}`");
-        }
-
+        $this->routes[$method][] = $route;
         return $route;
     }
 
-    // @TODO: Regex: (\[([^\/]*?)\])(?!.+\])
-    // public function addRoutes(string $optionable_route, $callback = null, string $method = null): UniformGroup
-    // {
-
-    // }
+    // TODO: addMultipleRoutes()
 
     public function __construct(Config $config)
     {
