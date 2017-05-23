@@ -23,6 +23,7 @@ class Params extends Debug implements Countable
      */
     public function __construct(string $method, string $query = null)
     {
+        $this->data = [];
         $method = strtoupper($method);
 
         if (!empty($query)) {
@@ -42,18 +43,19 @@ class Params extends Debug implements Countable
      */
     public function __isset($key): bool
     {
-        return isset($this->data->{$key});
+        return isset($this->data[$key]);
     }
 
     /**
      * @param string $key
      * @return mixed value of asked key or null
      */
-    public function __get($key)
+    public function __get($key) : ?string
     {
-        if (isset($this->data->{$key})) {
-            return $this->data->{$key};
+        if (isset($this->data[$key])) {
+            return filter_var($this->data[$key], FILTER_SANITIZE_STRING);
         }
+        return null;
     }
 
     public function count(): int
@@ -61,6 +63,9 @@ class Params extends Debug implements Countable
         return count($this->data);
     }
 
+    /**
+     * @return string[]
+     */
     public function getAll(): array
     {
         return $this->data;
