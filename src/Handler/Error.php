@@ -217,7 +217,7 @@ final class Error implements Countable
     public function findAll(string $instance = null): array
     {
         if(is_null($instance))
-            return $this->errors;
+            return $this->errors ?? [];
 
         $ret = [];
         foreach($this->errors as $i => $error)
@@ -231,10 +231,10 @@ final class Error implements Countable
     /**
      * @return [int, Throwable]
      */
-    public function findOne(string $instance = null): array
+    public function findOne(string $instance = null): ?array
     {
         if(is_null($instance))
-            return [0, $this->errors[0]];
+            return [0, $this->errors[0]] ?? null;
 
         foreach($this->errors as $i => $error)
         {
@@ -243,6 +243,7 @@ final class Error implements Countable
                 return [$i, $error];
             }
         }
+        return null;
     }
 
     public function pop(int $i = null): self

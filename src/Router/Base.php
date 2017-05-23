@@ -70,9 +70,10 @@ abstract class Base extends Debug implements Router
             $callback[0] = new $callback[0]();
         }
 
-        $route = $this->createRouteFrom($route, $callback);
-        $this->routes[$method][] = $route;
-        return $route;
+        $newRoute = $this->createRouteFrom($route, $callback);
+        $this->routes[$method][] = $newRoute;
+        $this->getLogger()->info('Added route: ' . $route);
+        return $newRoute;
     }
 
     // TODO: addMultipleRoutes()
