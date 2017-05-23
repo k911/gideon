@@ -45,10 +45,15 @@ class Renderer extends Debug
      */
     private function setHeaders()
     {
-        // Set
-        header('Content-Type: ' . $this->response->type, true, $this->response->code);
+        if(!empty($this->response->headers)) {
+            foreach($this->response->headers as $name => $value)
+            {
+                header("$name: $value");
+            }
+        }
 
-        // TODO: Set additional headers from $this->response->headers
+        // Set content type
+        header('Content-Type: ' . $this->response->type, true, $this->response->code);
 
         // Verify
         if ($this->response->code != http_response_code()) {
