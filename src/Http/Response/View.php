@@ -23,7 +23,7 @@ class View extends Base
 
         $this->handler = new stdClass();
         $this->handler->name = $view;
-        $this->handler->file = "$view.php";
+        $this->handler->file = "$view.view.php";
         return $this;
     }
 
