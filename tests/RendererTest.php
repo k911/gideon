@@ -48,6 +48,26 @@ Status: {{CONFIG_TEST_RENDERER_TEXT_CONFIG}}
 Language: {{DOCUMENT_LANG}}
 EOT;
 
+        // Build tested object
+        $response = new Response\Text($text);
+        $this->renderer->attach($response);
+
+        // Test params
+        $response->bindParam('NAME', $name);
+        $response->setParam('COUNTRY', $country);
+        $this->assertEquals($name, $response->params->NAME);
+        $this->assertEquals($country, $response->params->COUNTRY);
+        $this->assertEquals($this->config->get('RESPONSE_CODE_DEFAULT'), $response->code);
+        $this->assertEquals($this->config->get('RESPONSE_TYPE_DEFAULT'), $response->type);
+
+        // Test bind/set params
+        $name = 'a CHANGED php object Tester';
+        $country = 'Fake Testlandia';
+        $this->assertEquals($name, $response->params->NAME);
+        $this->assertNotEquals($country, $response->params->COUNTRY);
+        $response->setParam('COUNTRY', $country);
+        $this->assertEquals($country, $response->params->COUNTRY);
+
         // Expected output
         $alredy_parsed = <<<EOT
 Hi, I'm {$name} and I live in {$country}.
@@ -58,17 +78,7 @@ Status: {$status}
 Language: {$lang}
 EOT;
 
-        // Build tested object
-        $response = new Response\Text($text);
-        $response->bindParam('NAME', $name);
-        $this->renderer->attach($response);
-        $response->bindParam('COUNTRY', $country);
-
-        $this->assertEquals($name, $response->params->NAME);
-        $this->assertEquals($country, $response->params->COUNTRY);
-        $this->assertEquals($this->config->get('RESPONSE_CODE_DEFAULT'), $response->code);
-        $this->assertEquals($this->config->get('RESPONSE_TYPE_DEFAULT'), $response->type);
-
+        // Render
         ob_start();
         $this->renderer->render($this->errorHandler, false);
         $output = ob_get_clean();

@@ -71,8 +71,8 @@ class FastRouter extends Base
 
     public function dispatch(Request $request): Route
     {
-        $method = $request->method();
-        $uri = $request->uri();
+        $method = $request->getMethod();
+        $uri = $request->getURI();
 
         if (empty($this->chunks[$method])) {
             $this->prepare($method);

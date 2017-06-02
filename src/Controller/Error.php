@@ -35,7 +35,7 @@ class Error extends Base
         $response = new Response\Text("<p><h2>Executing `{{PARAM_CONTROLLER}}->{{PARAM_ACTION}}` resulted in errors:</h2></p>{{PARAM_ERRORS_HTML}}");
         $response->setCode(500);
         $response->setType('text/html');
-        $response->bindParams([
+        $response->setParams([
             'ERRORS_HTML' => $html,
             'CONTROLLER' => (new ReflectionClass($controller))->getShortName(),
             'ACTION' => $action]);
