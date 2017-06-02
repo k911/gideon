@@ -229,7 +229,7 @@ final class Error implements Countable
     }
 
     /**
-     * @return [int, Throwable]
+     * @return array [int, Throwable]
      */
     public function findOne(string $instance = null): array
     {
@@ -245,6 +245,10 @@ final class Error implements Countable
         }
     }
 
+    /**
+     * @param int $i index
+     * @return Error
+     */
     public function pop(int $i = null): self
     {
         unset($this->errors[$i ?? 0]);

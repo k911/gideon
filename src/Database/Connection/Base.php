@@ -6,6 +6,7 @@ use PDOException;
 use Gideon\Debug\Provider as Debug;
 use Gideon\Config;
 use Gideon\Database\Connection;
+use Gideon\Database\ConnectionException;
 use Gideon\Handler\Error as ErrorHandler;
 use Gideon\Handler\Call\SafeCall;
 
@@ -50,29 +51,40 @@ abstract class Base extends Debug implements Connection
         }
     }
 
-    public function close()
+    public function close(): Connection
     {
         unset($this->PDO);
+        return $this;
+    }
+
+    /**
+     * Creates PDO object instance
+     * @throws ConnectionException
+     * @return PDO
+     */
+    private function createPDO(): PDO {
+        try {
+            return new PDO($this->DSN, $this->username, $this->password, $this->options);
+        } catch (PDOException $exception) {
+            throw (new ConnectionException($exception->getMessage(), $exception->getCode()))
+                ->setCredentials($this->username, $this->password, $this->DSN, $this->options);
+        }
     }
 
     public function connect(): Connection
     {
         if (!isset($this->PDO)) {
-            $this->PDO = new PDO($this->DSN, $this->username, $this->password, $this->options);
+            $this->PDO = $this->createPDO();
         }
-
         return $this;
     }
 
     public function try_connect(ErrorHandler $handler): bool
     {
         if (!isset($this->PDO)) {
-            $this->PDO = (new SafeCall($handler,
-                function ($DSN, $username, $password, $options) {
-                    return new PDO($DSN, $username, $password, $options);
-                }))
-                ->setArguments($this->DSN, $this->username, $this->password, $this->options)
-                ->call();
+            $this->PDO = (new SafeCall($handler, function() {
+                return $this->createPDO();
+            }))->call();
             return $handler->isEmpty();
         }
         return true;
@@ -126,7 +138,7 @@ abstract class Base extends Debug implements Connection
         unset($settings['password']);
 
         if (isset($settings['options'])) {
-            $this->username = $settings['options'];
+            $this->options = $settings['options'];
             unset($settings['options']);
         }
 
