@@ -52,7 +52,7 @@ class Renderer extends Debug
             }
         }
 
-        // Set content type
+        // Set content type and response code
         header('Content-Type: ' . $this->response->type, true, $this->response->code);
 
         // Verify
@@ -71,10 +71,15 @@ class Renderer extends Debug
             $this->setHeaders();
         }
 
-        // buffer and output Response
-        $buffer = (new SafeCall($handler, [$this->response, 'render']))
+        // render response and handle errors
+        (new SafeCall($handler, [$this->response, 'render']))
             ->setArguments($this->config, $this->locale, $this->document)
             ->call();
+
+        // provide info about redering errors
+        if(!$handler->isEmpty()) {
+            'Some errors have occurred during redering response body. Please check log.';
+        }
     }
 
     /**

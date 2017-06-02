@@ -73,8 +73,8 @@ class Application extends Debug
         $connection = new Connection\MySQL($config);
 
         $renderer = new Renderer($config, $locale);
-        $renderer->uri = $request->uri();
-        $renderer->method = $request->method();
+        $renderer->uri = $request->getURI();
+        $renderer->method = $request->getMethod();
 
         $this->config = $config;
         $this->router = $router;
@@ -195,10 +195,6 @@ class Application extends Debug
     public function render()
     {
         $this->renderer->render($this->errorHandler);
-        if(!$this->errorHandler->isEmpty())
-        {
-            echo 'redirect then render errors';
-        }
     }
 
     protected function getDebugProperties(): array

@@ -15,7 +15,7 @@ class LoopRouter extends Base
 
     public function dispatch(Request $request): Route
     {
-        $method = $request->method();
+        $method = $request->getMethod();
 
         if (!$this->prepared[$method]) {
             $this->prepare($method);

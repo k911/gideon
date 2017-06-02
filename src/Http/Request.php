@@ -146,14 +146,14 @@ class Request extends Debug implements
             $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') ? 'https' : 'http';
     }
 
-    // TODO: rename to getURI()
-    public function uri(): string
+    // TODO: rename to getgetURI()
+    public function getURI(): string
     {
         return implode('/', $this->values);
     }
 
     // TODO: rename to getHttpMethod()
-    public function method(): string
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -161,7 +161,7 @@ class Request extends Debug implements
     public function getHttpRequest(): string
     {
         $protocol = $this->getProtocol();
-        $uri = $this->uri();
+        $uri = $this->getURI();
         $server = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
         return "{$this->method} $protocol://$uri $server";
     }

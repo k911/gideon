@@ -33,7 +33,7 @@ abstract class ResponseException extends Exception
             $code = $this->camelToMacroCase($code);
         }
         $this->errorCode = $code;
-        parent::__construct($message, ResponseCode::resolveErrorCode($code), $previous);
+        parent::__construct($message, self::resolveErrorCode($code), $previous);
     }
 
     public function getErrorCode(): string
@@ -44,5 +44,25 @@ abstract class ResponseException extends Exception
     public function getGetters(): array
     {
         return array_merge(parent::getGetters(), ['errorCode']);
+    }
+
+    /**
+     * Gets response status code from custom sting code
+     * @link http://www.restapitutorial.com/httpstatuscodes.html
+     * @param string $code unique name in MACRO_CASE
+     * @return int http status response code
+     */
+    public static function resolveErrorCode(string $code): int
+    {
+        switch ($code) {
+            case 'BAD_REQUEST':
+                return 400;
+            case 'NOT_FOUND':
+                return 404;
+            case 'DEFAULT':
+            case 'INTERNAL_SERVER_ERROR':
+            default:
+                return 500;
+        }
     }
 }

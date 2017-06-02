@@ -52,20 +52,32 @@ abstract class Base extends Debug implements Response
     }
     public function setHeader(string $name, string $value): Response
     {
-        if(!empty($name) && !empty($value))
+        if (!empty($name) && !empty($value)) {
             $this->headers[$name] = $value;
+            if($name === 'Content-Type') {
+                $this->getLogger()->warning('Content-Type header MUST be set via setType() method.');
+            }
+        }
         return $this;
     }
 
-    public function bindParam(string $param, $value): Response
+    public function bindParam(string $param, &$value): Response
+    {
+        $this->params->{$param} = &$value;
+        return $this;
+    }
+
+    public function setParam(string $param, $value): Response
     {
         $this->params->{$param} = $value;
         return $this;
     }
-    public function bindParams(array $params): Response
+
+    public function setParams(array $params): Response
     {
-        foreach($params as $key => $value)
-            $this->bindParam($key, $value);
+        foreach ($params as $key => $value) {
+            $this->setParam($key, $value);
+        }
         return $this;
     }
 
@@ -73,18 +85,22 @@ abstract class Base extends Debug implements Response
     {
         $this->params = new stdClass();
 
-        if(isset($handler))
+        if (isset($handler)) {
             $this->setHandler($handler);
-        if(isset($code))
+        }
+        if (isset($code)) {
             $this->setCode($code);
-        if(isset($type))
+        }
+        if (isset($type)) {
             $this->setType($type);
+        }
     }
 
     public function __get(string $key)
     {
-        if(isset($this->{$key}))
+        if (isset($this->{$key})) {
             return $this->$key;
+        }
     }
 
     public function __isset(string $key): bool
@@ -104,6 +120,4 @@ abstract class Base extends Debug implements Response
             'params' => $this->params
         ];
     }
-
-
 }
