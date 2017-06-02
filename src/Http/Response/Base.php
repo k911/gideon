@@ -25,6 +25,12 @@ abstract class Base extends Debug implements Response
     protected $code;
 
     /**
+     * Array of headers
+     * @var array
+     */
+    protected $headers;
+
+    /**
      * @var iterable $params variables used in rendering process
      */
     protected $params;
@@ -42,6 +48,12 @@ abstract class Base extends Debug implements Response
     public function setType(string $type): Response
     {
         $this->type = $type;
+        return $this;
+    }
+    public function setHeader(string $name, string $value): Response
+    {
+        if(!empty($name) && !empty($value))
+            $this->headers[$name] = $value;
         return $this;
     }
 

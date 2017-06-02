@@ -33,6 +33,7 @@ class RegexRoute extends Base
             if($param->volatile && isset($replacements[$param->name]))
             {
                 $param->value = $replacements[$param->name];
+                $this->getLogger()->info("Modified param :{$param->name} to match regex: {$replacements[$param->name]}");
             }
         }
         return $this;
