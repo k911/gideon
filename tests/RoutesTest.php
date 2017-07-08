@@ -44,7 +44,7 @@ class RoutesTest extends TestCase
         {
             $route_txt = "test/$i/:id/:any/static/:numeric";
             $matching_req = new Request($this->config, "test/$i/$id/$any/static/$false_numeric", 'GET');
-            $uri = $matching_req->uri();
+            $uri = $matching_req->getURI();
 
             $routes = ($this->routers->addRoute($route_txt, null, 'GET'))->where(['numeric' => '[a-z]{2}_[A-Z]{2}']);
             foreach($routes as $route)

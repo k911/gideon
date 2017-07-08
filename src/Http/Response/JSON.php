@@ -23,9 +23,15 @@ class JSON extends Base
         return $this;
     }
 
-    public function bindParam(string $param, $value): Response
+    public function setParam(string $param, $value): Response
     {
-        $this->params[$param] = $value;
+        $this->params[$param] = &$value;
+        return $this;
+    }
+
+    public function bindParam(string $param, &$value): Response
+    {
+        $this->params[$param] = &$value;
         return $this;
     }
 

@@ -16,8 +16,9 @@ interface Connection
 
     /**
      * Close connection to database
+     * @return Connection
      */
-    public function close();
+    public function close(): self;
 
     /**
      * Connect to database | no throw
@@ -28,7 +29,8 @@ interface Connection
 
     /**
      * Connect to database
-     * @throws \PDOException
+     * @throws ConnectionException
+     * @return Connection
      */
     public function connect(): self;
 }

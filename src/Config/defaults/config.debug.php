@@ -106,13 +106,13 @@ return
     ],
 
     /**
-     * @see Gideon\Renderer\Response
+     * @see Gideon\Http\Response
      */
     'RESPONSE_CODE_DEFAULT' => 200,
     'RESPONSE_TYPE_DEFAULT' => 'text/plain',
 
     /**
-     * @see Gideon\Renderer\Response\JSON
+     * @see Gideon\Http\Response\JSON
      */
     'JSON_TYPE_DEFAULT' => 'text/json',
     'JSON_TYPES_SUPPORTED' => [
@@ -122,7 +122,7 @@ return
     'JSON_CONTAINER_RESULT' => 'data',
 
     /**
-     * @see Gideon\Renderer\Reponse\View
+     * @see Gideon\Http\Reponse\View
      */
     'VIEW_TYPE_DEFAULT' => 'text/html',
     'VIEW_DEFAULT' => 'index/index',
@@ -132,7 +132,7 @@ return
     'VIEW_ERROR' => 'error/',
 
     /**
-     * @see Gideon\Renderer\Response\Text
+     * @see Gideon\Http\Response\Text
      */
     'TEXT_REPLACE_PATTERN' => '~{{2}([A-Z]+)_([A-Z_]+)}{2}~',
     'TEXT_REPLACE_UNDEFINED' => 'undefined',
