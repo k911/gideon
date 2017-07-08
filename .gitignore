@@ -1,10 +1,11 @@
 # default
-/.vscode
-/node_modules
+*.env
+.idea/*
+.vscode/*
+node_modules/*
 npm-debug.log
 **/.DS_Store
 **/.bak
-composer.lock
 composer.phar
 
 # configs
@@ -13,8 +14,4 @@ composer.phar
 # specific
 /doc
 /application
-/htdocs
-/ref
 /vendor
-codeclimate.json
-send-cc
