@@ -1,17 +1,22 @@
 # default
-*.env
-.idea/*
-.vscode/*
-node_modules/*
-npm-debug.log
 **/.DS_Store
 **/.bak
+/.idea
+/.vscode
+/node_modules
+.env
+npm-debug.log
 composer.phar
+composer.lock
 
 # configs
 /conf
 
 # specific
+/var
 /doc
 /application
 /vendor
+/htdocs
+/public
+/ref

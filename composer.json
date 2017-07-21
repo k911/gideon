@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Gideon Fast Tiny Framework - tiny php MVC framework featuring Material Design, Restful Fast Router, Anti-CSRF and TWIG support",
   "require": {
-    "psr/simple-cache": "^1",
+    "psr/simple-cache": "^1.0",
     "psr/log": "^1.0"
   },
   "require-dev": {
