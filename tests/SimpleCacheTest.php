@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Gideon\Filesystem\Directory;
 use PHPUnit\Framework\TestCase;
 use Gideon\Config\SimpleConfig;
 use Gideon\Cache\SimpleCache;
@@ -22,17 +23,14 @@ final class SimpleCacheTest extends TestCase
     public function testInit()
     {
         $path = $this->config->get('CACHE_PATH');
-        if(file_exists($path))
-        {
-            array_map('unlink', glob("$path/*"));
-            rmdir($path);
+        $dir = new Directory($path);
+        if($dir->exists()) {
+            $dir->delete();
         }
-        $this->assertEquals(false, file_exists($path));
 
         $cache = new SimpleCache($this->config);
 
-        $this->assertEquals(true, file_exists($path));
-        $this->assertEquals(true, is_dir($path));
+        $this->assertEquals(true, $dir->exists());
         $this->assertNotEquals(true, $cache->get('ANYTHING', false));
         return $cache;
     }

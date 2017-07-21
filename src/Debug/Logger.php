@@ -1,9 +1,10 @@
 <?php
+
 namespace Gideon\Debug;
 
-use Throwable;
-use Gideon\Exception\Any;
-use Gideon\Exception\IOException;
+use Gideon\Filesystem\AccessDeniedException;
+use Gideon\Filesystem\Directory;
+use Gideon\Filesystem\IOException;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 
@@ -13,14 +14,14 @@ use Psr\Log\LogLevel;
 class Logger extends AbstractLogger
 {
     /**
-     * @var string STRUCTURE
+     * @var string HEADING
      */
-    const STRUCTURE = "[Timestamp] [Type] [Prefix] [Message]";
+    const HEADING = "[Timestamp] [Type] [Prefix] [Message]";
 
     /**
-     * @var string $logfile path to writable/creatable file
+     * @var string $logFile path to writable/creatable file
      */
-    protected $logfile;
+    protected $logFile;
 
     /**
      * @var string $prefix to write in log line after log level
@@ -28,26 +29,42 @@ class Logger extends AbstractLogger
     protected $prefix;
 
     /**
-     * @param string $logfile
+     * Logger constructor.
+     * @param string $dir
+     * @param string $file
+     * @throws IOException
      */
-    public function __construct(string $logfile)
+    public function __construct(string $dir, string $file = 'log')
     {
-        if(!file_exists($logfile))
-        {
-            if(!touch($logfile))
-                throw new IOException('Cannot create logfile', $logfile);
-
-            // write log structure
-            $this->writeln($logfile, self::STRUCTURE);
+        $this->logFile = (new Directory($dir, '0755'))->getFile($file);
+        if (!$this->logFile->exists()) {
+            $this->logFile->create()->setPermissions('0644');
+            $this->writeLine(self::HEADING);
         }
+    }
 
-        $this->logfile = $logfile;
+    /**
+     * Write log line
+     * Tries to save it in utf-8 encoding using this hack:
+     * @link http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
+     * @param string $line
+     * @throws AccessDeniedException
+     */
+    protected function writeLine(string $line)
+    {
+        // Convert to UTF-8 and remove newline from endings
+        $line = trim($line);
+        $line = iconv(mb_detect_encoding($line, mb_detect_order(), true), "UTF-8", $line);
+
+        if (file_put_contents($this->logFile->getPath(), $line . PHP_EOL, FILE_APPEND) === false) {
+            throw new AccessDeniedException('Cannot write line to a file.', $this->logFile->getPath());
+        }
     }
 
     /**
      * Changes prefix and returns itself
      * @param string $prefix
-     * @return Gideon\Debug\Logger
+     * @return \Gideon\Debug\Logger
      */
     public function withPrefix(string $prefix): Logger
     {
@@ -56,35 +73,32 @@ class Logger extends AbstractLogger
     }
 
     /**
-     * Clear logfile
+     * Clear logFile
      * @throws IOException
      * @return Logger
      */
     public function clear(): Logger
     {
-        if(file_put_contents($this->logfile, '') === false)
-            throw new IOException('Cannot clear content of file', $this->logfile);
-
-        // write log structure
-        $this->writeln($this->logfile, self::STRUCTURE);
+        $this->logFile->clear();
+        $this->writeLine(self::HEADING);
         return $this;
     }
 
     /**
      * Main log function
      * @param string $level
-     *      @see Psr\Log\LogLevel
+     * @see \Psr\Log\LogLevel
      * @param string|\Throwable|\Serializable $message
      * @param array $context
      */
     public function log($level, $message, array $context = [])
     {
         // Replace templates
-        if(!empty($context))
+        if (!empty($context))
             $message = $this->interpolate($message, $context);
 
         // Add prefix
-        if(!empty($this->prefix))
+        if (!empty($this->prefix))
             $message = "[{$this->prefix}] $message";
 
         // Create and save line to log file
@@ -92,35 +106,16 @@ class Logger extends AbstractLogger
         $level = ($level === LogLevel::ERROR || $level === LogLevel::CRITICAL || $level === LogLevel::ALERT || $level === LogLevel::EMERGENCY) ?
             "! $level" : (
             ($level === LogLevel::DEBUG || $level === LogLevel::INFO) ?
-            "  $level" :
-            "- $level" );
-        $this->writeln($this->logfile, "$timestamp $level: $message");
-    }
-
-    /**
-     * Write log line
-     * Tries to save it in utf-8 encoding using this hack:
-     * @link http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
-     * @param string $file
-     * @param string $line
-     * @throws IOException
-     * @return void
-     */
-    protected function writeln(string $file, string $line)
-    {
-        // Convert to UTF-8 and remove newline from endings
-        $line = trim($line);
-        $line = iconv(mb_detect_encoding($line, mb_detect_order(), true), "UTF-8", $line);
-
-        if(file_put_contents($file, $line . PHP_EOL, FILE_APPEND) === false)
-            throw new IOException('Cannot write line to a file', $file);
+                "  $level" :
+                "- $level");
+        $this->writeLine("$timestamp $level: $message");
     }
 
     /**
      * Interpolates context values into the message placeholders.
      * @param string $message with optional templates: {{template_name}}
-     * @param array $context replacement => convertable to string value
-     * @return string interpolated
+     * @param array $context context key => replacement
+     * @return string interpolated output
      */
     protected function interpolate(string $message, array $context = []): string
     {

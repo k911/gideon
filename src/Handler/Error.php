@@ -12,11 +12,9 @@ use Gideon\Exception\Notice;
 use Gideon\Exception\Warning;
 use Gideon\Exception\Fatal;
 use Gideon\Exception\Unknown;
-use Gideon\Exception\ErrorException;
 use Gideon\Http\ResponseException;
 use Gideon\Config;
 use Gideon\Debug\Logger;
-use Psr\Log\LogLevel;
 
 /**
  * Config keys used:
@@ -38,7 +36,7 @@ final class Error implements Countable
     private $errors;
 
     /**
-     * @var Gideon\Debug\Logger $logger
+     * @var Logger $logger
      */
     private $logger;
 

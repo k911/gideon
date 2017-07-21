@@ -8,24 +8,22 @@ $src = realpath(__DIR__ . '/../../') . DIRECTORY_SEPARATOR;
 $locale = $src . 'Locale' . DIRECTORY_SEPARATOR . 'defaults' . DIRECTORY_SEPARATOR;
 
 // Application directory in public_html folder.
-// http(s)://domain.com/{$public_html}
+// http(s)://domain.com/{$alias}
 // e.g. for `localhost/gideon` => 'gideon/'
 // and for `localhost` => '' (no slash if in root public directory)
-$public_html = 'gideon/';
+$alias = 'gideon/';
 
 // Useful pathes
-$htdocs = $root . 'htdocs' . DIRECTORY_SEPARATOR;
-$app = $root . 'application' . DIRECTORY_SEPARATOR;
-$log = $app . 'log' . DIRECTORY_SEPARATOR;
-$view = $app . 'view' . DIRECTORY_SEPARATOR;
-$cache = $app . 'cache' . DIRECTORY_SEPARATOR;
+$public = $root . 'public' . DIRECTORY_SEPARATOR;
+$view = $root . 'view' . DIRECTORY_SEPARATOR;
+$log = $root . 'var/log' . DIRECTORY_SEPARATOR;
 
 return
 [
     /**
      * Basic informations, paths, urls
      */
-    'PUBLIC_HTML' => $public_html,
+    'ALIAS' => $alias,
 
     /**
      * @see Gideon\Application
@@ -36,11 +34,11 @@ return
     /**
      * @see Gideon\Cache\SimpleCache
      */
-    'CACHE_PATH' => $cache . 'test' . DIRECTORY_SEPARATOR,
-    'CACHE_MODE_DIR' => 0775,
-    'CACHE_MODE_FILE' => 0664,
-    //'CACHE_TTL_DEFAULT' => 10*365*86400,
-    //'CACHE_HASH_DEFAULT' => 'sha256',
+    'CACHE_PATH' => $root . 'var/tests/cache',
+    'CACHE_MODE_DIR' => '0700',
+    'CACHE_MODE_FILE' => '0600',
+    'CACHE_TTL_DEFAULT' => 1000,
+    'CACHE_HASH_DEFAULT' => 'sha256',
 
     /**
      * @see Gideon\Database\Connection\MySQL
@@ -48,9 +46,9 @@ return
     'MYSQL_SETTINGS_DEFAULT' =>
     [
         'host' => 'localhost',
-        'dbname' => 'comp_tests',
-        'username' => 'comp_tester',
-        'password' => 'V8OPYeZhs5Xt1GHp',
+        'dbname' => 'gideon',
+        'username' => 'gideon-debug',
+        'password' => '',
         'charset' => 'utf8'
     ],
 
@@ -58,9 +56,10 @@ return
      * @see Gideon\Debug\Logger
      */
     'LOGGER_INIT_DEFAULT' => true,
-    'LOGGER_FILE' => $log . 'test.log',
-    'LOGGER_RESET_LOG' => false,
-    'LOGGER_ROOT' => 'WebDev',
+    'LOGGER_DIR' => $log,
+    'LOGGER_FILE' => 'test.log',
+    'LOGGER_RESET_LOG' => true,
+    'LOGGER_ROOT' => 'gideon',
     'LOGGER_LOG_TRACES' => false,
 
     /**
@@ -105,7 +104,7 @@ return
     'TEST_INT_REQUESTS' => 1000,
 
     /**
-     * @see Gideon\Renderer\Response
+     * @see Gideon\Http\Response\Base
      */
     'RESPONSE_CODE_DEFAULT' => 200,
     'RESPONSE_TYPE_DEFAULT' => 'text/plain',
@@ -120,7 +119,7 @@ return
     ],
 
     /**
-     * @see Gideon\Http\Reponse\View
+     * @see Gideon\Http\Response\View
      */
     'VIEW_TYPE_DEFAULT' => 'text/html',
     'VIEW_DEFAULT' => 'index/index',
@@ -139,7 +138,7 @@ return
     /**
      * @see DebugTest
      */
-    'TEST_LOGFILE' => $log . 'log.test',
+    'TEST_LOGFILE' => 'log.test',
 
     /**
      * @see ConfigTest

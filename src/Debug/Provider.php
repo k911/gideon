@@ -17,17 +17,18 @@ use Psr\Log\LoggerInterface;
  * Config keys used:
  * - LOGGER_RESET_LOG
  * - LOGGER_FILE
+ * - LOGGER_DIR
  * - LOGGER_ROOT
  */
 abstract class Provider implements Debug
 {
     /**
-     * @var Gideon\Debug\Logger $Logger
+     * @var \Gideon\Debug\Logger $Logger
      */
     protected static $Logger;
 
     /**
-     * @var Gideon\Handler\ErrorHandler $ErrorHandler
+     * @var \Gideon\Handler\ErrorHandler $ErrorHandler
      */
     protected static $ErrorHandler;
 
@@ -68,7 +69,7 @@ abstract class Provider implements Debug
 
     /**
      * Gets logger instance with called class name as prefix
-     * @return Gideon\Debug\Logger
+     * @return \Gideon\Debug\Logger
      */
     public function getLogger(): LoggerInterface
     {
@@ -79,7 +80,7 @@ abstract class Provider implements Debug
 
     /**
      * Gets error handler instance
-     * @return Gideon\Handler\ErrorHandler
+     * @return \Gideon\Handler\ErrorHandler
      */
     public static function getErrorHandler(): ErrorHandler
     {
@@ -90,11 +91,12 @@ abstract class Provider implements Debug
 
     private static function setUpLogger(Config $config): Logger
     {
-        $logfile = $config->get('LOGGER_FILE');
+        $loggerDir = $config->get('LOGGER_DIR');
+        $loggerFile = $config->get('LOGGER_FILE');
         $clear = $config->get('LOGGER_RESET_LOG') === true;
 
         // Create logger
-        $logger = new Logger($logfile);
+        $logger = new Logger($loggerDir, $loggerFile);
 
         // Clear logfile if wanted
         if ($clear) {
@@ -114,7 +116,7 @@ abstract class Provider implements Debug
 
     /**
      * Intialize Gideon\Debug\Logger object
-     * @param Gideon\Application\Config $config
+     * @param \Gideon\Config $config
      * @return bool success
      */
     public static function initDebugProvider(Config $config): bool

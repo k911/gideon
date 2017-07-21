@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use Gideon\Config\SimpleConfig;
-use Gideon\Exception\IOException;
+use Gideon\Filesystem\IOException;
 use Gideon\Collection\FileLoader;
 use Gideon\Debug\Provider as Debug;
 

@@ -1,7 +1,11 @@
 <?php
 namespace Gideon\Cache;
 
-use Gideon\Exception\IOException;
+use DateInterval;
+use Gideon\Exception\Exception;
+use Gideon\Filesystem\Directory;
+use Gideon\Filesystem\FilesystemException;
+use Gideon\Filesystem\IOException;
 use Gideon\Config;
 use Psr\SimpleCache\CacheInterface;
 
@@ -19,14 +23,14 @@ use Psr\SimpleCache\CacheInterface;
 class SimpleCache implements CacheInterface
 {
     /**
-     * @var string $path to cache dir
+     * @var Directory cache directory
      */
-    private $path;
+    private $dir;
 
     /**
-     * @var string $fmode file mode
+     * @var string $perms file permissions (default = '0644')
      */
-    private $fmode;
+    private $perms;
 
     /**
      * @var int $ttl default cache files time to live - in seconds
@@ -48,42 +52,25 @@ class SimpleCache implements CacheInterface
         return !(preg_match('~[\{\}\\\\\(\)\/\@\:]~', $key) === 1);
     }
 
-    protected function pathFrom(string $key): string
-    {
+    protected function fileNameFrom(string $key): string {
         if (!$this->validate($key)) {
             throw new InvalidArgumentException("Key value `$key` contains illegal characters.");
         }
 
-        return $this->path . DIRECTORY_SEPARATOR . hash($this->hash, $key);
+        return hash($this->hash, $key);
+    }
+
+    protected function pathFrom(string $key): string
+    {
+        return $this->dir->getPath() . DIRECTORY_SEPARATOR . $this->fileNameFrom($key);
     }
 
     public function __construct(Config $config)
     {
-        $path = $config->get('CACHE_PATH');
-        $dmode = $config->has('CACHE_MODE_DIR') ? $config->get('CACHE_MODE_DIR')
-            : 0777; // default
-
-        // Verify path settings
-        if (!file_exists($path)) {
-            $old = umask(0);
-            if (!mkdir($path, $dmode, true)) {
-                throw new IOException('Cannot create directory', $path);
-            }
-            umask($old);
-        } elseif (!is_dir($path)) {
-            throw new IOException('Not a directory', $path);
-        } elseif ((fileperms($path) & 0777) != $dmode) {
-            if (!chmod($path, $dmode)) {
-                throw new IOException("Cannot set dir mode $dmode", $path);
-            }
-        }
-
-        $this->path = $path;
-        $this->fmode = $config->get('CACHE_MODE_FILE');
-        $this->ttl = $config->has('CACHE_TTL_DEFAULT') ? $config->get('CACHE_TTL_DEFAULT')
-            : 10*365*86400; // aprox. 10 years
-        $this->hash = $config->has('CACHE_HASH_DEFAULT') ? $config->get('CACHE_HASH_DEFAULT')
-            : 'sha256';
+        $this->dir = new Directory($config->get('CACHE_PATH'), $config->get('CACHE_MODE_DIR') ?? '0700');
+        $this->perms = $config->get('CACHE_MODE_FILE') ?? '0600';
+        $this->ttl = $config->get('CACHE_TTL_DEFAULT') ?? 10*365*86400;
+        $this->hash = $config->get('CACHE_HASH_DEFAULT') ?? 'sha256';
     }
 
     public function get($key, $default = null)
@@ -111,37 +98,35 @@ class SimpleCache implements CacheInterface
 
     public function set($key, $value, $ttl = null)
     {
-        $dest = $this->pathFrom($key);
-        $temp = $this->path . uniqid("temp_", true);
+        try {
+            $file = $this->dir->makeFile(uniqid("temp_", true));
+            $file->setPermissions($this->perms);
 
-        // Set default ttl if null
-        if (is_null($ttl)) {
-            $ttl = $this->ttl;
-        }
+            // Set default ttl if null
+            if (is_null($ttl)) {
+                $ttl = $this->ttl;
+            }
 
-        // Compute expiration timestamp
-        if (is_int($ttl)) {
-            $expires_at = time() + $ttl;
-        } elseif ($ttl instanceof DateInterval) {
-            $expires_at = date_create_from_format("U", time())->add($ttl)->getTimestamp();
-        } else {
-            throw new InvalidArgumentException("Illegal TTL: `" . var_export($ttl, true) . "`");
-        }
+            // Compute expiration timestamp
+            if (is_int($ttl)) {
+                $expires_at = time() + $ttl;
+            } elseif ($ttl instanceof DateInterval) {
+                $expires_at = date_create_from_format("U", time())->add($ttl)->getTimestamp();
+            } else {
+                throw new InvalidArgumentException("Illegal TTL: `" . var_export($ttl, true) . "`");
+            }
 
-        // Create temp file with serialized data
-        if (file_put_contents($temp, serialize($value)) === false) {
-            return false;
-        }
+            // Store data
+            $file->put(serialize($value))->rename($this->fileNameFrom($key), $expires_at);
+            return true;
 
-        // Change file mod, create destination file and rename temp file
-        if (chmod($temp, $this->fmode) !== false) {
-            if (rename($temp, $dest) && touch($dest, $expires_at)) {
-                return true;
+        } catch (Exception $ex) {
+            // Remove temp file upon error
+            if(isset($file)) {
+                $file->delete();
             }
         }
 
-        // Remove temp file upon error
-        unlink($temp);
         return false;
     }
 
@@ -152,7 +137,7 @@ class SimpleCache implements CacheInterface
 
     public function clear()
     {
-        array_map('unlink', glob($this->path . '*'));
+        $this->dir->clear();
     }
 
     public function getMultiple($keys, $default = null)
@@ -163,7 +148,7 @@ class SimpleCache implements CacheInterface
 
         $result = [];
         foreach ($keys as $key) {
-            $result[] = $this->get($keys, $default);
+            $result[] = $this->get($key, $default);
         }
         return $result;
     }
@@ -174,7 +159,7 @@ class SimpleCache implements CacheInterface
      */
     public function setMultiple($data, $ttl = null)
     {
-        if (!is_array($keys) && !($keys instanceof Traversable)) {
+        if (!is_array($data) && !($data instanceof Traversable)) {
             throw new InvalidArgumentException('$data has to be either array or Traversable.');
         }
 

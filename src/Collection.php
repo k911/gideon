@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Gideon;
 
 use Countable;
-use Gideon\Exception\IOException;
 
 interface Collection extends Countable
 {
@@ -24,23 +23,25 @@ interface Collection extends Countable
      */
     public function findMultiple(array $keys): array;
 
+
     /**
      * Gets values for given keys
      * @example usage: $item = $container('KEY');
      * @example usage: [$item1, $item2] = $container('KEY1', 'KEY2');
-     * @param string ...$keys
+     * @param string[] ...$keys
      * @return mixed|array if one key given it simply returns it value, array otherwise
      */
     public function __invoke(...$keys);
 
     /**
      * Gets value for given key, but never returns null
+     * @param string $key
      * @return mixed
      */
     public function __get(string $key);
 
     /**
-     * Checks wheter value for key is set in container
+     * Checks whether value for key is set in container
      * @param string $key
      * @return bool
      */
@@ -54,8 +55,8 @@ interface Collection extends Countable
     public function __isset(string $key): bool;
 
     /**
-     * Removes data keeped in container
-     * @return void
+     * Removes data kept in collection
+     * @return Collection
      */
     public function clear(): self;
 

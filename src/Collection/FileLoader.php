@@ -5,7 +5,7 @@ namespace Gideon\Collection;
 
 use Gideon\Collection;
 use Gideon\Debug\Provider as Debug;
-use Gideon\Exception\IOException;
+use Gideon\Filesystem\IOException;
 
 class FileLoader extends Debug implements Collection
 {

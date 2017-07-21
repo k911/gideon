@@ -1,6 +1,5 @@
 <?php
 
-
 // Root directory for application
 $root = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR;
 
@@ -9,17 +8,16 @@ $src = realpath(__DIR__ . '/../../') . DIRECTORY_SEPARATOR;
 $locale = $src . 'Locale' . DIRECTORY_SEPARATOR . 'defaults' . DIRECTORY_SEPARATOR;
 
 // Application directory in public_html folder.
-// http(s)://domain.com/{$public_html}
+// http(s)://domain.com/{$alias}
 // e.g. for `localhost/gideon` => 'gideon/'
 // and for `localhost` => '' (no slash if in root public directory)
-$public_html = 'gideon/';
+$alias = 'gideon/';
 
 // Useful pathes
-$htdocs = $root . 'htdocs' . DIRECTORY_SEPARATOR;
-$app = $root . 'application' . DIRECTORY_SEPARATOR;
-$log = $app . 'log' . DIRECTORY_SEPARATOR;
-$view = $app . 'view' . DIRECTORY_SEPARATOR;
-$cache = $app . 'cache' . DIRECTORY_SEPARATOR;
+$public = $root . 'public' . DIRECTORY_SEPARATOR;
+$view = $root . 'view' . DIRECTORY_SEPARATOR;
+$log = $root . 'var/log' . DIRECTORY_SEPARATOR;
+$cache = $root . 'var/cache' . DIRECTORY_SEPARATOR;
 
 return
 [
@@ -27,13 +25,13 @@ return
      * Basic informations, paths, urls
      * Remarks: '//' stands for choose current browser protocol
      */
-    'PUBLIC_HTML' => $public_html,
-    'URL' => "//{$_SERVER['HTTP_HOST']}/$public_html",
-    'CSS' => "//{$_SERVER['HTTP_HOST']}/{$public_html}css",
-    'IMG' => "//{$_SERVER['HTTP_HOST']}/{$public_html}img",
-    'ASSETS' => "//{$_SERVER['HTTP_HOST']}/{$public_html}assets",
-    'UPLOAD' => "//{$_SERVER['HTTP_HOST']}/{$public_html}assets/upload",
-    'JS' => "//{$_SERVER['HTTP_HOST']}/{$public_html}js",
+    'ALIAS' => $alias,
+    'URL' => "//{$_SERVER['HTTP_HOST']}/{$alias}",
+    'CSS' => "//{$_SERVER['HTTP_HOST']}/{$alias}css",
+    'IMG' => "//{$_SERVER['HTTP_HOST']}/{$alias}img",
+    'ASSETS' => "//{$_SERVER['HTTP_HOST']}/{$alias}assets",
+    'UPLOAD' => "//{$_SERVER['HTTP_HOST']}/{$alias}assets/upload",
+    'JS' => "//{$_SERVER['HTTP_HOST']}/{$alias}js",
 
     /**
      * @see Gideon\Application
@@ -45,10 +43,10 @@ return
      * @see Gideon\Cache\SimpleCache
      */
     'CACHE_PATH' => $cache,
-    'CACHE_MODE_DIR' => 0775,
-    'CACHE_MODE_FILE' => 0664,
-    //'CACHE_TTL_DEFAULT' => 10*365*86400,
-    //'CACHE_HASH_DEFAULT' => 'sha256',
+    'CACHE_MODE_DIR' => '0755',
+    'CACHE_MODE_FILE' => '0644',
+    'CACHE_TTL_DEFAULT' => 10*365*86400,
+    'CACHE_HASH_DEFAULT' => 'sha256',
 
     /**
      * @see Gideon\Database\Connection\MySQL
@@ -56,9 +54,9 @@ return
     'MYSQL_SETTINGS_DEFAULT' =>
     [
         'host' => 'localhost',
-        'dbname' => 'comp_tests',
-        'username' => 'test',
-        'password' => 'p5sVz8FRZvXzhMXQ',
+        'dbname' => 'gideon',
+        'username' => 'gideon-test',
+        'password' => '',
         'charset' => 'utf8'
     ],
 
@@ -66,7 +64,8 @@ return
      * @see Gideon\Debug\Logger
      */
     'LOGGER_INIT_DEFAULT' => true,
-    'LOGGER_FILE' => $log . 'debug.log',
+    'LOGGER_DIR' => $log,
+    'LOGGER_FILE' => 'debug.log',
     'LOGGER_RESET_LOG' => false,
     'LOGGER_ROOT' => 'src',
     'LOGGER_LOG_TRACES' => true,
@@ -122,7 +121,7 @@ return
     'JSON_CONTAINER_RESULT' => 'data',
 
     /**
-     * @see Gideon\Http\Reponse\View
+     * @see Gideon\Http\Response\View
      */
     'VIEW_TYPE_DEFAULT' => 'text/html',
     'VIEW_DEFAULT' => 'index/index',
